@@ -1,0 +1,122 @@
+<resources>
+
+    <string name="app_name">aMazeChallenge</string>
+
+    <string name="Game">Game</string>
+    <string name="Maze_challenge">Maze challenge!</string>
+    <string name="Select_maze">Select maze</string>
+    <string name="Players">Players</string>
+    <string name="Add_player">Add player</string>
+    <string name="Start_game">Start game</string>
+    <string name="Selected_algorithm">Selected algorithm</string>
+    <string name="Algorithm">Algorithm</string>
+    <string name="Color">Color</string>
+    <string name="Selected_color">Selected color</string>
+    <string name="Auto_play">Auto play</string>
+    <string name="Next">Next</string>
+    <string name="Interval">Interval</string>
+    <string name="Name">Name</string>
+    <string name="Add">Add</string>
+    <string name="Save">Save</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Cancelled">Cancelled</string>
+    <string name="About">About</string>
+    <string name="Love_the_app">Love the app?</string>
+    <string name="Rate_us">Rate us</string>
+    <string name="Share">Share</string>
+    <string name="Tell_the_world">Tell the world</string>
+    <string name="Share_with_your_friends">Share with your friends</string>
+    <string name="Version">Version</string>
+    <string name="Developed_by">Developed by</string>
+    <string name="SharingInstructions">Get the aMazeChallenge app and learn to code by playing! Get it free from Google Play now: https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge</string>
+    <string name="NoAppsAvailable">No apps available for sharing</string>
+    <string name="application_url">https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge</string>
+    <string name="inspire_url">http://inspirecenter.org</string>
+
+    <string name="instructions">Write your code below to get out of the maze:</string>
+    <string name="demoCode_loop1">while (!solved) {</string>
+    <string name="demoCode_writeCode">Write your code here&#8230;</string>
+    <string name="demoCode_loop2">}</string>
+    <string name="Help">Help</string>
+    <string name="Check_code">Check code</string>
+    <string name="Apply">Apply</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_about">About</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+
+</resources>

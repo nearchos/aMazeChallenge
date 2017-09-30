@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_main">
+
+        <item
+            android:id="@+id/nav_game"
+            android:title="@string/Game" />
+        <item
+            android:id="@+id/nav_players"
+            android:title="@string/Players" />
+        <item
+            android:id="@+id/nav_algorithm"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/Algorithm" />
+
+    </group>
+
+    <group android:id="@+id/group_info">
+
+        <item
+            android:id="@+id/nav_info"
+            android:icon="@android:drawable/ic_dialog_info"
+            android:title="@string/About" />
+
+    </group>
+
+</menu>
