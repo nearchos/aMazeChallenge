@@ -1,0 +1,169 @@
+[{
+  "type": "maze_move_forward",
+  "message0": "Move Forward",
+  "previousStatement": null,
+  "colour": 260,
+  "tooltip": "Move the player forward.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_turn_cw",
+  "message0": "Turn Clockwise",
+  "previousStatement": null,
+  "colour": 260,
+  "tooltip": "Turn the player clockwise.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_turn_ccw",
+  "message0": "Turn Counter-Clockwise",
+  "previousStatement": null,
+  "colour": 260,
+  "tooltip": "Turn the player counterclockwise.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_obstacle_exists",
+  "message0": "obstacle exists %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "DIRECTION",
+      "check": "Direction"
+    }
+  ],
+  "output": "Boolean",
+  "colour": 65,
+  "tooltip": "Returns true if there is an obstacle in a certain direction.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_is_passable",
+  "message0": "is passable %1 Direction %2",
+  "args0": [
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "input_value",
+      "name": "DIRECTION",
+      "check": "Direction"
+    }
+  ],
+  "output": "Boolean",
+  "colour": 65,
+  "tooltip": "Returns true if the next block in this direction is passable.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_canmove_left",
+  "message0": "can move left",
+  "output": "Boolean",
+  "colour": 65,
+  "tooltip": "Returns true if the position left of the player is passable.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_canmove_right",
+  "message0": "can move right",
+  "output": "Boolean",
+  "colour": 65,
+  "tooltip": "Returns true if the position right of the player is passable.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_canmove_forward",
+  "message0": "can move forward",
+  "output": "Boolean",
+  "colour": 65,
+  "tooltip": "Returns true if the position ahead of the player is passable.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_canmove_backward",
+  "message0": "can move backward",
+  "output": "Boolean",
+  "colour": 65,
+  "tooltip": "Returns true if the position behind the player is passable.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_justturned",
+  "message0": "just turned",
+  "output": "Boolean",
+  "colour": 65,
+  "tooltip": "Returns true if the player's last move was a turn.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_set_justturned",
+  "message0": "set just turned %1",
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "justTurned",
+      "check": "Boolean"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": "Boolean",
+  "colour": 20,
+  "tooltip": "Sets the just turned variable to a given value (true/false).",
+  "helpUrl": ""
+},
+{
+  "type": "maze_getrandomnumber",
+  "message0": "get random number %1 (lowest) %2 (highest) %3",
+  "args0": [
+    {
+      "type": "input_dummy"
+    },
+    {
+      "type": "input_value",
+      "name": "low",
+      "check": "Number"
+    },
+    {
+      "type": "input_value",
+      "name": "high",
+      "check": "Number"
+    }
+  ],
+  "inputsInline": true,
+  "output": "Number",
+  "colour": 120,
+  "tooltip": "Returns a number between the given numbers (excluding the highest)",
+  "helpUrl": ""
+},
+{
+  "type": "maze_direction_north",
+  "message0": "North",
+  "output": "Direction",
+  "colour": 150,
+  "tooltip": "North",
+  "helpUrl": ""
+},
+{
+  "type": "maze_direction_south",
+  "message0": "South",
+  "output": "Direction",
+  "colour": 150,
+  "tooltip": "South.",
+  "helpUrl": ""
+},
+{
+  "type": "maze_direction_east",
+  "message0": "East",
+  "output": "Direction",
+  "colour": 150,
+  "tooltip": "East",
+  "helpUrl": ""
+},
+{
+  "type": "maze_direction_west",
+  "message0": "West",
+  "output": "Direction",
+  "colour": 150,
+  "tooltip": "West",
+  "helpUrl": ""
+}]
