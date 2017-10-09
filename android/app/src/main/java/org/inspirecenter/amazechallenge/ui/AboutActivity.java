@@ -10,13 +10,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.BuildConfig;
 
 import java.util.List;
 
-public class AboutActivity extends Activity {
+public class AboutActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

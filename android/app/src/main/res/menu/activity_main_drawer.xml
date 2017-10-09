@@ -10,9 +10,9 @@
             android:id="@+id/nav_players"
             android:title="@string/Players" />
         <item
-            android:id="@+id/nav_algorithm"
+            android:id="@+id/nav_code_designer"
             android:icon="@drawable/ic_menu_manage"
-            android:title="@string/Algorithm" />
+            android:title="@string/Code_designer" />
 
     </group>
 

@@ -40,12 +40,14 @@
     <string name="Help">Help</string>
     <string name="Check_code">Check code</string>
     <string name="Apply">Apply</string>
+    <string name="Code_designer">Code designer</string>
+    <string name="Code_is_auto_saved">Your code is automatically saved!</string>
+    <string name="Your_code_has_been_saved">Your code has been saved!</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_about">About</string>
 
     <!-- Strings related to Settings -->
 

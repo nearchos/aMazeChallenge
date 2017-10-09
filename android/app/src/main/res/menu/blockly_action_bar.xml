@@ -4,7 +4,7 @@
     <item android:id="@+id/action_clear" android:title="@string/action_clear"
         android:orderInCategory="12" app:showAsAction="ifRoom"
         android:icon="@drawable/ic_layers_clear_white_24dp"/>
-    <!--<item android:id="@+id/action_save" android:title="@string/Save"-->
-        <!--android:orderInCategory="15" app:showAsAction="ifRoom"-->
-        <!--android:icon="@drawable/ic_save_white_24dp"/>-->
+    <item android:id="@+id/action_save" android:title="@string/Save"
+        android:orderInCategory="15" app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_save_white_24dp"/>
 </menu>

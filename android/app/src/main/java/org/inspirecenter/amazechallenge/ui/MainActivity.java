@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.Player;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(org.inspirecenter.amazechallenge.R.layout.activity_main);
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(org.inspirecenter.amazechallenge.R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == org.inspirecenter.amazechallenge.R.id.nav_players) {
 
-        } else if (id == org.inspirecenter.amazechallenge.R.id.nav_algorithm) {
+        } else if (id == org.inspirecenter.amazechallenge.R.id.nav_code_designer) {
             //startActivity(new Intent(this, AlgorithmActivity.class));
             startActivity(new Intent(this, BlocklyActivity.class));
         } else if (id == org.inspirecenter.amazechallenge.R.id.nav_info) {

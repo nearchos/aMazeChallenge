@@ -14,14 +14,15 @@
  */
 package org.inspirecenter.amazechallenge.ui;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.blockly.android.AbstractBlocklyActivity;
@@ -61,8 +62,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 @Override
                 public void onFinishCodeGeneration(final String generatedCode) {
                     Log.i(TAG, "generatedCode:\n" + generatedCode);
-                    Toast.makeText(getApplicationContext(), generatedCode,
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.Your_code_has_been_saved, Toast.LENGTH_LONG).show();
                     final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BlocklyActivity.this);
                     sharedPreferences.edit().putString (KEY_ALGORITHM_ACTIVITY_CODE, generatedCode).apply();
                     finish();
@@ -70,27 +70,28 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             };//end mCodeGeneratorCallback
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        final ActionBar actionBar = getActionBar();
+        if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
     protected View onCreateContentView(int containerId) {
-        View root = getLayoutInflater().inflate(R.layout.activity_blockly, null);
-        final Button applyButton = (Button) root.findViewById(R.id.applyButtonBlockly);
-        applyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                /** TODO, Code generation, if possible... Later! **/
-
-                final Intent intent = getIntent();
-                final Maze selectedMaze = (Maze) intent.getSerializableExtra(GameActivity.SELECTED_GAME_KEY);
-                final Intent intentPlay = new Intent(BlocklyActivity.this, GameActivity.class);
-                intentPlay.putExtra(GameActivity.SELECTED_GAME_KEY, selectedMaze);
-
-                if (getController().getWorkspace().hasBlocks()) {
-                    onRunCode();
-                }
-            }//end onClick()
-        });//end listener
-        return root;
+        return getLayoutInflater().inflate(R.layout.activity_blockly, null);
     }//end onCreateContentView()
+
+    private void submitCode() {
+        final Intent intent = getIntent();
+        final Maze selectedMaze = (Maze) intent.getSerializableExtra(GameActivity.SELECTED_GAME_KEY);
+        final Intent intentPlay = new Intent(BlocklyActivity.this, GameActivity.class);
+        intentPlay.putExtra(GameActivity.SELECTED_GAME_KEY, selectedMaze);
+
+        if (getController().getWorkspace().hasBlocks()) {
+            onRunCode();
+        }
+    }
 
     @NonNull
     @Override
@@ -135,14 +136,18 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == com.google.blockly.android.R.id.action_clear) {
-            onClearWorkspace();
-            return true;
-        } else if (id == android.R.id.home && mNavigationDrawer != null) {
-            setNavDrawerOpened(!isNavDrawerOpen());
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                submitCode();
+                return true;
+            case R.id.action_save:
+                Toast.makeText(this, R.string.Code_is_auto_saved, Toast.LENGTH_SHORT).show();
+                return true;
+            case com.google.blockly.android.R.id.action_clear:
+                //todo show confirm dialog
+                onClearWorkspace();
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }//end onOptionsItemSelected
 
