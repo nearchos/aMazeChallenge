@@ -23,6 +23,7 @@
 
         <activity android:name=".ui.BlocklyActivity"
             android:label="@string/Code_designer"
+            android:theme="@style/BlocklyAppTheme"
             android:parentActivityName="org.inspirecenter.amazechallenge.ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

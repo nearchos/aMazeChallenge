@@ -1,9 +1,7 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
+import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.Game;
 
 import java.util.Locale;
@@ -35,13 +35,16 @@ public class GameActivity extends AppCompatActivity {
     private Switch autoPlayButton;
     private Button nextButton;
 
+    private TextView movesDataTextView;
+    private Button movesDetailsButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(org.inspirecenter.amazechallenge.R.layout.activity_game);
+        setContentView(R.layout.activity_game);
 
         this.gameView = findViewById(org.inspirecenter.amazechallenge.R.id.activity_grid_grid_view);
-        this.delaySeekBar = findViewById(org.inspirecenter.amazechallenge.R.id.activity_grid_delay_spinner);
+        this.delaySeekBar = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_delay_spinner);
         final Vector<String> periodOptions = new Vector<>();
         for(final long period : PERIOD_OPTIONS) {
             if(period < 1000) {
@@ -59,12 +62,21 @@ public class GameActivity extends AppCompatActivity {
             @Override public void onNothingSelected(AdapterView<?> parent) { /* nothing */ }
         });
 
-        this.autoPlayButton = findViewById(org.inspirecenter.amazechallenge.R.id.activity_grid_auto_play_switch);
-        this.nextButton = findViewById(org.inspirecenter.amazechallenge.R.id.activity_grid_button_next);
+        this.autoPlayButton = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_auto_play_switch);
+        this.nextButton = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_button_next);
         this.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 makeNextMove();
+            }
+        });
+
+        movesDataTextView = findViewById(R.id.activity_game_moves_data);
+        movesDetailsButton = findViewById(R.id.activity_game_moves_details);
+        movesDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // todo show a dialog displaying the details of all players' moves
             }
         });
 
@@ -103,6 +115,7 @@ public class GameActivity extends AppCompatActivity {
     private void makeNextMove() {
         game.applyNextMove(this);
         gameView.invalidate();
+        // todo update movesDataTextView
     }
 
     private class MazeRunner extends TimerTask {
