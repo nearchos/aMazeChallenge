@@ -182,7 +182,7 @@ public class Game implements Serializable {
      * @return the implementation of {@link MazeSolver} corresponding to the given {@link Player}
      */
     private MazeSolver getMazeSolver(final Player player) {
-        final Class<MazeSolver> clazz = player.getMazeSolverClass();
+        final Class<? extends MazeSolver> clazz = player.getMazeSolverClass();
         try {
             final Constructor<?> constructor = clazz.getConstructor(Game.class, Player.class);
             return (MazeSolver) constructor.newInstance(this, player);

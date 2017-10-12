@@ -9,8 +9,12 @@ import org.inspirecenter.amazechallenge.interpreter.MazeInterpreter;
 import org.mozilla.javascript.Context;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InterpretedMazeSolver extends AbstractMazeSolver {
+
+    private static final String TAG = "aMazeChallenge";
 
     public static final String PARAMETER_KEY_CODE = "code";
     private String code;
@@ -34,7 +38,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     public PlayerMove getNextMove() {
         Log.i("Wrapped Code: ", code);
 
-        PlayerMove nextMove = null;
+        PlayerMove nextMove;
 
         Object instanceAsObject = this;
 
@@ -48,10 +52,8 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         }
 
         /*
-         * TODO: Fix Blockly if block error --> The "else if" and "else" statements are not generated!
-         *
-         * NOTE: This can be overcome by inserting multiple simple if statements after each other for now.
-         *
+         * Blockly if block error --> The "else if" and "else" statements are not generated!
+         * Fixed! (https://github.com/google/blockly-android/issues/666)
          */
 
         Log.i("Current Move: ", nextMove == null ? "null" : nextMove.toString());
@@ -64,7 +66,17 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         return "Interpreted Maze";
     }
 
-    static String wrapCode(String code) {
+    private Map<String,Object> javascriptArguments = new HashMap<>();
+
+    public  Object getJavascriptArgument(final String key) {
+        return javascriptArguments.get(key);
+    }
+
+    public  Object setJavascriptArgument(final String key, final Object value) {
+        return javascriptArguments.put(key, value);
+    }
+
+    private static String wrapCode(String code) {
         String turned =
                 "var justTurned = false;\n function getJustTurned() { return justTurned; }\n";
         String wrapperStart =

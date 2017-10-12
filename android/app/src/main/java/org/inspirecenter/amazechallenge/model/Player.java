@@ -17,9 +17,9 @@ public class Player implements Serializable {
     private Direction direction;
     private ShapeColor color;
     private Shape shape;
-    private Class<MazeSolver> mazeSolverClass;
+    private Class<? extends MazeSolver> mazeSolverClass;
 
-    public Player(final String name, final ShapeColor color, final Shape shape, final Class<MazeSolver> mazeSolverClass) {
+    public Player(final String name, final ShapeColor color, final Shape shape, final Class<? extends MazeSolver> mazeSolverClass) {
         this.name = name;
         this.position = new Position(0, 0);
         this.direction = NORTH;
@@ -45,11 +45,11 @@ public class Player implements Serializable {
         return direction;
     }
 
-    public void turnClockwise() {
+    void turnClockwise() {
         this.direction = direction.turnClockwise();
     }
 
-    public void turnCounterClockwise() {
+    void turnCounterClockwise() {
         this.direction = direction.turnCounterClockwise();
     }
 
@@ -79,7 +79,7 @@ public class Player implements Serializable {
         return shape;
     }
 
-    public Class<MazeSolver> getMazeSolverClass() {
+    public Class<? extends MazeSolver> getMazeSolverClass() {
         return mazeSolverClass;
     }
 
