@@ -6,19 +6,18 @@
             <block type="maze_move_forward"></block>
             <block type="maze_turn_cw"></block>
             <block type="maze_turn_ccw"></block>
+            <block type="maze_init_function"></block>
+            <block type="maze_run_function"></block>
+            <block type="maze_canmove_forward"></block>
+            <block type="maze_canmove_left"></block>
+            <block type="maze_canmove_right"></block>
+            <block type="maze_canmove_backward"></block>
+            <block type="maze_obstacle_exists"></block>
             <block type="maze_direction_north"></block>
             <block type="maze_direction_south"></block>
             <block type="maze_direction_east"></block>
             <block type="maze_direction_west"></block>
-            <block type="maze_obstacle_exists"></block>
-            <block type="maze_is_passable"></block>
-			<block type="maze_justturned"></block>
-            <block type="maze_set_justturned"></block>
-			<block type="maze_canmove_forward"></block>
-			<block type="maze_canmove_left"></block>
-			<block type="maze_canmove_right"></block>
-			<block type="maze_canmove_backward"></block>
-			<block type="maze_getrandomnumber"></block>
+
         </category>
 
         <category name="Logic" colour="210">

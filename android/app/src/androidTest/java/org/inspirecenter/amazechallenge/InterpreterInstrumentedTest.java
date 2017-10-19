@@ -14,6 +14,7 @@ import org.inspirecenter.amazechallenge.model.Shape;
 import org.inspirecenter.amazechallenge.model.ShapeColor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mozilla.javascript.NativeObject;
 
 import static org.junit.Assert.*;
 
@@ -54,6 +55,8 @@ public class InterpreterInstrumentedTest {
     @Test
     public void interpretation_isCorrect() throws Exception {
 
+        Log.i(TAG, SAMPLE_CODE_1);
+
         final Context context = InstrumentationRegistry.getTargetContext();
 
         final Player player = new Player("test", ShapeColor.PLAYER_COLOR_BLACK, Shape.CIRCLE, InterpretedMazeSolver.class);
@@ -67,25 +70,27 @@ public class InterpreterInstrumentedTest {
             final Object o = MazeInterpreter.callFunction(SAMPLE_CODE_1, "wrapper", Object.class, interpretedMazeSolver);
 
             Log.i(TAG, "returned object: " + o + " (type: " + o.getClass() + ")");
-//            if(o instanceof org.mozilla.javascript.NativeObject) {
-//                final org.mozilla.javascript.NativeObject no = (NativeObject) o;
-//                Log.i(TAG, "no: " + no.keySet());
-//                Log.i(TAG, "no: " + no.values());
-//            }
+            if(o instanceof org.mozilla.javascript.NativeObject) {
+                final org.mozilla.javascript.NativeObject no = (NativeObject) o;
+                Log.i(TAG, "no: " + no.keySet());
+                Log.i(TAG, "no: " + no.values());
+            }
             test1 = (Boolean) interpretedMazeSolver.getJavascriptArgument("test");
+            Log.i("Value of Test: ", String.valueOf(test1));
         }
 
         boolean test2;
         {
             final Object o = MazeInterpreter.callFunction(SAMPLE_CODE_1, "wrapper", Object.class, interpretedMazeSolver);
 
-//            Log.i(TAG, "returned object: " + o + " (type: " + o.getClass() + ")");
-//            if(o instanceof org.mozilla.javascript.NativeObject) {
-//                final org.mozilla.javascript.NativeObject no = (NativeObject) o;
-//                Log.i(TAG, "no: " + no.keySet());
-//                Log.i(TAG, "no: " + no.values());
-//            }
+            Log.i(TAG, "returned object: " + o + " (type: " + o.getClass() + ")");
+            if(o instanceof org.mozilla.javascript.NativeObject) {
+                final org.mozilla.javascript.NativeObject no = (NativeObject) o;
+                Log.i(TAG, "no: " + no.keySet());
+                Log.i(TAG, "no: " + no.values());
+            }
             test2 = (Boolean) interpretedMazeSolver.getJavascriptArgument("test");
+            Log.i("Value of Test: ", String.valueOf(test2));
         }
 
 

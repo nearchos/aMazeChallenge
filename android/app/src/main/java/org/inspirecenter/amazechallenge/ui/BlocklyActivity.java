@@ -151,4 +151,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         return super.onOptionsItemSelected(item);
     }//end onOptionsItemSelected
 
+    //[Nicos] Code should also be saved when the user presses the hardkey back button.
+    @Override
+    public void onBackPressed() {
+        submitCode();
+    }
+
 }//end activity BlocklyActivity
