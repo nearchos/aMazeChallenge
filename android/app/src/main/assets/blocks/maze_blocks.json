@@ -131,7 +131,6 @@
     }
   ],
   "previousStatement": null,
-  "nextStatement": null,
   "colour": 230,
   "tooltip": "Runs at each turn of the player to solve the maze.",
   "helpUrl": ""

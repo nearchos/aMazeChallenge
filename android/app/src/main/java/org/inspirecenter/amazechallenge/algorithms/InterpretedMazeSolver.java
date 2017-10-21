@@ -6,8 +6,9 @@ import android.widget.Toast;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.InterpretedMazeRunnerParams;
 import org.inspirecenter.amazechallenge.model.Player;
-import org.inspirecenter.amazechallenge.interpreter.MazeInterpreter;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ScriptableObject;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -20,13 +21,10 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     private static final String TAG = "aMazeChallenge";
     public static final String PARAMETER_KEY_CODE = "code";
     private String code;
-    private static Context RHINO;
     private InterpretedMazeSolver instance;
 
     public InterpretedMazeSolver(final Game game, final Player player) {
         super(game, player);
-        RHINO = Context.enter();
-        RHINO.setOptimizationLevel(-1);
         instance = this;
     }
 
@@ -50,103 +48,69 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
             try {
                 Log.d(TAG, "Running init...");
                 Log.d(TAG, " ** javascriptArguments before init: " + javascriptArguments);
-                MazeInterpreter.callFunction(code, "init", Object.class, instance);
+
+                Context RHINO = Context.enter();
+                RHINO.setOptimizationLevel(-1);
+                ScriptableObject scope = RHINO.initStandardObjects();
+                RHINO.evaluateString(scope, code, "init", 1, null);
+                Function function = (Function)scope.get("init", scope);
+                function.call(RHINO, scope, scope, new Object[] { instance });
+
                 Log.d(TAG, " ** javascriptArguments after init: " + javascriptArguments);
                 Log.d(TAG, "Done Running init...");
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            catch (Exception e) { e.printStackTrace(); }
+            finally { Context.exit(); }
 
-//            Iterator it = javascriptArguments.entrySet().iterator();
-//            if (!it.hasNext()) {
-//                Log.i(TAG, "EMPTY MAP AFTER INIT!");
-//            }
-//            while (it.hasNext()) {
-//                Map.Entry pair = (Map.Entry)it.next();
-//                Log.i(TAG, pair.getKey() + " = " + pair.getValue() + "// Type: " + pair.getValue().getClass());
-//                it.remove(); // avoids a ConcurrentModificationException
-//            }
-            Log.d(TAG, " ** javascriptArguments: " + javascriptArguments);
+            Log.d(TAG, " ** After init: " + javascriptArguments);
         }
     }
 
     @Override
     public PlayerMove getNextMove() {
 
-        PlayerMove nextMove;
+        PlayerMove nextMove = null;
 
-        /*
-        try {
-            MazeInterpreter.callFunction(code, "wrapper", Object.class, new Object[] { instanceAsObject });
-            nextMove  = (PlayerMove) getJavascriptArgument("retVal");
-        } catch (Exception e) {
-            Log.e("maze", e.getMessage());
-            throw new RuntimeException(e);
-        }
-
-        Log.i("Current Move: ", nextMove == null ? "null" : nextMove.toString());
-        return nextMove == null ? PlayerMove.NO_MOVE : nextMove;*/
-
-//        Iterator it = javascriptArguments.entrySet().iterator();
-//        if (!it.hasNext()) {
-//            Log.i(TAG, "EMPTY MAP BEFORE WRAPPER!");
-//        }
-//        while (it.hasNext()) {
-//            Map.Entry pair = (Map.Entry)it.next();
-//            Log.i(TAG, pair.getKey() + " = " + pair.getValue());
-//            it.remove(); // avoids a ConcurrentModificationException
-//        }
-        Log.d(TAG, " ** javascriptArguments: " + javascriptArguments);
+        Log.d(TAG, " ** Before wrapper: " + javascriptArguments);
 
         try {
-            MazeInterpreter.callFunction(code, "wrapper", Object.class, instance);
-        } catch (Exception e) {
-            e.printStackTrace();
+            Context RHINO = Context.enter();
+            RHINO.setOptimizationLevel(-1);
+            ScriptableObject scope = RHINO.initStandardObjects();
+            RHINO.evaluateString(scope, code, "wrapper", 1, null);
+            Function function = (Function) scope.get("wrapper", scope);
+            Object result = function.call(RHINO, scope, scope, new Object[] { instance });
+            nextMove = (PlayerMove) Context.jsToJava(result, PlayerMove.class);
         }
+        catch (Exception e) { e.printStackTrace(); }
+        finally { Context.exit(); }
+        Log.d(TAG, " ** After wrapper: " + javascriptArguments);
 
-//        boolean varBool = (boolean) getJavascriptArgument("bool");
-//        int varInt = (int) getJavascriptArgument("int");
-//        float varFloat = (float) getJavascriptArgument("float");
-//
-//        Log.i(TAG, "Variable values are:  bool = " + String.valueOf(varBool) + ", int = " + String.valueOf(varInt) + ", float = " + String.valueOf(varFloat));
-
-//        Iterator its = javascriptArguments.entrySet().iterator();
-//        if (!its.hasNext()) {
-//            Log.i(TAG, "EMPTY MAP AFTER WRAPPER!");
-//        }
-//        while (its.hasNext()) {
-//            Map.Entry pair = (Map.Entry)its.next();
-//            Log.i(TAG, pair.getKey() + " = " + pair.getValue());
-//            its.remove(); // avoids a ConcurrentModificationException
-//        }
-        Log.d(TAG, " ** javascriptArguments: " + javascriptArguments);
-
-
-
-        return PlayerMove.NO_MOVE;
+        return nextMove == null ? PlayerMove.NO_MOVE : nextMove;
     }//end getNextMove()
 
     @Override
-    public String toString() {
-        return "Interpreted Maze";
-    }
+    public String toString() { return "Interpreted Maze"; }
 
     public Map<String,Object> javascriptArguments = new HashMap<>();
+    public Map<String, Class> javascriptArgumentTypes = new HashMap<>();
 
     public Object getJavascriptArgument(final String key) {
         Log.d(TAG, "    *** getJavascriptArgument GET: " + key + " -> " + javascriptArguments.get(key) + ", value type: " + (javascriptArguments.get(key) != null ? javascriptArguments.get(key).getClass() :  "null"));
-
-//        return RHINO.javaToJS(javascriptArguments.get(key), ?);
         return javascriptArguments.get(key);
+    }
+
+    public Class getJavascriptArgumentType(final String key) {
+        return javascriptArgumentTypes.get(key);
     }
 
     public Object setJavascriptArgument(final String key, final Object value) {
         Log.d(TAG, "    *** getJavascriptArgument SET: " + key + " -> " + value + " of type: [" + value.getClass() + "] (value was : " + javascriptArguments.get(key) + ")");
+        javascriptArgumentTypes.put(key, value.getClass());
         return javascriptArguments.put(key, value);
     }
 
     private static String wrapCode(final String code) {
-
         final int DECL_END = getPlayerCodeStart(code);
         final String PROPNAMES = "\n\n\n//Params Array\n" +
                 "var propNames = [];\n" +
@@ -155,13 +119,10 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
                 "      propNames.push(propName);\n" +
                 "   }\n" +
                 "}\n";
-
         final String START_CODE = code.substring(0, DECL_END);
         final String END_CODE = code.substring(DECL_END, code.length());
         final String FINAL_CODE = START_CODE + PROPNAMES + END_CODE;
-
         return FINAL_CODE;
-
     }//end wrapCode()
 
     /**
@@ -181,9 +142,5 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         }//end for all lines
         return totalLineCharacters - 1; //Return index, not length
     }//end getPlayerCodeStart()
-
-    void callme(String stuff) {
-        Log.i("callme", stuff);
-    }
 
 }
