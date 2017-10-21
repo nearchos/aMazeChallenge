@@ -10,6 +10,7 @@ import org.inspirecenter.amazechallenge.interpreter.MazeInterpreter;
 import org.mozilla.javascript.Context;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,21 +48,25 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
             Log.i(TAG, "##########################");
 
             try {
+                Log.d(TAG, "Running init...");
+                Log.d(TAG, " ** javascriptArguments before init: " + javascriptArguments);
                 MazeInterpreter.callFunction(code, "init", Object.class, instance);
+                Log.d(TAG, " ** javascriptArguments after init: " + javascriptArguments);
+                Log.d(TAG, "Done Running init...");
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            Iterator it = javascriptArguments.entrySet().iterator();
-            if (!it.hasNext()) {
-                Log.i(TAG, "EMPTY MAP AFTER INIT!");
-            }
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                Log.i(TAG, pair.getKey() + " = " + pair.getValue() + "// Type: " + pair.getValue().getClass());
-                it.remove(); // avoids a ConcurrentModificationException
-            }
-
+//            Iterator it = javascriptArguments.entrySet().iterator();
+//            if (!it.hasNext()) {
+//                Log.i(TAG, "EMPTY MAP AFTER INIT!");
+//            }
+//            while (it.hasNext()) {
+//                Map.Entry pair = (Map.Entry)it.next();
+//                Log.i(TAG, pair.getKey() + " = " + pair.getValue() + "// Type: " + pair.getValue().getClass());
+//                it.remove(); // avoids a ConcurrentModificationException
+//            }
+            Log.d(TAG, " ** javascriptArguments: " + javascriptArguments);
         }
     }
 
@@ -82,15 +87,16 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         Log.i("Current Move: ", nextMove == null ? "null" : nextMove.toString());
         return nextMove == null ? PlayerMove.NO_MOVE : nextMove;*/
 
-        Iterator it = javascriptArguments.entrySet().iterator();
-        if (!it.hasNext()) {
-            Log.i(TAG, "EMPTY MAP BEFORE WRAPPER!");
-        }
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            Log.i(TAG, pair.getKey() + " = " + pair.getValue());
-            it.remove(); // avoids a ConcurrentModificationException
-        }
+//        Iterator it = javascriptArguments.entrySet().iterator();
+//        if (!it.hasNext()) {
+//            Log.i(TAG, "EMPTY MAP BEFORE WRAPPER!");
+//        }
+//        while (it.hasNext()) {
+//            Map.Entry pair = (Map.Entry)it.next();
+//            Log.i(TAG, pair.getKey() + " = " + pair.getValue());
+//            it.remove(); // avoids a ConcurrentModificationException
+//        }
+        Log.d(TAG, " ** javascriptArguments: " + javascriptArguments);
 
         try {
             MazeInterpreter.callFunction(code, "wrapper", Object.class, instance);
@@ -104,15 +110,16 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 //
 //        Log.i(TAG, "Variable values are:  bool = " + String.valueOf(varBool) + ", int = " + String.valueOf(varInt) + ", float = " + String.valueOf(varFloat));
 
-        Iterator its = javascriptArguments.entrySet().iterator();
-        if (!its.hasNext()) {
-            Log.i(TAG, "EMPTY MAP AFTER WRAPPER!");
-        }
-        while (its.hasNext()) {
-            Map.Entry pair = (Map.Entry)its.next();
-            Log.i(TAG, pair.getKey() + " = " + pair.getValue());
-            its.remove(); // avoids a ConcurrentModificationException
-        }
+//        Iterator its = javascriptArguments.entrySet().iterator();
+//        if (!its.hasNext()) {
+//            Log.i(TAG, "EMPTY MAP AFTER WRAPPER!");
+//        }
+//        while (its.hasNext()) {
+//            Map.Entry pair = (Map.Entry)its.next();
+//            Log.i(TAG, pair.getKey() + " = " + pair.getValue());
+//            its.remove(); // avoids a ConcurrentModificationException
+//        }
+        Log.d(TAG, " ** javascriptArguments: " + javascriptArguments);
 
 
 
@@ -127,10 +134,14 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     public Map<String,Object> javascriptArguments = new HashMap<>();
 
     public Object getJavascriptArgument(final String key) {
+        Log.d(TAG, "    *** getJavascriptArgument GET: " + key + " -> " + javascriptArguments.get(key) + ", value type: " + (javascriptArguments.get(key) != null ? javascriptArguments.get(key).getClass() :  "null"));
+
+//        return RHINO.javaToJS(javascriptArguments.get(key), ?);
         return javascriptArguments.get(key);
     }
 
     public Object setJavascriptArgument(final String key, final Object value) {
+        Log.d(TAG, "    *** getJavascriptArgument SET: " + key + " -> " + value + " of type: [" + value.getClass() + "] (value was : " + javascriptArguments.get(key) + ")");
         return javascriptArguments.put(key, value);
     }
 
