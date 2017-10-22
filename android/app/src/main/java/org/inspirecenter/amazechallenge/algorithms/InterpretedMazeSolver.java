@@ -1,19 +1,15 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.InterpretedMazeRunnerParams;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class InterpretedMazeSolver extends AbstractMazeSolver {
@@ -21,29 +17,27 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     private static final String TAG = "aMazeChallenge";
     public static final String PARAMETER_KEY_CODE = "code";
     private String code;
-    private InterpretedMazeSolver instance;
 
     public InterpretedMazeSolver(final Game game, final Player player) {
         super(game, player);
-        instance = this;
     }
 
     public void setParameter(final String name, final Serializable value) {
         if(PARAMETER_KEY_CODE.equals(name)) {
             code = (String) value;
 
-            //DBEUG INFO:
-            Log.i(TAG, "####### PRE-WRAPPED CODE #######");
-            Log.i(TAG, code);
-            Log.i(TAG, "##########################");
+            //DEBUG INFO:
+            Log.d(TAG, "####### PRE-WRAPPED CODE #######");
+            Log.d(TAG, code);
+            Log.d(TAG, "################################");
 
             //Wrap the code:
             code = wrapCode(code);
 
             //DBEUG INFO:
-            Log.i(TAG, "####### FINAL CODE #######");
-            Log.i(TAG, code);
-            Log.i(TAG, "##########################");
+            Log.d(TAG, "########## FINAL CODE ##########");
+            Log.d(TAG, code);
+            Log.d(TAG, "################################");
 
             try {
                 Log.d(TAG, "Running init...");
@@ -53,8 +47,8 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
                 RHINO.setOptimizationLevel(-1);
                 ScriptableObject scope = RHINO.initStandardObjects();
                 RHINO.evaluateString(scope, code, "init", 1, null);
-                Function function = (Function)scope.get("init", scope);
-                function.call(RHINO, scope, scope, new Object[] { instance });
+                Function function = (Function) scope.get("init", scope);
+                function.call(RHINO, scope, scope, new Object[] { this });
 
                 Log.d(TAG, " ** javascriptArguments after init: " + javascriptArguments);
                 Log.d(TAG, "Done Running init...");
@@ -69,7 +63,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     @Override
     public PlayerMove getNextMove() {
 
-        PlayerMove nextMove = null;
+        PlayerMove nextMove = PlayerMove.NO_MOVE;
 
         Log.d(TAG, " ** Before wrapper: " + javascriptArguments);
 
@@ -79,14 +73,15 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
             ScriptableObject scope = RHINO.initStandardObjects();
             RHINO.evaluateString(scope, code, "wrapper", 1, null);
             Function function = (Function) scope.get("wrapper", scope);
-            Object result = function.call(RHINO, scope, scope, new Object[] { instance });
+            Object result = function.call(RHINO, scope, scope, new Object[] { this });
             nextMove = (PlayerMove) Context.jsToJava(result, PlayerMove.class);
         }
         catch (Exception e) { e.printStackTrace(); }
         finally { Context.exit(); }
+
         Log.d(TAG, " ** After wrapper: " + javascriptArguments);
 
-        return nextMove == null ? PlayerMove.NO_MOVE : nextMove;
+        return nextMove;
     }//end getNextMove()
 
     @Override
@@ -96,7 +91,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     public Map<String, Class> javascriptArgumentTypes = new HashMap<>();
 
     public Object getJavascriptArgument(final String key) {
-        Log.d(TAG, "    *** getJavascriptArgument GET: " + key + " -> " + javascriptArguments.get(key) + ", value type: " + (javascriptArguments.get(key) != null ? javascriptArguments.get(key).getClass() :  "null"));
+//        Log.d(TAG, "    *** getJavascriptArgument GET: " + key + " -> " + javascriptArguments.get(key) + ", value type: " + (javascriptArguments.get(key) != null ? javascriptArguments.get(key).getClass() :  "null"));
         return javascriptArguments.get(key);
     }
 
@@ -105,24 +100,24 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     }
 
     public Object setJavascriptArgument(final String key, final Object value) {
-        Log.d(TAG, "    *** getJavascriptArgument SET: " + key + " -> " + value + " of type: [" + value.getClass() + "] (value was : " + javascriptArguments.get(key) + ")");
+//        Log.d(TAG, "    *** getJavascriptArgument SET: " + key + " -> " + value + " of type: [" + value.getClass() + "] (value was : " + javascriptArguments.get(key) + ")");
         javascriptArgumentTypes.put(key, value.getClass());
         return javascriptArguments.put(key, value);
     }
 
     private static String wrapCode(final String code) {
-        final int DECL_END = getPlayerCodeStart(code);
-        final String PROPNAMES = "\n\n\n//Params Array\n" +
+        final int declarationsEnd = getPlayerCodeStart(code);
+        final String variableStoring = "\n\n\n//Params Array\n" +
                 "var propNames = [];\n" +
                 "for(var propName in this) {\n" +
                 "   if (typeof this[propName] != 'function' && this[propName] != 'propName' && !(this[propName] instanceof Array)) {\n" +
                 "      propNames.push(propName);\n" +
                 "   }\n" +
                 "}\n";
-        final String START_CODE = code.substring(0, DECL_END);
-        final String END_CODE = code.substring(DECL_END, code.length());
-        final String FINAL_CODE = START_CODE + PROPNAMES + END_CODE;
-        return FINAL_CODE;
+        final String startingCode = code.substring(0, declarationsEnd);
+        final String endingCode = code.substring(declarationsEnd, code.length());
+        final String finalCode = startingCode + variableStoring + endingCode;
+        return finalCode;
     }//end wrapCode()
 
     /**
@@ -130,10 +125,10 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
      * @param code
      * @return Return the index of the character at which the variable declarations stop.
      */
-    public static int getPlayerCodeStart(String code) {
+    private static int getPlayerCodeStart(String code) {
         if (code.length() == 0) return 0;
         int totalLineCharacters = 0;
-        String[] lines = code.split("\n");
+        String [] lines = code.split("\n");
         for (int i = 0; i < lines.length; i++) {
             if (lines[i].startsWith("var ")) {
                 totalLineCharacters += lines[i].length() + 1; //Also include the removed \n for each line.
@@ -142,5 +137,4 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         }//end for all lines
         return totalLineCharacters - 1; //Return index, not length
     }//end getPlayerCodeStart()
-
 }

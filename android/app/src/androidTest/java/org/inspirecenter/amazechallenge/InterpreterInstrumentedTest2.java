@@ -7,7 +7,6 @@ import android.util.Log;
 
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
-import org.inspirecenter.amazechallenge.interpreter.MazeInterpreter;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.Maze;
 import org.inspirecenter.amazechallenge.model.Player;

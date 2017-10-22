@@ -6,7 +6,6 @@ import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
-import org.inspirecenter.amazechallenge.interpreter.MazeInterpreter;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.Maze;
 import org.inspirecenter.amazechallenge.model.Player;
@@ -14,7 +13,9 @@ import org.inspirecenter.amazechallenge.model.Shape;
 import org.inspirecenter.amazechallenge.model.ShapeColor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.ScriptableObject;
 
 import static org.junit.Assert.*;
 
@@ -65,9 +66,15 @@ public class InterpreterInstrumentedTest {
         final InterpretedMazeSolver interpretedMazeSolver = new InterpretedMazeSolver(game, player);
         interpretedMazeSolver.setParameter(InterpretedMazeSolver.PARAMETER_KEY_CODE, SAMPLE_CODE_1);
 
+        org.mozilla.javascript.Context RHINO = org.mozilla.javascript.Context.enter();
+        RHINO.setOptimizationLevel(-1);
+        ScriptableObject scope = RHINO.initStandardObjects();
+        RHINO.evaluateString(scope, SAMPLE_CODE_1, "wrapper", 1, null);
+        Function function = (Function) scope.get("wrapper", scope);
+
         boolean test1;
         {
-            final Object o = MazeInterpreter.callFunction(SAMPLE_CODE_1, "wrapper", Object.class, interpretedMazeSolver);
+            final Object o = function.call(RHINO, scope, scope, new Object[] { interpretedMazeSolver });
 
             Log.i(TAG, "returned object: " + o + " (type: " + o.getClass() + ")");
             if(o instanceof org.mozilla.javascript.NativeObject) {
@@ -81,7 +88,7 @@ public class InterpreterInstrumentedTest {
 
         boolean test2;
         {
-            final Object o = MazeInterpreter.callFunction(SAMPLE_CODE_1, "wrapper", Object.class, interpretedMazeSolver);
+            final Object o = function.call(RHINO, scope, scope, new Object[] { interpretedMazeSolver });
 
             Log.i(TAG, "returned object: " + o + " (type: " + o.getClass() + ")");
             if(o instanceof org.mozilla.javascript.NativeObject) {
