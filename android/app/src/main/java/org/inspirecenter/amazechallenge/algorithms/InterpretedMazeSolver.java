@@ -1,13 +1,11 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
 import android.util.Log;
-
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,11 +32,12 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
             //Wrap the code:
             code = wrapCode(code);
 
-            //DBEUG INFO:
+            //DEBUG INFO:
             Log.d(TAG, "########## FINAL CODE ##########");
             Log.d(TAG, code);
             Log.d(TAG, "################################");
 
+            //Call the Initialization function
             try {
                 Log.d(TAG, "Running init...");
                 Log.d(TAG, " ** javascriptArguments before init: " + javascriptArguments);
@@ -58,7 +57,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 
             Log.d(TAG, " ** After init: " + javascriptArguments);
         }
-    }
+    }//end setParameter()
 
     @Override
     public PlayerMove getNextMove() {
@@ -67,6 +66,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 
         Log.d(TAG, " ** Before wrapper: " + javascriptArguments);
 
+        //Call the Wrapper function (run)
         try {
             Context RHINO = Context.enter();
             RHINO.setOptimizationLevel(-1);
@@ -87,21 +87,15 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     @Override
     public String toString() { return "Interpreted Maze"; }
 
-    public Map<String,Object> javascriptArguments = new HashMap<>();
-    public Map<String, Class> javascriptArgumentTypes = new HashMap<>();
+    private Map<String,Object> javascriptArguments = new HashMap<>();
 
     public Object getJavascriptArgument(final String key) {
 //        Log.d(TAG, "    *** getJavascriptArgument GET: " + key + " -> " + javascriptArguments.get(key) + ", value type: " + (javascriptArguments.get(key) != null ? javascriptArguments.get(key).getClass() :  "null"));
         return javascriptArguments.get(key);
     }
 
-    public Class getJavascriptArgumentType(final String key) {
-        return javascriptArgumentTypes.get(key);
-    }
-
     public Object setJavascriptArgument(final String key, final Object value) {
 //        Log.d(TAG, "    *** getJavascriptArgument SET: " + key + " -> " + value + " of type: [" + value.getClass() + "] (value was : " + javascriptArguments.get(key) + ")");
-        javascriptArgumentTypes.put(key, value.getClass());
         return javascriptArguments.put(key, value);
     }
 
@@ -130,9 +124,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         int totalLineCharacters = 0;
         String [] lines = code.split("\n");
         for (int i = 0; i < lines.length; i++) {
-            if (lines[i].startsWith("var ")) {
-                totalLineCharacters += lines[i].length() + 1; //Also include the removed \n for each line.
-            }//end if line starts with "var "
+            if (lines[i].startsWith("var ")) totalLineCharacters += lines[i].length() + 1;
             else break;
         }//end for all lines
         return totalLineCharacters - 1; //Return index, not length
