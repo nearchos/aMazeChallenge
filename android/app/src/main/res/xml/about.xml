@@ -11,17 +11,19 @@
     </Preference>
 
     <Preference
-        android:key="applicationVersion"
-        android:title="@string/Version"/>
-    <!--android:summary="@string/version_name"-->
-
-    <Preference
         android:key="applicationDevelopedBy"
         android:title="@string/Developed_by"
+        android:icon="@mipmap/inspire"
         android:summary="@string/inspire_url">
         <intent android:action="android.intent.action.VIEW"
             android:data="@string/inspire_url" />
     </Preference>
+
+    <Preference
+        android:key="applicationVersion"
+        android:title="@string/Version"
+        android:icon="@drawable/ic_keyboard_black_24dp"/>
+    <!--android:summary="@string/version_name"-->
 
     <Preference
         android:key="rateUs"

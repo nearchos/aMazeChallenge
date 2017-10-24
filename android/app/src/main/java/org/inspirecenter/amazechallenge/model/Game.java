@@ -187,7 +187,7 @@ public class Game implements Serializable {
             final Constructor<?> constructor = clazz.getConstructor(Game.class, Player.class);
             return (MazeSolver) constructor.newInstance(this, player);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            Log.e("mazes", "Error while instantiating object for algorithm: " + clazz, e);
+            Log.e("challenges", "Error while instantiating object for algorithm: " + clazz, e);
             throw new RuntimeException(e);
         }
     }

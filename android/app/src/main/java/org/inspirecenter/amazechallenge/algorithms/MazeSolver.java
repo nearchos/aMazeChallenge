@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public interface MazeSolver extends Serializable {
 
-    public void setParameter(final String name, final Serializable  value);
+    void setParameter(final String name, final Serializable  value);
 
-    public PlayerMove getNextMove();
+    PlayerMove getNextMove();
 }

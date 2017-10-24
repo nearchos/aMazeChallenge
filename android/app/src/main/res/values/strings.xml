@@ -4,8 +4,10 @@
 
     <string name="Game">Game</string>
     <string name="Maze_challenge">Maze challenge!</string>
-    <string name="Select_maze">Select maze</string>
-    <string name="Players">Players</string>
+    <string name="Select_challenge">Select challenge</string>
+    <string name="Select_color">Select color</string>
+    <string name="Home">Home</string>
+    <string name="Personalize">Personalize</string>
     <string name="Add_player">Add player</string>
     <string name="Start_game">Start game</string>
     <string name="Selected_algorithm">Selected algorithm</string>
@@ -16,6 +18,7 @@
     <string name="Next">Next</string>
     <string name="Interval">Interval</string>
     <string name="Name">Name</string>
+    <string name="Maze_name">Maze name</string>
     <string name="Add">Add</string>
     <string name="Save">Save</string>
     <string name="Cancel">Cancel</string>
@@ -32,19 +35,27 @@
     <string name="NoAppsAvailable">No apps available for sharing</string>
     <string name="application_url">https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge</string>
     <string name="inspire_url">http://inspirecenter.org</string>
+    <string name="Guest">Guest</string>
+    <string name="Done">Done</string>
+    <string name="Clear">Clear</string>
+    <string name="Clear_code">Clear code</string>
+    <string name="Are_you_sure_you_want_to_erase_the_code">Are you sure you want to erase the code? This action cannot be undone!</string>
 
-    <string name="instructions">Write your code below to get out of the maze:</string>
+    <string name="instructions">Write your code below to get out of the grid:</string>
     <string name="demoCode_loop1">while (!solved) {</string>
     <string name="demoCode_writeCode">Write your code here&#8230;</string>
     <string name="demoCode_loop2">}</string>
     <string name="Help">Help</string>
     <string name="Check_code">Check code</string>
     <string name="Apply">Apply</string>
-    <string name="Code_designer">Code designer</string>
+    <string name="Code_editor">Code editor</string>
+    <string name="Training">Training</string>
+    <string name="Online_challenge">Online challenge</string>
     <string name="Code_is_auto_saved">Your code is automatically saved!</string>
     <string name="Your_code_has_been_saved">Your code has been saved!</string>
     <string name="Moves">Moves</string>
     <string name="Details">Details</string>
+    <string name="User_image">User image</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

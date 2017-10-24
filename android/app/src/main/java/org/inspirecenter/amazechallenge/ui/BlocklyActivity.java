@@ -15,6 +15,8 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -144,14 +146,27 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 Toast.makeText(this, R.string.Code_is_auto_saved, Toast.LENGTH_SHORT).show();
                 return true;
             case com.google.blockly.android.R.id.action_clear:
-                //todo show confirm dialog
-                onClearWorkspace();
+                // show confirm dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.Clear_code)
+                        .setMessage(R.string.Are_you_sure_you_want_to_erase_the_code)
+                        .setPositiveButton(R.string.Clear, new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialogInterface, int i) {
+                                onClearWorkspace();
+                            }
+                        })
+                        .setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        }).create().show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }//end onOptionsItemSelected
 
-    //[Nicos] Code should also be saved when the user presses the hardkey back button.
+    //[Nicos] Code should also be saved when the user presses the hard-key back button.
     @Override
     public void onBackPressed() {
         submitCode();

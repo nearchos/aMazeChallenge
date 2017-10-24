@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="stateHidden|adjustPan">
-
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
@@ -20,29 +19,54 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.BlocklyActivity"
-            android:label="@string/Code_designer"
-            android:theme="@style/BlocklyAppTheme"
-            android:parentActivityName="org.inspirecenter.amazechallenge.ui.MainActivity">
+        <activity
+            android:name=".ui.PersonalizeActivity"
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
         </activity>
-
-        <activity android:name=".ui.GameActivity" />
-
-        <activity android:name=".ui.AddPlayerActivity" />
-
+        <activity
+            android:name=".ui.BlocklyActivity"
+            android:label="@string/Code_editor"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/BlocklyAppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.TrainingActivity"
+            android:label="@string/Code_editor"
+            android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.GameActivity"
+            android:label="@string/About"
+            android:parentActivityName=".ui.TrainingActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.inspirecenter.amazechallenge.ui.TrainingActivity" />
+        </activity>
+        <activity
+            android:name=".ui.OnlineChallengeActivity"
+            android:label="@string/Online_challenge"
+            android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
+        </activity>
         <activity
             android:name=".ui.AboutActivity"
             android:label="@string/About"
-            android:parentActivityName="org.inspirecenter.amazechallenge.ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
         </activity>
-
     </application>
 
 </manifest>

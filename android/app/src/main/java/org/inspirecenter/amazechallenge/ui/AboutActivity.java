@@ -1,7 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;

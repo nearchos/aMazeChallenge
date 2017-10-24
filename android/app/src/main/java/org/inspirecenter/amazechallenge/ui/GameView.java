@@ -57,9 +57,9 @@ public class GameView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = getMeasuredWidth();
-        int heigth = getMeasuredHeight();
+        int height = getMeasuredHeight();
 
-        int dimen = (width > heigth) ? heigth : width;
+        int dimen = (width > height) ? height : width;
 
         setMeasuredDimension(dimen, dimen);
     }

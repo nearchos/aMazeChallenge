@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +43,9 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        final ActionBar actionBar = getActionBar();
+        if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
         this.gameView = findViewById(org.inspirecenter.amazechallenge.R.id.activity_grid_grid_view);
         this.delaySeekBar = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_delay_spinner);

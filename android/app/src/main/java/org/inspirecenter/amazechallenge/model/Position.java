@@ -1,5 +1,8 @@
 package org.inspirecenter.amazechallenge.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -48,9 +51,7 @@ public class Position implements Serializable {
 
         final Position position = (Position) o;
 
-        if (row != position.row) return false;
-        return col == position.col;
-
+        return row == position.row && col == position.col;
     }
 
     @Override
@@ -63,5 +64,11 @@ public class Position implements Serializable {
     @Override
     public String toString() {
         return "Position{row=" + row + ", col=" + col + "}";
+    }
+
+    public static Position parseJSON(final JSONObject jsonObject) throws JSONException {
+        final int row = jsonObject.getInt("row");
+        final int col = jsonObject.getInt("col");
+        return new Position(row, col);
     }
 }

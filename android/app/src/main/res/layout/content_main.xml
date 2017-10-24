@@ -13,68 +13,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:padding="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Body1"
-                android:text="@string/Select_maze"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="0dp" />
-
-            <Spinner
-                android:id="@+id/activity_main_mazes_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-
-        <View
-            android:background="@color/colorAccent"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Base.TextAppearance.AppCompat.Body1"
-            android:padding="8dp"
-            android:text="@string/Players"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="0dp" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/activity_main_players_list_view"
-            android:padding="8dp"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="0dp"/>
-
         <Button
-            android:id="@+id/activity_main_add_player_button"
-            android:text="@string/Add"
+            android:text="@string/Personalize"
+            android:onClick="personalize"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:padding="8dp"
-            android:layout_gravity="end"
-            android:layout_width="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <View
-            android:background="@color/colorAccent"
+        <Button
+            android:text="@string/Code_editor"
+            android:onClick="codeEditor"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_margin="16dp"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="wrap_content" />
 
         <Button
-            android:id="@+id/activity_main_start_game_button"
-            android:text="@string/Start_game"
-            android:drawableEnd="@drawable/ic_play_arrow_black_24dp"
+            android:text="@string/Training"
+            android:onClick="training"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:text="@string/Online_challenge"
+            android:onClick="onlineChallenge"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
