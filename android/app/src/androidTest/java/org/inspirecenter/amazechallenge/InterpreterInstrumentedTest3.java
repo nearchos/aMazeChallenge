@@ -56,7 +56,7 @@ public class InterpreterInstrumentedTest3 {
         final Context context = InstrumentationRegistry.getTargetContext();
 
         final Player player = new Player("test", ShapeColor.PLAYER_COLOR_BLACK, Shape.CIRCLE, InterpretedMazeSolver.class);
-        final Maze maze = new Maze(context.getAssets().open("challenges/grid0.txt"));
+        final Maze maze = new Maze(context.getAssets().open("challenges/challenge0.json"));
         final Game game = new Game(maze);
         final InterpretedMazeSolver interpretedMazeSolver = new InterpretedMazeSolver(game, player);
         interpretedMazeSolver.setParameter(InterpretedMazeSolver.PARAMETER_KEY_CODE, SAMPLE_CODE_3);
