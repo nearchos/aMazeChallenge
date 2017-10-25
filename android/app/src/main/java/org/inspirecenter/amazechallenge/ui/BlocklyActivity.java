@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,6 +91,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         final Intent intentPlay = new Intent(BlocklyActivity.this, GameActivity.class);
         intentPlay.putExtra(GameActivity.SELECTED_GAME_KEY, selectedMaze);
 
+        Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG).setAction("Action", null).show(); // todo
         if (getController().getWorkspace().hasBlocks()) {
             onRunCode();
         }

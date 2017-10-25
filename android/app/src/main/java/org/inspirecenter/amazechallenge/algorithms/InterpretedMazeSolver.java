@@ -66,6 +66,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 
         Log.d(TAG, " ** Before wrapper: " + javascriptArguments);
 
+        // todo set a deadline (e.. 1 sec) and if no return from RHINO, stop it and return NO_MOVE
         //Call the Wrapper function (run)
         try {
             Context RHINO = Context.enter();
