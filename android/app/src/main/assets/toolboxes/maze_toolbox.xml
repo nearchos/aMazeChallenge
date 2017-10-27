@@ -2,7 +2,7 @@
 
     <toolbox>
 
-        <category name="Maze" colour="#330033">
+        <category name="aMaze" colour="#330033">
             <block type="maze_move_forward"></block>
             <block type="maze_turn_cw"></block>
             <block type="maze_turn_ccw"></block>
