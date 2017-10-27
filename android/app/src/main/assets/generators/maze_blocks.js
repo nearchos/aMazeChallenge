@@ -29,64 +29,62 @@ Blockly.JavaScript['maze_obstacle_exists'] = function(block) {
 
 Blockly.JavaScript['maze_canmove_left'] = function(block) {
   var code = 'instance.canMoveLeft()';
-  // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['maze_canmove_right'] = function(block) {
     var code = 'instance.canMoveRight()';
-  // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['maze_canmove_forward'] = function(block) {
-    var code = 'instance.canMoveForward()\n';
-  // TODO: Change ORDER_NONE to the correct strength.
+    var code = 'instance.canMoveForward()';
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['maze_canmove_backward'] = function(block) {
-    var code = 'instance.canMoveBackward()\n';
-  // TODO: Change ORDER_NONE to the correct strength.
+    var code = 'instance.canMoveBackward()';
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['maze_direction_north'] = function(block) {
   var code = 'Packages.org.inspirecenter.amazechallenge.model.Direction.NORTH';
-  // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['maze_direction_south'] = function(block) {
   var code = 'Packages.org.inspirecenter.amazechallenge.model.Direction.SOUTH';
-  // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['maze_direction_east'] = function(block) {
   var code = 'Packages.org.inspirecenter.amazechallenge.model.Direction.EAST';
-  // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['maze_direction_west'] = function(block) {
   var code = 'Packages.org.inspirecenter.amazechallenge.model.Direction.WEST';
-  // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['maze_init_function'] = function(block) {
   var statements_init = Blockly.JavaScript.statementToCode(block, 'init');
-  var code = "function init(instance) {\n"
-   + statements_init
-   + "  propNames.forEach(function(item, index) { instance.setJavascriptArgument(item, this[item]); } );\n"
-   + "}//end init()\n\n";
+  var code = "function init(instance) {\n" +
+   //Detect the declared variables:
+   "  populatePropNames();\n" +
+   //Run the user's initialization statements:
+   statements_init +
+   //Save the values into the map:
+   "  propNames.forEach(function(item, index) { instance.setJavascriptArgument(item, this[item]); } );\n" +
+   "}//end init()\n\n";
   return code;
 };
 
 Blockly.JavaScript['maze_run_function'] = function(block) {
   var statements_run = Blockly.JavaScript.statementToCode(block, 'run');
-  var code = "function wrapper(instance) {\n" +
+  var code = "function run(instance) {\n" +
+  //Detect the declared variables:
+  "  populatePropNames();\n" +
   //Default return value:
   "  var __retVal = Packages.org.inspirecenter.amazechallenge.algorithms.PlayerMove.NO_MOVE;\n" +
   //Get the values of the variables from the map:
@@ -111,6 +109,6 @@ Blockly.JavaScript['maze_run_function'] = function(block) {
   //If the code does not return yet, return the default value (NO_MOVE).
   "  return __retVal;\n" +
 
-  "}//end wrapper()\n";
+  "}//end run()\n";
   return code;
 };
