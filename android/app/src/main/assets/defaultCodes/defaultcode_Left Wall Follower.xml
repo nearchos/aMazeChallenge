@@ -1,0 +1,89 @@
+
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="maze_init_function" id="2f9e4ed7-ba92-40f9-a3aa-e347347d94ab" x="34.0" y="53.0">
+    <statement name="init">
+      <block type="variables_set" id="fb60c0ed-29db-472d-ac5c-a2e538d60219">
+        <value name="VALUE">
+          <block type="logic_boolean" id="12faf562-4334-4fab-817a-9152c753a0f9">
+            <field name="BOOL">FALSE</field>
+          </block>
+        </value>
+        <field name="VAR">justTurned</field>
+      </block>
+    </statement>
+    <next>
+      <block type="maze_run_function" id="c69b8d4c-1238-4d0e-9098-eabbcfc6633b">
+        <statement name="run">
+          <block type="controls_if" id="f124af14-c430-4d9e-9437-4faf94fd1ae7">
+            <value name="IF0">
+              <block type="logic_operation" id="1e1a2c5f-dd38-4bce-ae8c-9fc5bd7bbed5">
+                <value name="A">
+                  <block type="variables_get" id="a2f5aa30-26bd-40ba-92dd-0b9fa1b689e2">
+                    <field name="VAR">justTurned</field>
+                  </block>
+                </value>
+                <value name="B">
+                  <block type="maze_canmove_forward" id="9d0fd41b-ebd0-4f42-aa57-f78761e02a30" />
+                </value>
+                <field name="OP">AND</field>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="variables_set" id="8b768cce-d3cf-416f-92c0-325ccdbb9877">
+                <value name="VALUE">
+                  <block type="logic_boolean" id="2346f706-6083-4540-9f7e-4a8b14e34047">
+                    <field name="BOOL">FALSE</field>
+                  </block>
+                </value>
+                <field name="VAR">justTurned</field>
+                <next>
+                  <block type="maze_move_forward" id="6d611de5-cf41-4302-9618-7ffbdf0bd9e0" />
+                </next>
+              </block>
+            </statement>
+            <next>
+              <block type="controls_if" id="30c305a3-d142-4118-9cb1-0a339ffeac72">
+                <mutation elseif="1" else="1" />
+                <value name="IF0">
+                  <block type="maze_canmove_left" id="4fa01a76-483a-41d0-9165-07c33cc6c5a0" />
+                </value>
+                <statement name="DO0">
+                  <block type="variables_set" id="897cc67f-b44f-461c-b5c7-b164c6c33c92">
+                    <value name="VALUE">
+                      <block type="logic_boolean" id="8982513b-1c01-4732-8ae2-2cc2d6e89ffd">
+                        <field name="BOOL">TRUE</field>
+                      </block>
+                    </value>
+                    <field name="VAR">justTurned</field>
+                    <next>
+                      <block type="maze_turn_ccw" id="4332cf98-82a5-4cbf-9eb0-5357d9b0a956" />
+                    </next>
+                  </block>
+                </statement>
+                <value name="IF1">
+                  <block type="maze_canmove_forward" id="9e35222e-3889-4fe2-b7bc-92840c55dfd1" />
+                </value>
+                <statement name="DO1">
+                  <block type="maze_move_forward" id="908da563-21ed-4bb4-a41f-7850a2225468" />
+                </statement>
+                <statement name="ELSE">
+                  <block type="variables_set" id="1c1949d5-d589-46ef-b3de-104e339bc293">
+                    <value name="VALUE">
+                      <block type="logic_boolean" id="cc7f8ada-12db-454c-a77d-9131b0771992">
+                        <field name="BOOL">TRUE</field>
+                      </block>
+                    </value>
+                    <field name="VAR">justTurned</field>
+                    <next>
+                      <block type="maze_turn_cw" id="c5f8c0b7-dc8a-4dc3-9fd9-32394c9f1fc5" />
+                    </next>
+                  </block>
+                </statement>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </next>
+  </block>
+</xml>

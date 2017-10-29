@@ -40,6 +40,20 @@
     <string name="Clear">Clear</string>
     <string name="Clear_code">Clear code</string>
     <string name="Are_you_sure_you_want_to_erase_the_code">Are you sure you want to erase the code? This action cannot be undone!</string>
+    <string name="Save_code">Save code</string>
+    <string name="Save_code_name">Enter a name for your saved code:</string>
+    <string name="save_code_error_empty">The code name cannot be empty.</string>
+    <string name="save_code_error_invalid">The code name must contain letters and numbers only.</string>
+    <string name="try_again">Try again</string>
+    <string name="load_code">Load code</string>
+    <string name="load_code_message">Please choose a code to load:</string>
+    <string name="delete_code">Delete code?</string>
+    <string name="delete">Delete</string>
+    <string name="delete_code_message">Are you sure you would like to delete this code?</string>
+    <string name="code_deleted">Code deleted.</string>
+    <string name="code_overwrite">Overwrite code?</string>
+    <string name="code_overwrite_yes">Overwrite</string>
+    <string name="code_overwrite_message">You have already stored code using this name. Would you like to overwrite it?</string>
 
     <string name="instructions">Write your code below to get out of the grid:</string>
     <string name="demoCode_loop1">while (!solved) {</string>

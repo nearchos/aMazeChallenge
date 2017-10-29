@@ -1,0 +1,146 @@
+
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="maze_init_function" id="2f9e4ed7-ba92-40f9-a3aa-e347347d94ab" x="34.0" y="53.0">
+    <statement name="init">
+      <block type="variables_set" id="fb60c0ed-29db-472d-ac5c-a2e538d60219">
+        <value name="VALUE">
+          <block type="logic_boolean" id="12faf562-4334-4fab-817a-9152c753a0f9">
+            <field name="BOOL">FALSE</field>
+          </block>
+        </value>
+        <field name="VAR">justTurned</field>
+      </block>
+    </statement>
+    <next>
+      <block type="maze_run_function" id="c69b8d4c-1238-4d0e-9098-eabbcfc6633b">
+        <statement name="run">
+          <block type="controls_if" id="c6fad26c-675a-4c1c-9c78-feefb6ce8cd1">
+            <value name="IF0">
+              <block type="variables_get" id="d69f4c24-9fc9-44e9-a5c3-aef2a1f52fba">
+                <field name="VAR">justTurned</field>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="variables_set" id="bc97608f-28a6-423d-a1df-de92cf309ad4">
+                <value name="VALUE">
+                  <block type="logic_boolean" id="742ed2df-6ff5-4564-a8bd-a75fc6aa2de3">
+                    <field name="BOOL">FALSE</field>
+                  </block>
+                </value>
+                <field name="VAR">justTurned</field>
+                <next>
+                  <block type="controls_if" id="a76b2495-429f-4e0d-ab49-5d46409f764c">
+                    <value name="IF0">
+                      <block type="maze_canmove_forward" id="1e5dfc48-88d3-49c7-84c1-1b600e82c6de" />
+                    </value>
+                    <statement name="DO0">
+                      <block type="maze_move_forward" id="e94e4422-16c7-450f-a910-44c6880ad6f5" />
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </statement>
+            <next>
+              <block type="variables_set" id="8618e57c-b254-4d3d-9070-b829af844895">
+                <value name="VALUE">
+                  <block type="math_random_int" id="fc98ef0f-9509-4629-a824-1647ffb0c345">
+                    <value name="FROM">
+                      <shadow type="math_number" id="877f72d3-9cd4-414b-9797-9d30cb7cfb6d">
+                        <field name="NUM">0</field>
+                      </shadow>
+                    </value>
+                    <value name="TO">
+                      <shadow type="math_number" id="89f9b083-d494-4201-963f-3f882b02d837">
+                        <field name="NUM">3</field>
+                      </shadow>
+                    </value>
+                  </block>
+                </value>
+                <field name="VAR">randomChoice</field>
+                <next>
+                  <block type="controls_if" id="26b47bd9-1a9f-4ebe-b988-c819224f2f82">
+                    <mutation elseif="2" else="0" />
+                    <value name="IF0">
+                      <block type="logic_compare" id="b5f38b55-48ef-4549-86d0-3f6922644f9d">
+                        <value name="A">
+                          <block type="variables_get" id="12540569-e166-4ac4-a554-b7c4d01673eb">
+                            <field name="VAR">randomChoice</field>
+                          </block>
+                        </value>
+                        <value name="B">
+                          <block type="math_number" id="d8b957c9-8d8b-4ca1-be5e-c9396a6ccae1">
+                            <field name="NUM">0</field>
+                          </block>
+                        </value>
+                        <field name="OP">EQ</field>
+                      </block>
+                    </value>
+                    <statement name="DO0">
+                      <block type="variables_set" id="e1f06c64-8eb4-446c-b442-ad5956ba46dc">
+                        <value name="VALUE">
+                          <block type="logic_boolean" id="eed3631e-3665-42b6-8647-4cbbb2482265">
+                            <field name="BOOL">TRUE</field>
+                          </block>
+                        </value>
+                        <field name="VAR">justTurned</field>
+                        <next>
+                          <block type="maze_turn_cw" id="e3a9fd3b-1b98-44ac-8748-c2108b273f80" />
+                        </next>
+                      </block>
+                    </statement>
+                    <value name="IF1">
+                      <block type="logic_compare" id="a5d72720-021e-4321-be59-9293ca794305">
+                        <value name="A">
+                          <block type="variables_get" id="09990bf9-56a4-431f-9409-d8c70c50199f">
+                            <field name="VAR">randomChoice</field>
+                          </block>
+                        </value>
+                        <value name="B">
+                          <block type="math_number" id="ef19ba53-e535-4c62-b574-6dab5b93d3cd">
+                            <field name="NUM">1</field>
+                          </block>
+                        </value>
+                        <field name="OP">EQ</field>
+                      </block>
+                    </value>
+                    <statement name="DO1">
+                      <block type="variables_set" id="c28db357-0057-41bd-9f2a-53f831358213">
+                        <value name="VALUE">
+                          <block type="logic_boolean" id="668c59c7-db81-4d83-a604-f3c20228665e">
+                            <field name="BOOL">TRUE</field>
+                          </block>
+                        </value>
+                        <field name="VAR">justTurned</field>
+                        <next>
+                          <block type="maze_turn_ccw" id="4c04c991-c9dc-4da3-8197-31d40d79ac74" />
+                        </next>
+                      </block>
+                    </statement>
+                    <value name="IF2">
+                      <block type="logic_compare" id="a9f2313e-f93d-4d2f-af89-5c4008741897">
+                        <value name="A">
+                          <block type="variables_get" id="90f3b9c3-ddbd-4d35-ad81-91710e9ca83c">
+                            <field name="VAR">randomChoice</field>
+                          </block>
+                        </value>
+                        <value name="B">
+                          <block type="math_number" id="c694dea0-3964-4b8c-a8b2-fdcea65cc497">
+                            <field name="NUM">2</field>
+                          </block>
+                        </value>
+                        <field name="OP">EQ</field>
+                      </block>
+                    </value>
+                    <statement name="DO2">
+                      <block type="maze_move_forward" id="6c764508-7a57-4f00-8407-a62ff63b0a38" />
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </next>
+  </block>
+</xml>
