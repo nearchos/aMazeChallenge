@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 public class Challenge implements Serializable {
 
+    private int apiVersion; // used to determine if the player can 'support' this challenge
     private String name;
     private boolean canRepeat; // whether a player can play again and again
     private boolean canJoinAfterStart; // whether a player can join after the start of the challenge
