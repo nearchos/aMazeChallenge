@@ -172,4 +172,31 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         return builder.toString();
     }//end filterCode()
 
-}
+
+    public static boolean checkCodeValidity(final String code) {
+
+        //EXTREMELY IMPORTANT NOTE: Perform these checks **BEFORE** wrapping or filtering the code.
+
+        //TODO: Check for function-in-function statements:
+        /*
+        function x() {
+            function x() {
+                function x() {
+                    ...
+                }
+            }
+        }
+         */
+
+        //TODO: Check for missing run() function:
+
+        //TODO: Check for empty run() function:
+
+        //TODO: Check for while(true) statements:
+
+        //TODO: Check for very large for loop counters:
+
+        return true;
+    }//end checkCodeValidity()
+
+}//end class InterpretedMazeSolver
