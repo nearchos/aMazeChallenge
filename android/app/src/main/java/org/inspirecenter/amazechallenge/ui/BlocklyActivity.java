@@ -69,6 +69,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     public static final String ASSETS_CODES_DIR = "defaultCodes";
     public static ArrayList<String> codeNamesList = new ArrayList<>();
     public static ArrayList<String> codeFilesList = new ArrayList<>();
+    public static AlertDialog loadDialog;
 
     private static final List<String> BLOCK_DEFINITIONS = Arrays.asList(
             DefaultBlocks.COLOR_BLOCKS_PATH,
@@ -169,25 +170,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 return true;
 
             case R.id.action_save:
-                final AlertDialog.Builder saveDialog = new AlertDialog.Builder(this);
-                //Input EditText for name of the saved code:
                 final EditText input = new EditText(BlocklyActivity.this);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                saveDialog.setView(input);
-                //Title, message and responses:
-                saveDialog.setTitle(R.string.Save_code)
-                        .setMessage(R.string.Save_code_name)
-                        .setPositiveButton(R.string.Save, null)
-                        .setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        });
-                final AlertDialog SAVE_DIALOG = saveDialog.create();
+                final AlertDialog SAVE_DIALOG = createSaveDialog(input);
                 SAVE_DIALOG.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface dialog) {
@@ -237,28 +221,17 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             case R.id.action_load:
                 updateInternalStorageCodes();
                 getCodes();
-                final AlertDialog.Builder loadDialog = new AlertDialog.Builder(this);
-                LoadDialogListAdapter listAdapter = new LoadDialogListAdapter(this, codeNamesList, codeFilesList, this);
                 final ListView list = new ListView(BlocklyActivity.this);
-                list.setAdapter(listAdapter);
-
-                LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                list.setLayoutParams(lp_list);
-                loadDialog.setView(list);
-                loadDialog.setTitle(R.string.load_code);
-                loadDialog.setMessage(R.string.load_code_message);
-                final AlertDialog LOAD_DIALOG = loadDialog.create();
-                LOAD_DIALOG.show();
+                loadDialog = createLoadDialog(list);
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         setSaveFilename(codeFilesList.get(i));
                         onLoadWorkspace();
-                        LOAD_DIALOG.dismiss();
+                        loadDialog.dismiss();
                     }
                 });
+                loadDialog.show();
                 return true;
 
 
@@ -441,5 +414,41 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         File file = getBaseContext().getFileStreamPath(filename);
         return file.exists();
     }//end internalFileExists()
+
+    private AlertDialog createSaveDialog(EditText input) {
+        final AlertDialog.Builder saveDialogBuilder = new AlertDialog.Builder(this);
+        //Input EditText for name of the saved code:
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        saveDialogBuilder.setView(input);
+        //Title, message and responses:
+        saveDialogBuilder.setTitle(R.string.Save_code)
+                .setMessage(R.string.Save_code_name)
+                .setPositiveButton(R.string.Save, null)
+                .setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        return saveDialogBuilder.create();
+    }
+
+    private AlertDialog createLoadDialog(ListView list) {
+        final AlertDialog.Builder loadDialog = new AlertDialog.Builder(this);
+        LoadDialogListAdapter listAdapter = new LoadDialogListAdapter(this, codeNamesList, codeFilesList, this);
+        list.setAdapter(listAdapter);
+
+        LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        list.setLayoutParams(lp_list);
+        loadDialog.setView(list);
+        loadDialog.setTitle(R.string.load_code);
+        loadDialog.setMessage(R.string.load_code_message);
+        return loadDialog.create();
+    }//end createLoadDialog()
 
 }//end activity BlocklyActivity

@@ -75,7 +75,7 @@ public class LoadDialogListAdapter extends BaseAdapter {
                                 activity.deleteInternalFile(fileNames.get(i));
                                 Snackbar.make(activity.findViewById(R.id.blocklyView), R.string.code_deleted, Snackbar.LENGTH_LONG).show();
                                 dialogInterface.dismiss();
-                                //TODO: Also dismiss the load dialog.
+                                BlocklyActivity.loadDialog.dismiss();
                             }//end onClick()
                         })
                         .setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
