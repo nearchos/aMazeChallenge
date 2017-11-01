@@ -32,7 +32,6 @@ public class LoadDialogListAdapter extends BaseAdapter {
     private ArrayList<String> codeNames;
     private final BlocklyActivity activity;
     private LayoutInflater inflater;
-    private AlertDialog loadDialog;
 
     public LoadDialogListAdapter(@NonNull Context context, ArrayList<String> codeNames, ArrayList<String> fileNames, BlocklyActivity activity) {
         this.fileNames = fileNames;

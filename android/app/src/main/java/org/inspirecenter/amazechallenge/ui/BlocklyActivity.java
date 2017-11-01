@@ -47,6 +47,7 @@ import com.google.blockly.model.DefaultBlocks;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.LoadDialogListAdapter;
 import org.inspirecenter.amazechallenge.model.Maze;
+import org.mozilla.javascript.tools.debugger.Main;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -115,9 +116,16 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         final Intent intentPlay = new Intent(BlocklyActivity.this, GameActivity.class);
         intentPlay.putExtra(GameActivity.SELECTED_GAME_KEY, selectedMaze);
 
-        Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG).setAction("Action", null).show(); // todo
+        if (getController().getWorkspace().hasBlocks()) {
+            Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            onRunCode();
+        }//end if has blocks
+        else {
+            Intent intentBack = new Intent(BlocklyActivity.this, MainActivity.class);
+            startActivity(intentBack);
+        }//end else
 
-        if (getController().getWorkspace().hasBlocks()) onRunCode();
+
     }//end submitCode()
 
     @NonNull
@@ -415,6 +423,11 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         return file.exists();
     }//end internalFileExists()
 
+    /**
+     * Creates the Save Dialog.
+     * @param input The edit text object (code name).
+     * @return Returns an AlertDialog object.
+     */
     private AlertDialog createSaveDialog(EditText input) {
         final AlertDialog.Builder saveDialogBuilder = new AlertDialog.Builder(this);
         //Input EditText for name of the saved code:
@@ -436,6 +449,11 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         return saveDialogBuilder.create();
     }
 
+    /**
+     * Creates the Load Dialog.
+     * @param list The list of items to choose from to load.
+     * @return Returns an AlertDialog object.
+     */
     private AlertDialog createLoadDialog(ListView list) {
         final AlertDialog.Builder loadDialog = new AlertDialog.Builder(this);
         LoadDialogListAdapter listAdapter = new LoadDialogListAdapter(this, codeNamesList, codeFilesList, this);
