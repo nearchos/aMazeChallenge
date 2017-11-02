@@ -18,10 +18,10 @@ import org.inspirecenter.amazechallenge.model.Shape;
 
 import java.util.Collection;
 
-import static org.inspirecenter.amazechallenge.model.Maze.SHAPE_ONLY_LEFT_SIDE;
-import static org.inspirecenter.amazechallenge.model.Maze.SHAPE_ONLY_LOWER_SIDE;
-import static org.inspirecenter.amazechallenge.model.Maze.SHAPE_ONLY_RIGHT_SIDE;
-import static org.inspirecenter.amazechallenge.model.Maze.SHAPE_ONLY_UPPER_SIDE;
+import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LEFT_SIDE;
+import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LOWER_SIDE;
+import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_RIGHT_SIDE;
+import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_UPPER_SIDE;
 
 /**
  * @author Nearchos
@@ -74,14 +74,14 @@ public class GameView extends View {
         final int width = canvas.getWidth();
         final int height = canvas.getHeight();
         final int smallestSide = Math.min(width, height);
-        final int tile_size = smallestSide / game.getGridSize();
-        final int padding = (smallestSide - (tile_size * game.getGridSize())) / 2;
+        // todo adjust id non-square grids are to be supported at drawn stage
+        final int tile_size = smallestSide / game.getGridWidth();
+        final int padding = (smallestSide - (tile_size * game.getGridWidth())) / 2;
 
         // draw maze grid (row 0 is top, and col 0 is left (so move from top left rightwards, then next row, and so on)
         if(game != null) {
-            final int gridSize = game.getGridSize();
-            for(int row = 0; row < gridSize; row++) {
-                for(int col = 0; col < gridSize; col++) {
+            for(int row = 0; row < game.getGridWidth(); row++) {
+                for(int col = 0; col < game.getGridHeight(); col++) {
                     final int shape = game.getCell(row, col);
                     drawGridCell(row, col, tile_size, padding, shape, COLOR_BLACK, canvas);
                 }

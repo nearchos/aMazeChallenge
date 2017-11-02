@@ -11,47 +11,33 @@ import java.util.Scanner;
  * @author Nearchos
  *         Created: 14-Aug-17
  */
-public class Maze implements Serializable { // consider renaming the class to Grid to accommodate more general grids (instead of just mazes)
+public class Grid implements Serializable { // consider renaming the class to Grid to accommodate more general grids (instead of just mazes)
 
     public static final int SHAPE_ONLY_UPPER_SIDE = 0x1; // -
     public static final int SHAPE_ONLY_LOWER_SIDE = 0x2; // _
     public static final int SHAPE_ONLY_LEFT_SIDE  = 0x4; // |
     public static final int SHAPE_ONLY_RIGHT_SIDE = 0x8; //  |
 
-    private final int gridSize;
+    private final int width;
+    private final int height;
     private final int[][] grid;
     private Position startingPosition;
     private Position targetPosition;
 
-    public Maze(final InputStream inputStream) {
-        final Scanner scanner = new Scanner(inputStream);
-        gridSize = scanner.nextInt();
-        grid = new int[gridSize][gridSize];
-        scanner.nextLine(); // reads the rest of the first line (containing the gridSize)
-        for (int row = 0; row < gridSize; row++) {
-            final String line = scanner.nextLine();
-            for (int col = 0; col < gridSize; col++) {
-                grid[row][col] = Integer.parseInt(Character.toString(line.charAt(col)), 16);
-            }
-        }
-
-        final int startingPositionRow = scanner.nextInt();
-        final int startingPositionCol = scanner.nextInt();
-        startingPosition = new Position(startingPositionRow, startingPositionCol);
-        final int targetPositionRow = scanner.nextInt();
-        final int targetPositionCol = scanner.nextInt();
-        targetPosition = new Position(targetPositionRow, targetPositionCol); // top right
-    }
-
-    public Maze(final int gridSize, final int[][] grid, final Position startingPosition, final Position targetPosition) {
-        this.gridSize = gridSize;
+    public Grid(final int width, final int height, final int[][] grid, final Position startingPosition, final Position targetPosition) {
+        this.width = width;
+        this.height = height;
         this.grid = grid;
         this.startingPosition = startingPosition;
         this.targetPosition = targetPosition;
     }
 
-    int getGridSize() {
-        return gridSize;
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     int get(final int row, final int col) {
@@ -84,21 +70,22 @@ public class Maze implements Serializable { // consider renaming the class to Gr
 
     @Override
     public String toString() {
-        return "Maze " + getGridSize() + "x" + getGridSize();
+        return "Grid " + width + "x" + height;
     }
 
-    public static Maze parseJSON(final JSONObject jsonObject) throws JSONException {
-        final int gridSize = jsonObject.getInt("size");
-        final int[][] grid = new int[gridSize][gridSize];
+    public static Grid parseJSON(final JSONObject jsonObject) throws JSONException {
+        final int width = jsonObject.getInt("width");
+        final int height = jsonObject.getInt("height");
+        final int[][] grid = new int[width][height];
         final Scanner scanner = new Scanner(jsonObject.getString("data"));
-        for (int row = 0; row < gridSize; row++) {
+        for (int row = 0; row < height; row++) {
             final String line = scanner.nextLine();
-            for (int col = 0; col < gridSize; col++) {
+            for (int col = 0; col < width; col++) {
                 grid[row][col] = Integer.parseInt(Character.toString(line.charAt(col)), 16);
             }
         }
         final Position startingPosition = Position.parseJSON(jsonObject.getJSONObject("startingPosition"));
         final Position targetPosition = Position.parseJSON(jsonObject.getJSONObject("targetPosition"));
-        return new Maze(gridSize, grid, startingPosition, targetPosition);
+        return new Grid(width, height, grid, startingPosition, targetPosition);
     }
 }

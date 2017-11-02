@@ -1,12 +1,16 @@
 {
-    "name": "Challenge 1 - Easy",
+    "id": 0,
+    "apiVersion": 1,
+    "name": "Challenge 0",
+    "description": "Easy",
     "canRepeat": true,
     "canJoinAfterStart": true,
     "canStepOnEachOther": true,
     "startTimestamp": 0,
     "endTimestamp": 0,
     "grid": {
-        "size": 10,
+        "width": 10,
+        "height": 10,
         "data": "533333395b\n6953395acd\n78695a69cc\n523a69d6ac\nedd5b6295a\n522853128d\nc596a587ac\n684b5a4bdc\n7a69e50968\n7332bee63a",
         "startingPosition": {
             "row": 9,

@@ -7,11 +7,14 @@ import android.util.Log;
 
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
+import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.Maze;
+import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Shape;
 import org.inspirecenter.amazechallenge.model.ShapeColor;
+import org.inspirecenter.amazechallenge.ui.TrainingActivity;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -75,9 +78,12 @@ public class InterpreterInstrumentedTest2 {
 
         final Context context = InstrumentationRegistry.getTargetContext();
 
+        final String json = TrainingActivity.convertStreamToString(context.getAssets().open("challenges/challenge0.json"));
+        final Challenge challenge = Challenge.parseJSON(new JSONObject(json));
+
         final Player player = new Player("test", ShapeColor.PLAYER_COLOR_BLACK, Shape.CIRCLE, InterpretedMazeSolver.class);
-        final Maze maze = new Maze(context.getAssets().open("challenges/challenge0.json"));
-        final Game game = new Game(maze);
+        final Grid grid = challenge.getGrid();
+        final Game game = new Game(grid);
         final InterpretedMazeSolver interpretedMazeSolver = new InterpretedMazeSolver(game, player);
         interpretedMazeSolver.setParameter(InterpretedMazeSolver.PARAMETER_KEY_CODE, SAMPLE_CODE_2);
 

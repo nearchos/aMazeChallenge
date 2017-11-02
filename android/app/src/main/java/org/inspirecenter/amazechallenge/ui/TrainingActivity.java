@@ -3,27 +3,20 @@ package org.inspirecenter.amazechallenge.ui;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.Maze;
+import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Player;
-import org.inspirecenter.amazechallenge.model.PlayerColor;
 import org.inspirecenter.amazechallenge.model.Shape;
 import org.inspirecenter.amazechallenge.model.ShapeColor;
 import org.json.JSONException;
@@ -73,8 +66,8 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
 
     @Override
     public void onChallengeSelected(final Challenge challenge) {
-        final Maze selectedMaze = challenge.getGrid();
-        final Game game = new Game(selectedMaze);
+        final Grid selectedGrid = challenge.getGrid();
+        final Game game = new Game(selectedGrid);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         final Map<String,Serializable> parametersMap = new HashMap<>();
@@ -92,7 +85,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         startActivity(intent);
     }
 
-    static String convertStreamToString(final InputStream inputStream) {
+    public static String convertStreamToString(final InputStream inputStream) {
         final Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
         return scanner.hasNext() ? scanner.next() : "";
     }

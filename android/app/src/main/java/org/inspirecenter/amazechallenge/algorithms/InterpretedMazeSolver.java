@@ -87,7 +87,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     }//end getNextMove()
 
     @Override
-    public String toString() { return "Interpreted Maze"; }
+    public String toString() { return "Interpreted Grid"; }
 
     private Map<String,Object> javascriptArguments = new HashMap<>();
 

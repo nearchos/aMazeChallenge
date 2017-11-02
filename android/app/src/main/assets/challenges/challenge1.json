@@ -1,12 +1,16 @@
 {
-    "name": "Challenge 2 - Medium",
+    "id": 1,
+    "apiVersion": 1,
+    "name": "Challenge 1",
+    "description": "Medium",
     "canRepeat": true,
     "canJoinAfterStart": true,
     "canStepOnEachOther": true,
     "startTimestamp": 0,
     "endTimestamp": 0,
     "grid": {
-        "size": 20,
+        "width": 20,
+        "height": 20,
         "data": "5bdd53b79ddd7339dd5b\nc528413308c49dd40acd\nce5ae6bdeccce40a6968\nc7233338d486184b785a\n495b53186869cce59629\ne4adc5a63a5acc58ed58\n729cce5b71a5a4acdcec\nd78685ad703a5a5a609c\nc523ac72303b6bcd786a\n6231323b7a71330a7879\n531a59d5bd5ad5a5b69c\n69e7860ad629c638532a\n5a71ad4303bccd58c539\n69785029cd5a48eece5a\n5a5aee7ac42be43b6bcd\nc78713312011bcdd538c\n6969639edee4b622296a\n52bc71a5039c59dd5a5b\nc532b63ac5a6a602218d\ne633b733ae7333a73a6a",
         "startingPosition": {
             "row": 19,

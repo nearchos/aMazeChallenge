@@ -23,28 +23,32 @@ import java.util.Map;
 public class Game implements Serializable {
 
     private static final Direction DEFAULT_STARTING_DIRECTION = Direction.NORTH;
-    private final Maze maze;
+    private final Grid grid;
     private Map<String,Player> players = new HashMap<>();
     private Map<String,MazeSolver> playerNamesToMazeSolvers = new HashMap<>();
 
-    public Game(final Maze maze) {
-        this.maze = maze;
+    public Game(final Grid grid) {
+        this.grid = grid;
     }
 
-    public int getGridSize() {
-        return maze.getGridSize();
+    public int getGridWidth() {
+        return grid.getWidth();
+    }
+
+    public int getGridHeight() {
+        return grid.getHeight();
     }
 
     public int getCell(final int row, final int col) {
-        return maze.get(row, col);
+        return grid.get(row, col);
     }
 
     public Position getStartingPosition() {
-        return maze.getStartingPosition();
+        return grid.getStartingPosition();
     }
 
     public Position getTargetPosition() {
-        return maze.getTargetPosition();
+        return grid.getTargetPosition();
     }
 
     /**
@@ -66,7 +70,7 @@ public class Game implements Serializable {
      */
     public boolean addPlayer(@NonNull final Player player, final Map<String, Serializable> parametersMap) {
         final boolean replaced = players.containsKey(player.getName());
-        player.init(maze.getStartingPosition(), DEFAULT_STARTING_DIRECTION);
+        player.init(grid.getStartingPosition(), DEFAULT_STARTING_DIRECTION);
         players.put(player.getName(), player);
         final MazeSolver mazeSolver = getMazeSolver(player);
         for(final Map.Entry<String,Serializable> entry : parametersMap.entrySet()) {
@@ -109,7 +113,7 @@ public class Game implements Serializable {
                 if(canMoveForward(player)) player.moveForward();
                 break;
             case NO_MOVE:
-                Log.d("maze-challenge", "move: " + playerMove);
+                Log.d("grid-challenge", "move: " + playerMove);
                 break;
             default:
                 throw new RuntimeException("Invalid PlayerMove: " + playerMove);
@@ -136,7 +140,7 @@ public class Game implements Serializable {
     public boolean canMoveForward(final Player player) {
         final Position playerPosition = player.getPosition();
         final Direction playerDirection = player.getDirection();
-        return !maze.hasWall(playerPosition, playerDirection);
+        return !grid.hasWall(playerPosition, playerDirection);
     }
 
     /**
@@ -148,7 +152,7 @@ public class Game implements Serializable {
     public boolean canMoveBackward(final Player player) {
         final Position playerPosition = player.getPosition();
         final Direction oppositeDirection = player.getDirection().opposite();
-        return !maze.hasWall(playerPosition, oppositeDirection);
+        return !grid.hasWall(playerPosition, oppositeDirection);
     }
 
     /**
@@ -160,7 +164,7 @@ public class Game implements Serializable {
     public boolean canMoveLeft(final Player player) {
         final Position playerPosition = player.getPosition();
         final Direction leftDirection = player.getDirection().turnCounterClockwise();
-        return !maze.hasWall(playerPosition, leftDirection);
+        return !grid.hasWall(playerPosition, leftDirection);
     }
 
     /**
@@ -172,7 +176,7 @@ public class Game implements Serializable {
     public boolean canMoveRight(final Player player) {
         final Position playerPosition = player.getPosition();
         final Direction rightDirection = player.getDirection().turnClockwise();
-        return !maze.hasWall(playerPosition, rightDirection);
+        return !grid.hasWall(playerPosition, rightDirection);
     }
 
     /**

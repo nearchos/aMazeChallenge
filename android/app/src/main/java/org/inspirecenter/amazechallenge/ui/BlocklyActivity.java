@@ -16,9 +16,6 @@ package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,7 +30,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -45,15 +41,13 @@ import com.google.blockly.android.codegen.CodeGenerationRequest;
 import com.google.blockly.model.DefaultBlocks;
 
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.LoadDialogListAdapter;
-import org.inspirecenter.amazechallenge.model.Maze;
-import org.mozilla.javascript.tools.debugger.Main;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,9 +106,9 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
     private void submitCode() {
         final Intent intent = getIntent();
-        final Maze selectedMaze = (Maze) intent.getSerializableExtra(GameActivity.SELECTED_GAME_KEY);
+        final Grid selectedGrid = (Grid) intent.getSerializableExtra(GameActivity.SELECTED_GAME_KEY);
         final Intent intentPlay = new Intent(BlocklyActivity.this, GameActivity.class);
-        intentPlay.putExtra(GameActivity.SELECTED_GAME_KEY, selectedMaze);
+        intentPlay.putExtra(GameActivity.SELECTED_GAME_KEY, selectedGrid);
 
         if (getController().getWorkspace().hasBlocks()) {
             Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG).setAction("Action", null).show();

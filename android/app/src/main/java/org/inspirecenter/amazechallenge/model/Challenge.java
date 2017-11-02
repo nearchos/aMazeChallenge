@@ -14,17 +14,22 @@ import java.io.Serializable;
  */
 public class Challenge implements Serializable {
 
-    private int apiVersion; // used to determine if the player can 'support' this challenge
-    private String name;
-    private boolean canRepeat; // whether a player can play again and again
-    private boolean canJoinAfterStart; // whether a player can join after the start of the challenge
-    private boolean canStepOnEachOther; // whether players can step on each other
-    private long startTimestamp; // when the challenge starts being available, or zero if available from the beginning of time (timestamp in UTC)
-    private long endTimestamp; // when the challenge ends being available, or zero if available forever (timestamp in UTC)
-    private Maze grid;
+    private final long id;
+    private final String name;
+    private final int apiVersion; // used to determine if the player can 'support' this challenge
+    private final String description; // brief description of the challenge
+    private final boolean canRepeat; // whether a player can play again and again
+    private final boolean canJoinAfterStart; // whether a player can join after the start of the challenge
+    private final boolean canStepOnEachOther; // whether players can step on each other
+    private final long startTimestamp; // when the challenge starts being available, or zero if available from the beginning of time (timestamp in UTC)
+    private final long endTimestamp; // when the challenge ends being available, or zero if available forever (timestamp in UTC)
+    private final Grid grid;
 
-    public Challenge(String name, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp, long endTimestamp, Maze grid) {
+    private Challenge(long id, String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp, long endTimestamp, Grid grid) {
+        this.id = id;
+        this.apiVersion = apiVersion;
         this.name = name;
+        this.description = description;
         this.canRepeat = canRepeat;
         this.canJoinAfterStart = canJoinAfterStart;
         this.canStepOnEachOther = canStepOnEachOther;
@@ -33,8 +38,20 @@ public class Challenge implements Serializable {
         this.grid = grid;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public int getApiVersion() {
+        return apiVersion;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public boolean isCanRepeat() {
@@ -57,7 +74,7 @@ public class Challenge implements Serializable {
         return endTimestamp;
     }
 
-    public Maze getGrid() {
+    public Grid getGrid() {
         return grid;
     }
 
@@ -65,6 +82,8 @@ public class Challenge implements Serializable {
     public String toString() {
         return "Challenge{" +
                 "name='" + name + '\'' +
+                ", apiVersion=" + apiVersion+
+                ", description=" + description+
                 ", canRepeat=" + canRepeat +
                 ", canJoinAfterStart=" + canJoinAfterStart +
                 ", canStepOnEachOther=" + canStepOnEachOther +
@@ -75,13 +94,16 @@ public class Challenge implements Serializable {
     }
 
     public static Challenge parseJSON(final JSONObject jsonObject) throws JSONException {
+        final long id = jsonObject.getLong("id");
         final String name = jsonObject.getString("name");
+        final int apiVersion = jsonObject.getInt("apiVersion");
+        final String description = jsonObject.getString("description");
         final boolean canRepeat = jsonObject.getBoolean("canRepeat");
         final boolean canJoinAfterStart = jsonObject.getBoolean("canJoinAfterStart");
         final boolean canStepOnEachOther = jsonObject.getBoolean("canStepOnEachOther");
         final long startTimestamp = jsonObject.getLong("startTimestamp");
         final long endTimestamp = jsonObject.getLong("endTimestamp");
-        final Maze grid = Maze.parseJSON(jsonObject.getJSONObject("grid"));
-        return new Challenge(name, canRepeat, canJoinAfterStart, canStepOnEachOther, startTimestamp, endTimestamp, grid);
+        final Grid grid = Grid.parseJSON(jsonObject.getJSONObject("grid"));
+        return new Challenge(id, name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther, startTimestamp, endTimestamp, grid);
     }
 }
