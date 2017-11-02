@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
+    <!--API-->
     <servlet>
         <servlet-name>ChallengesServlet</servlet-name>
         <servlet-class>org.inspirecenter.amazechallenge.api.ChallengesServlet</servlet-class>
@@ -11,6 +12,14 @@
     <servlet-mapping>
         <servlet-name>ChallengesServlet</servlet-name>
         <url-pattern>/api/json/challenges</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ChallengeServlet</servlet-name>
+        <servlet-class>org.inspirecenter.amazechallenge.api.ChallengeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChallengeServlet</servlet-name>
+        <url-pattern>/api/json/challenge</url-pattern>
     </servlet-mapping>
 
     <!--Admin-->
@@ -37,6 +46,22 @@
     <servlet-mapping>
         <servlet-name>DeleteParameterServlet</servlet-name>
         <url-pattern>/admin/delete-parameter</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AdminChallenges</servlet-name>
+        <jsp-file>/admin/challenges.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminChallenges</servlet-name>
+        <url-pattern>/admin/challenges</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AddChallengeServlet</servlet-name>
+        <servlet-class>org.inspirecenter.amazechallenge.admin.AddChallengeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddChallengeServlet</servlet-name>
+        <url-pattern>/admin/add-challenge</url-pattern>
     </servlet-mapping>
 
     <!--Objectify Filters-->

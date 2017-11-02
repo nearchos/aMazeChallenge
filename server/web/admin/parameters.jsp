@@ -21,6 +21,8 @@
             <td></td>
         </tr>
 <%
+    final String error = request.getParameter("error");
+
     final List<Parameter> allParameters = ObjectifyService.ofy()
             .load()
             .type(Parameter.class)
@@ -36,8 +38,6 @@
         </tr>
 <%
     }
-
-    final String error = request.getParameter("error");
 %>
     </table>
 
