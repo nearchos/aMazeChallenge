@@ -43,16 +43,16 @@
             <next>
               <block type="variables_set" id="8618e57c-b254-4d3d-9070-b829af844895">
                 <value name="VALUE">
-                  <block type="math_random_int" id="fc98ef0f-9509-4629-a824-1647ffb0c345">
-                    <value name="FROM">
-                      <shadow type="math_number" id="877f72d3-9cd4-414b-9797-9d30cb7cfb6d">
+                  <block type="maze_randomint" id="a2f24752-a4b1-4bce-b615-c5d5ba6ab067">
+                    <value name="min">
+                      <block type="math_number" id="1d4b55d8-de9a-4c65-a4ad-e4dfba58aab4">
                         <field name="NUM">0</field>
-                      </shadow>
+                      </block>
                     </value>
-                    <value name="TO">
-                      <shadow type="math_number" id="89f9b083-d494-4201-963f-3f882b02d837">
+                    <value name="max">
+                      <block type="math_number" id="b354ee31-857d-4871-a8fd-15a40b261d8d">
                         <field name="NUM">3</field>
-                      </shadow>
+                      </block>
                     </value>
                   </block>
                 </value>

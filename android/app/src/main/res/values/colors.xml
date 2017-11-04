@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="lightGray">#AAAAAA</color>
+
+    <color name="snackbarRed">#C00</color>
+    <color name="snackbarYellow">#880</color>
+    <color name="snackbarBlue">#00C</color>
+
 </resources>

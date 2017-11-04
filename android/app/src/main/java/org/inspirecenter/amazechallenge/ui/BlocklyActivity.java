@@ -22,10 +22,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,18 +36,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.blockly.android.AbstractBlocklyActivity;
+import com.google.blockly.android.BlocklyActivityHelper;
 import com.google.blockly.android.codegen.CodeGenerationRequest;
+import com.google.blockly.model.BlocklySerializerException;
 import com.google.blockly.model.DefaultBlocks;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.Grid;
+import org.inspirecenter.amazechallenge.model.InterpreterError;
 import org.inspirecenter.amazechallenge.model.LoadDialogListAdapter;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -65,6 +73,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     public static ArrayList<String> codeNamesList = new ArrayList<>();
     public static ArrayList<String> codeFilesList = new ArrayList<>();
     public static AlertDialog loadDialog;
+    public static int snackbarDuration_MS = 5000;
 
     private static final List<String> BLOCK_DEFINITIONS = Arrays.asList(
             DefaultBlocks.COLOR_BLOCKS_PATH,
@@ -110,16 +119,48 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         final Intent intentPlay = new Intent(BlocklyActivity.this, GameActivity.class);
         intentPlay.putExtra(GameActivity.SELECTED_GAME_KEY, selectedGrid);
 
-        if (getController().getWorkspace().hasBlocks()) {
+        //Save the code first, but don't display message:
+        try { mBlocklyActivityHelper.saveWorkspaceToAppDir(AUTOSAVE_FILENAME); }
+        catch (FileNotFoundException | BlocklySerializerException e) { e.printStackTrace(); }
+
+        //Find any errors:
+        InterpreterError error = checkCode();
+
+        if (error != InterpreterError.NO_ERROR) {
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.blocklyView), error.toString(), snackbarDuration_MS).setAction(R.string.back_to_menu, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intentBack = new Intent(BlocklyActivity.this, MainActivity.class);
+                    startActivity(intentBack);
+                }//end onClick()
+            });
+            View sbView = snackbar.getView();
+            TextView sbTView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            snackbar.setActionTextColor(Color.WHITE);
+            switch (error.type) {
+                case ERROR:
+                    sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbarRed));
+                    sbTView.setTextColor(Color.WHITE);
+                    break;
+                case WARNING:
+                    sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbarYellow));
+                    sbTView.setTextColor(Color.WHITE);
+                    break;
+                case INFO:
+                    sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbarBlue));
+                    sbTView.setTextColor(Color.WHITE);
+                    break;
+            }//end switch
+            snackbar.show();
+        }//end if error occured
+        else if (getController().getWorkspace().hasBlocks()) {
             Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG).setAction("Action", null).show();
             onRunCode();
-        }//end if has blocks
+        }//end if has blocks and no error occured
         else {
             Intent intentBack = new Intent(BlocklyActivity.this, MainActivity.class);
             startActivity(intentBack);
-        }//end else
-
-
+        }//end if no blocks and no error
     }//end submitCode()
 
     @NonNull
@@ -441,7 +482,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     }
                 });
         return saveDialogBuilder.create();
-    }
+    }//end createSaveDialog()
 
     /**
      * Creates the Load Dialog.
@@ -462,5 +503,60 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         loadDialog.setMessage(R.string.load_code_message);
         return loadDialog.create();
     }//end createLoadDialog()
+
+    /**
+     * Checks the code for obvious user mistakes such as missing or empty functions etc.
+     * @return Returns an InterpreterError to describe the error that occured.
+     */
+    private InterpreterError checkCode() {
+        final String code = getTempWorkspaceContents();
+        if (!code.contains("<block type=\"maze_run_function\"")) return InterpreterError.MISSING_RUN_FUNC;
+        else if (!code.contains("<block type=\"maze_init_function\"")) return InterpreterError.MISSING_INIT_FUNC;
+
+        String [] lines = code.split("\n");
+
+        boolean runHasStatements = false;
+        boolean parsingRunFunction = false;
+        for (final String line : lines) {
+            if (!parsingRunFunction) {
+                if (line.contains("<block type=\"maze_run_function\"")) parsingRunFunction = true;
+            }
+            else {
+                if (line.contains("</block")) parsingRunFunction = false;
+                else {
+                    if (line.contains("<block"))  {
+                        runHasStatements = true;
+                        break;
+                    }//end if line contains another block
+                }//end else line doesn't end block
+            }//end else parsingRunFunction
+        }//end for all lines
+
+        //TODO: Check for infinite loops.
+        //TODO: Check for function in function statements.
+
+        if (!runHasStatements)  return InterpreterError.EMPTY_RUN_FUNC;
+
+        return InterpreterError.NO_ERROR;
+
+    }//end checkCode()
+
+    /**
+     * Gets the contents of the temporary workspace as an XML file.
+     * @return A string with the text contents of the temporary workspace XML format.
+     */
+    private String getTempWorkspaceContents() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            FileInputStream in = new FileInputStream(new File(getFilesDir().getAbsolutePath() + "/" + AUTOSAVE_FILENAME));
+            System.out.println(getFilesDir().getAbsolutePath());
+            InputStreamReader inputStreamReader = new InputStreamReader(in);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) sb.append(line);
+        }//end try
+        catch (IOException e) { e.printStackTrace(); }
+        return sb.toString();
+    }//end getTempWorkspaceContents()
 
 }//end activity BlocklyActivity

@@ -118,21 +118,48 @@
   "tooltip": "Initializes the maze variables.",
   "helpUrl": ""
 },
-{
-  "type": "maze_run_function",
-  "message0": "Run %1  %2",
-  "args0": [
-    {
-      "type": "input_dummy"
-    },
-    {
-      "type": "input_statement",
-      "name": "run"
-    }
-  ],
-  "previousStatement": null,
-  "colour": 230,
-  "tooltip": "Runs at each turn of the player to solve the maze.",
-  "helpUrl": ""
-}
+  {
+    "type": "maze_run_function",
+    "message0": "Run %1  %2",
+    "args0": [
+      {
+        "type": "input_dummy"
+      },
+      {
+        "type": "input_statement",
+        "name": "run"
+      }
+    ],
+    "previousStatement": null,
+    "colour": 230,
+    "tooltip": "Runs at each turn of the player to solve the maze.",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_randomint",
+    "message0": "random integer from %1 %2 %3 to %4",
+    "args0": [
+      {
+        "type": "input_dummy"
+      },
+      {
+        "type": "input_value",
+        "name": "min",
+        "check": "Number"
+      },
+      {
+        "type": "input_dummy"
+      },
+      {
+        "type": "input_value",
+        "name": "max",
+        "check": "Number"
+      }
+    ],
+    "inputsInline": true,
+    "output": null,
+    "colour": 225,
+    "tooltip": "Returns a random integer in the range provided.",
+    "helpUrl": ""
+  }
 ]

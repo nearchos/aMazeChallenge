@@ -89,4 +89,5 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         final Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
         return scanner.hasNext() ? scanner.next() : "";
     }
+
 }

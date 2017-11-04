@@ -1,12 +1,16 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
 import android.util.Log;
+import android.widget.Toast;
+
 import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.InterpreterError;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +36,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
             Log.d(TAG, "################################");
 
             //Wrap the code:
-            code = wrapCode(code);
+            code = processCode(code);
 
             //DEBUG INFO:
             Log.d(TAG, "########## FINAL CODE ##########");
@@ -63,6 +67,14 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 
     @Override
     public PlayerMove getNextMove() {
+
+        InterpreterError error = checkCodeValidity(code);
+
+        if (error != InterpreterError.NO_ERROR) {
+            //TODO: How do we display a toast from here? - the toast will print the error description.
+            Log.d(TAG, "InterpreterError!!! - " + error.toString());
+            return PlayerMove.NO_MOVE;
+        }
 
         PlayerMove nextMove = PlayerMove.NO_MOVE;
 
@@ -101,7 +113,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         return javascriptArguments.put(key, value);
     }
 
-    private static String wrapCode(final String code) {
+    private static String processCode(final String code) {
         final int declarationsEnd = getPlayerCodeStart(code);
         final String variableStoring = "\n\n\n//Params Array\n" +
                 "var propNames = [];\n" +
@@ -111,7 +123,16 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
                 "         propNames.push(propName);\n" +
                 "      }\n" +
                 "   }\n" +
-                "}//end populatePropNames()\n";
+                "}//end populatePropNames()\n" +
+                "\n" +
+                "function _getRandomInt(a, b) {\n" +
+                "  if (a > b) {\n" +
+                "    var c = a;\n" +
+                "    a = b;\n" +
+                "    b = c;\n" +
+                "  }\n" +
+                "  return Math.floor(Math.random() * (b - a + 1) + a);\n" +
+                "}//end _getRandomInt()\n";
         String startingCode = "";
         if (declarationsEnd > 0) startingCode = code.substring(0, declarationsEnd);
         String endingCode = "";
@@ -143,7 +164,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
      * @param CODE The original generated code.
      * @return A filtered string containing the processed code.
      */
-    public static String filterCode(final String CODE) {
+    private static String filterCode(final String CODE) {
         StringBuilder builder = new StringBuilder();
         String code = CODE.replaceAll("\r", "");
         String[] lines = code.split("\n");
@@ -162,7 +183,8 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
                 }//end if func decl
             }//end if not function
             else {
-                builder.append(line + "\n");
+                builder.append(line);
+                builder.append("\n");
                 if (line.contains("//end")) {
                     builder.append("\n");
                     parseFunction = false;
@@ -172,31 +194,51 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         return builder.toString();
     }//end filterCode()
 
+    /**
+     * Checks A FILTERED code (output of function filterCode()) for obvious errors.
+     * @param code The filtered code to check for errors.
+     * @return Returns an InterpreterError (enum) which describes the kind of error.
+     */
+    private static InterpreterError checkCodeValidity(final String code) {
 
-    public static boolean checkCodeValidity(final String code) {
+        //Check for missing run function:
+        if (!code.contains("function run")) return InterpreterError.MISSING_RUN_FUNC;
 
-        //EXTREMELY IMPORTANT NOTE: Perform these checks **BEFORE** wrapping or filtering the code.
+        //Check for infinite while loops:
+        if (code.contains("while (true)")) return InterpreterError.INFINITE_LOOP;
 
-        //TODO: Check for function-in-function statements:
-        /*
-        function x() {
-            function x() {
-                function x() {
-                    ...
-                }
+        String[] lines = code.split("\n");
+        boolean parsingFunction = false;
+        boolean parsingRunFunction = false;
+        boolean runHasStatements = false;
+
+        for (final String line : lines) {
+
+            //Check for empty run() function:
+
+            if (!parsingRunFunction) {
+                if (line.contains("//---- PLAYER'S CODE ----")) parsingRunFunction = true;
             }
-        }
-         */
+            else {
+                if (line.contains("//-----------------------")) parsingRunFunction = false;
+                else if (!line.trim().isEmpty()) runHasStatements = true;
+            }
 
-        //TODO: Check for missing run() function:
+            //Check for function-in-function statements:
+            if (!parsingFunction) {
+                if (line.contains("function ")) parsingFunction = true;
+            }
+            else {
+                if (line.contains("}//end")) parsingFunction = false;
+                else if (line.contains("function ")) return InterpreterError.FUNCTION_IN_FUNCTION;
+            }
 
-        //TODO: Check for empty run() function:
+        }//end foreach line
 
-        //TODO: Check for while(true) statements:
+        System.out.println(runHasStatements);
+        if (!runHasStatements) return InterpreterError.EMPTY_RUN_FUNC;
 
-        //TODO: Check for very large for loop counters:
-
-        return true;
+        return InterpreterError.NO_ERROR;
     }//end checkCodeValidity()
 
 }//end class InterpretedMazeSolver

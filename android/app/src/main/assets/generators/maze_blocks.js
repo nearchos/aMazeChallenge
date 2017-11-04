@@ -112,3 +112,10 @@ Blockly.JavaScript['maze_run_function'] = function(block) {
   "}//end run()\n";
   return code;
 };
+
+Blockly.JavaScript['maze_randomint'] = function(block) {
+  var value_min = Blockly.JavaScript.valueToCode(block, 'min', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_max = Blockly.JavaScript.valueToCode(block, 'max', Blockly.JavaScript.ORDER_ATOMIC);
+  var code = "_getRandomInt(" + value_min + ", " + value_max + ")";
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
