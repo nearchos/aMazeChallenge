@@ -126,6 +126,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         //Find any errors:
         InterpreterError error = checkCode();
 
+        //Handle the errors:
         if (error != InterpreterError.NO_ERROR) {
             Snackbar snackbar = Snackbar.make(findViewById(R.id.blocklyView), error.toString(), snackbarDuration_MS);
             View sbView = snackbar.getView();
@@ -504,7 +505,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
         LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutPara3ms.MATCH_PARENT);
+                LinearLayout.LayoutParams.MATCH_PARENT);
         list.setLayoutParams(lp_list);
         loadDialog.setView(list);
         loadDialog.setTitle(R.string.load_code);
@@ -518,9 +519,14 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
      */
     private InterpreterError checkCode() {
         final String code = getTempWorkspaceContents();
+
+        //Check if run function exists:
         if (!code.contains("<block type=\"maze_run_function\"")) return InterpreterError.MISSING_RUN_FUNC;
+
+        //Check if ini function exists:
         else if (!code.contains("<block type=\"maze_init_function\"")) return InterpreterError.MISSING_INIT_FUNC;
 
+        //Check if the run function contains code:
         String [] lines = code.split("\n");
 
         boolean runHasStatements = false;
@@ -530,13 +536,11 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 if (line.contains("<block type=\"maze_run_function\"")) parsingRunFunction = true;
             }
             else {
-                if (line.contains("</block")) parsingRunFunction = false;
-                else {
-                    if (line.contains("<block"))  {
+                if (line.contains("<block")) {
                         runHasStatements = true;
                         break;
-                    }//end if line contains another block
-                }//end else line doesn't end block
+                }//end if line has block decl
+                if (line.contains("</block>")) parsingRunFunction = false;
             }//end else parsingRunFunction
         }//end for all lines
 
@@ -561,7 +565,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             InputStreamReader inputStreamReader = new InputStreamReader(in);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String line;
-            while ((line = bufferedReader.readLine()) != null) sb.append(line);
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }//end while
         }//end try
         catch (IOException e) { e.printStackTrace(); }
         return sb.toString();
