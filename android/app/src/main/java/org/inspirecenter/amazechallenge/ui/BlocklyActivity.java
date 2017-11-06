@@ -127,13 +127,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         InterpreterError error = checkCode();
 
         if (error != InterpreterError.NO_ERROR) {
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.blocklyView), error.toString(), snackbarDuration_MS).setAction(R.string.back_to_menu, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intentBack = new Intent(BlocklyActivity.this, MainActivity.class);
-                    startActivity(intentBack);
-                }//end onClick()
-            });
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.blocklyView), error.toString(), snackbarDuration_MS);
             View sbView = snackbar.getView();
             TextView sbTView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
             snackbar.setActionTextColor(Color.WHITE);
@@ -141,14 +135,28 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 case ERROR:
                     sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbarRed));
                     sbTView.setTextColor(Color.WHITE);
+                    snackbar.setAction(R.string.back_to_menu, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intentBack = new Intent(BlocklyActivity.this, MainActivity.class);
+                        startActivity(intentBack);
+                    }//end onClick()
+                });
                     break;
                 case WARNING:
                     sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbarYellow));
                     sbTView.setTextColor(Color.WHITE);
+                    snackbar.setAction(R.string.compile_anyway, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onRunCode();
+                    }//end onClick()
+                });
                     break;
                 case INFO:
                     sbView.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbarBlue));
                     sbTView.setTextColor(Color.WHITE);
+                    onRunCode();
                     break;
             }//end switch
             snackbar.show();
@@ -496,7 +504,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
         LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutPara3ms.MATCH_PARENT);
         list.setLayoutParams(lp_list);
         loadDialog.setView(list);
         loadDialog.setTitle(R.string.load_code);
