@@ -1,0 +1,29 @@
+/api/json/challenges {gets list of available challenges}
+- status: ok, return: JSON-formatted list of available challenges
+
+/api/json/leaderboard?challenge-id=123 {returns the leaderboard of the specified challenge (no need to join)}
+- status: ok, return: JSON-formatted version of leaderboard
+- status: error, messages: ["missing or empty challenge-id" | "invalid challenge-id" | "unknown challenge-id" | "specified id not found"]
+
+/api/json/join?challenge-id=123&email=...&name=...&avatar=...&color=... {joins specified challenge, creates a new session for given player/email}
+- status: ok, return: session-id
+- status: redirect, return: url
+- status: error, messages: ["missing challenge-id" | "unknown challenge-id"]
+- status: error, messages: ["specified challenge not active - will start on ..."]
+- status: error, messages: ["specified challenge not active - ended on ..."]
+- status: error, messages: ["specified challenge unavailable"]
+
+/api/json/submit-code?session-id=abc123&code=... {submits specified code, if successful and not participating yet triggers the player to enter the queue, if playing terminates player and adds new code to the end of the queue, if already in queue replaces code and moves back to the end of the queue}
+- status: ok, return: player status ("added to the end of the queue", "terminated and added to the end of the queue", "
+- status: error, messages: ["unknown session-id"]
+- status: error, messages: ["invalid code"]
+- status: error, messages: ["challenge associated to this session is not active - will start on ..."]
+- status: error, messages: ["challenge associated to this session is not active - ended on ..."]
+- status: error, messages: ["challenge associated to this session is unavailable"]
+
+/api/json/game-state?session-id=abc123 {accesses the state of the game as it is at this moment}}
+- status: ok, return: JSON-formatted version of the state of the game (e.g. player positions, queue of players, player names & avatars & colors, basic statistics, etc.)
+- status: error, messages: ["unknown session-id"]
+- status: error, messages: ["challenge associated to this session is not active - will start on ..."]
+- status: error, messages: ["challenge associated to this session is not active - ended on ..."]
+- status: error, messages: ["challenge associated to this session is unavailable"]
