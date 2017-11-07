@@ -6,7 +6,11 @@ import java.util.Vector;
 
 public class ReplyBuilder {
 
-    public static String createReplyWithError(@NotNull final Vector<String> errorMessages) {
+    public static String createReplyWithError(@NotNull final String errorMessage) {
+        return "{ \"status\": \"error\", \"messages\": [ \"" + errorMessage + "\" ] }";
+    }
+
+    public static String createReplyWithErrors(@NotNull final Vector<String> errorMessages) {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{ \"status\": \"error\", \"messages\": [");
         for(int i = 0; i < errorMessages.size(); i++) {

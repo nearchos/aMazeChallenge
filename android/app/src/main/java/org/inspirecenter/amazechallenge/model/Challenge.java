@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Models a challenge by describing its properties (e.g. grid, num of players, whether its

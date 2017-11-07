@@ -46,7 +46,7 @@ public class ChallengeServlet extends HttpServlet {
         if(errors.isEmpty()) {
             reply = ReplyBuilder.createReplyWithOneParameter("challenge", json);
         } else {
-            reply = ReplyBuilder.createReplyWithError(errors);
+            reply = ReplyBuilder.createReplyWithErrors(errors);
         }
 
         final PrintWriter printWriter = response.getWriter();

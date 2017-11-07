@@ -29,7 +29,7 @@ public class ChallengesServlet extends HttpServlet {
 
         for(int i = 0; i < allChallenges.size(); i++) {
             final Challenge challenge = allChallenges.get(i);
-            reply.append(challenge.toJsonSummary()).append(i < allChallenges.size() - 1 ? "," : "");
+            reply.append(challenge.toJson()).append(i < allChallenges.size() - 1 ? "," : "");
         }
 
         reply.append(

@@ -5,7 +5,7 @@
     <Preference
         android:title="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:summary="@string/application_url">
+        android:summary="@string/application_motto">
         <intent android:action="android.intent.action.VIEW"
             android:data="@string/application_url" />
     </Preference>
@@ -24,6 +24,12 @@
         android:title="@string/Version"
         android:icon="@drawable/ic_keyboard_black_24dp"/>
     <!--android:summary="@string/version_name"-->
+
+    <Preference
+        android:key="applicationApi"
+        android:title="@string/Application_API"
+        android:icon="@drawable/ic_cloud_circle_black_24dp"
+        android:summary="@string/api_url"/>
 
     <Preference
         android:key="rateUs"

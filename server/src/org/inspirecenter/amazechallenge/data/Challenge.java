@@ -76,44 +76,24 @@ public class Challenge {
     }
 
     public String toJson() { // todo use gson or similar to do this more elegantly
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{")
-                .append("\"id\": ").append(id).append(",")
-                .append("  \"name\": \"").append(name).append("\",")
-                .append("  \"apiVersion\": \"").append(apiVersion).append("\",")
-                .append("  \"description\": \"").append(description).append("\",")
-                .append("  \"canRepeat\": ").append(canRepeat).append(",")
-                .append("  \"canJoinAfterStart\": ").append(canJoinAfterStart).append(",")
-                .append("  \"canStepOnEachOther\": ").append(canStepOnEachOther).append(",")
-                .append("  \"startTimestamp\": ").append(startTimestamp).append(",")
-                .append("  \"endTimestamp\": ").append(endTimestamp).append(",")
-                .append("  \"grid\": {")
-                .append("    \"width\": ").append(grid.getWidth()).append(",")
-                .append("    \"height\": ").append(grid.getHeight()).append(",")
-                .append("    \"data\": \"").append(grid.getData()).append("\",")
-                .append("    \"startingPosition\": { \"row\": ").append(grid.getStartingPosition().getRow()).append(", \"col\": ").append(grid.getStartingPosition().getCol()).append(" },")
-                .append("    \"targetPosition\": { \"row\": ").append(grid.getTargetPosition().getRow()).append(", \"col\": ").append(grid.getTargetPosition().getCol()).append(" }")
-                .append("  }")
-                .append("}");
 
-        return stringBuilder.toString();
-    }
-
-    public String toJsonSummary() { // todo use gson or similar to do this more elegantly
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{")
-                .append("\"id\": ").append(id).append(",")
-                .append("  \"name\": \"").append(name).append("\",")
-                .append("  \"apiVersion\": \"").append(apiVersion).append("\",")
-                .append("  \"description\": \"").append(description).append("\",")
-                .append("  \"startTimestamp\": ").append(startTimestamp).append(",")
-                .append("  \"endTimestamp\": ").append(endTimestamp).append(",")
-                .append("  \"grid\": {")
-                .append("    \"width\": ").append(grid.getWidth()).append(",")
-                .append("    \"height\": ").append(grid.getHeight())
-                .append("  }")
-                .append("}");
-
-        return stringBuilder.toString();
+        return "{" +
+                "\"id\": " + id + "," +
+                "  \"name\": \"" + name + "\"," +
+                "  \"apiVersion\": \"" + apiVersion + "\"," +
+                "  \"description\": \"" + description + "\"," +
+                "  \"canRepeat\": " + canRepeat + "," +
+                "  \"canJoinAfterStart\": " + canJoinAfterStart + "," +
+                "  \"canStepOnEachOther\": " + canStepOnEachOther + "," +
+                "  \"startTimestamp\": " + startTimestamp + "," +
+                "  \"endTimestamp\": " + endTimestamp + "," +
+                "  \"grid\": {" +
+                "    \"width\": " + grid.getWidth() + "," +
+                "    \"height\": " + grid.getHeight() + "," +
+                "    \"data\": \"" + grid.getData() + "\"," +
+                "    \"startingPosition\": { \"row\": " + grid.getStartingPosition().getRow() + ", \"col\": " + grid.getStartingPosition().getCol() + " }," +
+                "    \"targetPosition\": { \"row\": " + grid.getTargetPosition().getRow() + ", \"col\": " + grid.getTargetPosition().getCol() + " }" +
+                "  }" +
+                "}";
     }
 }

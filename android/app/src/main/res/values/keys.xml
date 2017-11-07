@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="application_url">https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge</string>
+    <string name="api_url">https://amazechallenge.appspot.com/api/json</string>
+    <!-- this is valid only foe debugging - must override in production -->
+    <string name="magic">21f6df52f90c</string>
+</resources>

@@ -2,8 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.inspirecenter.amazechallenge">
 
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" android:maxSdkVersion="22" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +27,7 @@
         </activity>
         <activity
             android:name=".ui.PersonalizeActivity"
+            android:label="@string/Personalize"
             android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -40,7 +44,7 @@
         </activity>
         <activity
             android:name=".ui.TrainingActivity"
-            android:label="@string/Code_editor"
+            android:label="@string/Training"
             android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -48,7 +52,7 @@
         </activity>
         <activity
             android:name=".ui.GameActivity"
-            android:label="@string/About"
+            android:label="@string/Game"
             android:parentActivityName=".ui.TrainingActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -61,6 +65,12 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
+        </activity>
+        <activity android:name=".ui.JoinActivity"
+            android:parentActivityName=".ui.OnlineChallengeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.inspirecenter.amazechallenge.ui.OnlineChallengeActivity" />
         </activity>
         <activity
             android:name=".ui.AboutActivity"

@@ -1,6 +1,7 @@
 <resources>
 
     <string name="app_name">aMazeChallenge</string>
+    <string name="application_motto">There is always a way when you can code!</string>
 
     <string name="Game">Game</string>
     <string name="Maze_challenge">Maze challenge!</string>
@@ -18,6 +19,7 @@
     <string name="Next">Next</string>
     <string name="Interval">Interval</string>
     <string name="Name">Name</string>
+    <string name="Email">Email</string>
     <string name="Maze_name">Maze name</string>
     <string name="Add">Add</string>
     <string name="Save">Save</string>
@@ -30,10 +32,10 @@
     <string name="Tell_the_world">Tell the world</string>
     <string name="Share_with_your_friends">Share with your friends</string>
     <string name="Version">Version</string>
+    <string name="Application_API">Application API</string>
     <string name="Developed_by">Developed by</string>
     <string name="SharingInstructions">Get the aMazeChallenge app and learn to code by playing! Get it free from Google Play now: https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge</string>
     <string name="NoAppsAvailable">No apps available for sharing</string>
-    <string name="application_url">https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge</string>
     <string name="inspire_url">http://inspirecenter.org</string>
     <string name="Guest">Guest</string>
     <string name="Done">Done</string>

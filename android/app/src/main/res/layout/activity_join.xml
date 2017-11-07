@@ -2,19 +2,19 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_online_challenge"
+    android:id="@+id/activity_join"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.inspirecenter.amazechallenge.ui.OnlineChallengeActivity">
+    tools:context="org.inspirecenter.amazechallenge.ui.JoinActivity">
 
     <ProgressBar
-        android:id="@+id/activity_online_challenge_progress_bar"
+        android:id="@+id/activity_join_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/activity_online_challenge_list_view"
+    <TextView
+        android:id="@+id/activity_join_result"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </android.support.design.widget.CoordinatorLayout>

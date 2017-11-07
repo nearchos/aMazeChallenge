@@ -9,6 +9,7 @@ import android.widget.TextView;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.Challenge;
 
+import java.util.Collection;
 import java.util.Vector;
 
 /**
@@ -53,6 +54,14 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
 
     void add(final Challenge challenge) {
         challenges.add(challenge);
+    }
+
+    void addAll(final Collection<Challenge> challenges) {
+        this.challenges.addAll(challenges);
+    }
+
+    void clear() {
+        this.challenges.clear();
     }
 
     Vector<Challenge> getChallenges() {

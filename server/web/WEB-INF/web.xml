@@ -21,6 +21,14 @@
         <servlet-name>ChallengeServlet</servlet-name>
         <url-pattern>/api/json/challenge</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>JoinServlet</servlet-name>
+        <servlet-class>org.inspirecenter.amazechallenge.api.JoinServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JoinServlet</servlet-name>
+        <url-pattern>/api/json/join</url-pattern>
+    </servlet-mapping>
 
     <!--Admin-->
     <servlet>
