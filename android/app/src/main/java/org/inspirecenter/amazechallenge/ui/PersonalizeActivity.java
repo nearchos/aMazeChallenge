@@ -3,6 +3,7 @@ package org.inspirecenter.amazechallenge.ui;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -58,7 +59,7 @@ public class PersonalizeActivity extends AppCompatActivity {
         final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
         nameEditText.setText(name);
 
-        final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, "");
+        final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
         if(email.isEmpty()) {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && (checkSelfPermission(Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED)) {
                 requestPermissions(new String[] { Manifest.permission.GET_ACCOUNTS }, PERMISSIONS_REQUEST_GET_ACCOUNT);
@@ -79,12 +80,14 @@ public class PersonalizeActivity extends AppCompatActivity {
         // do nothing if denied
     }
 
+    @SuppressLint("SetTextI18n")
     private void selectAccount() {
         final AccountManager accountManager = AccountManager.get(this);
         final Account[] accounts = accountManager.getAccountsByType("com.google");
 
         if(accounts.length == 0) {
             // ignore
+            emailEditText.setText("guest@example.com");
         } else { // accounts.length >= 1
             // select the first email
             emailEditText.setText(accounts[0].name);
@@ -94,9 +97,9 @@ public class PersonalizeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        final String name = nameEditText.getText().toString();
+        final String name = nameEditText.getText().toString().trim();
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_NAME, name).apply();
-        final String email = emailEditText.getText().toString();
+        final String email = emailEditText.getText().toString().toLowerCase().trim();
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_EMAIL, email).apply();
     }
 
@@ -125,7 +128,6 @@ public class PersonalizeActivity extends AppCompatActivity {
                 colorDialog.dismiss();
             }
         });
-
     }
 
     public void done(final View view) {

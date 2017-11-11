@@ -38,6 +38,7 @@
     <string name="NoAppsAvailable">No apps available for sharing</string>
     <string name="inspire_url">http://inspirecenter.org</string>
     <string name="Guest">Guest</string>
+    <string name="Guest_email">guest@example.com</string>
     <string name="Done">Done</string>
     <string name="Clear">Clear</string>
     <string name="Clear_code">Clear code</string>

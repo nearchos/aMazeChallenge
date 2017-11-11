@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.R;
@@ -29,6 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
+import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
+
 public class TrainingActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener {
 
     public static final String CHALLENGES_PATH = "challenges";
@@ -40,6 +45,16 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
 
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+
+        final ImageView userImageView = findViewById(R.id.activity_training_user_image);
+        // todo set selected image/avatar
+        final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
+        final TextView nameTextView = findViewById(R.id.activity_training_user_name);
+        nameTextView.setText(name);
+        final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
+        final TextView emailTextView = findViewById(R.id.activity_training_user_email);
+        emailTextView.setText(email);
+        // todo set selected color to image/avatar and possible the name/email
 
         final RecyclerView challengesRecyclerView = findViewById(R.id.activity_training_mazes_list_view);
         challengesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -74,7 +89,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
         parametersMap.put(InterpretedMazeSolver.PARAMETER_KEY_CODE, code);
 
-        final String name = sharedPreferences.getString(PersonalizeActivity.PREFERENCE_KEY_NAME, "Guest");
+        final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, "Guest");
         final ShapeColor shapeColor = ShapeColor.PLAYER_COLOR_RED; // todo enable user selection
         final Shape shape = Shape.TRIANGLE; // todo enable user selection
         final Player player = new Player(name, shapeColor, shape, InterpretedMazeSolver.class);
