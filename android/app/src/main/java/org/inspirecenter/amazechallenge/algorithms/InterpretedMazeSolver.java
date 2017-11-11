@@ -68,14 +68,6 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     @Override
     public PlayerMove getNextMove() {
 
-        InterpreterError error = checkCodeValidity(code);
-
-        if (error != InterpreterError.NO_ERROR) {
-            //TODO: How do we display a toast from here? - the toast will print the error description.
-            Log.d(TAG, "InterpreterError!!! - " + error.toString());
-            return PlayerMove.NO_MOVE;
-        }
-
         PlayerMove nextMove = PlayerMove.NO_MOVE;
 
         Log.d(TAG, " ** Before wrapper: " + javascriptArguments);
@@ -193,52 +185,5 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         }//end foreach line
         return builder.toString();
     }//end filterCode()
-
-    /**
-     * Checks A FILTERED code (output of function filterCode()) for obvious errors.
-     * @param code The filtered code to check for errors.
-     * @return Returns an InterpreterError (enum) which describes the kind of error.
-     */
-    private static InterpreterError checkCodeValidity(final String code) {
-
-        //Check for missing run function:
-        if (!code.contains("function run")) return InterpreterError.MISSING_RUN_FUNC;
-
-        //Check for infinite while loops:
-        if (code.contains("while (true)")) return InterpreterError.INFINITE_LOOP;
-
-        String[] lines = code.split("\n");
-        boolean parsingFunction = false;
-        boolean parsingRunFunction = false;
-        boolean runHasStatements = false;
-
-        for (final String line : lines) {
-
-            //Check for empty run() function:
-
-            if (!parsingRunFunction) {
-                if (line.contains("//---- PLAYER'S CODE ----")) parsingRunFunction = true;
-            }
-            else {
-                if (line.contains("//-----------------------")) parsingRunFunction = false;
-                else if (!line.trim().isEmpty()) runHasStatements = true;
-            }
-
-            //Check for function-in-function statements:
-            if (!parsingFunction) {
-                if (line.contains("function ")) parsingFunction = true;
-            }
-            else {
-                if (line.contains("}//end")) parsingFunction = false;
-                else if (line.contains("function ")) return InterpreterError.FUNCTION_IN_FUNCTION;
-            }
-
-        }//end foreach line
-
-        System.out.println(runHasStatements);
-        if (!runHasStatements) return InterpreterError.EMPTY_RUN_FUNC;
-
-        return InterpreterError.NO_ERROR;
-    }//end checkCodeValidity()
 
 }//end class InterpretedMazeSolver

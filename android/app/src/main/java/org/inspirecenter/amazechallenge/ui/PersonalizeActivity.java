@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.inspirecenter.amazechallenge.R;
-import org.inspirecenter.amazechallenge.model.SelectColorDialogListAdapter;
 
 import static org.inspirecenter.amazechallenge.model.PlayerColor.PLAYER_COLORS;
 

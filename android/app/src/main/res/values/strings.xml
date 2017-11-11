@@ -57,8 +57,7 @@
     <string name="code_overwrite">Overwrite code?</string>
     <string name="code_overwrite_yes">Overwrite</string>
     <string name="code_overwrite_message">You have already stored code using this name. Would you like to overwrite it?</string>
-    <string name="color_select_title">Select color</string>
-    <string name="ignore">Ignore</string>
+    <string name="color_select_title">Select color</string>>
     <string name="back_to_menu">Back to menu</string>
 
     <string name="instructions">Write your code below to get out of the grid:</string>
@@ -77,10 +76,26 @@
     <string name="Details">Details</string>
     <string name="User_image">User image</string>
     <string name="Compiling">Compiling the code…</string>
-    <string name="warning">Warning</string>
     <string name="workspace_empty_message">Workspace is empty. Are you sure you would like to go back?</string>
     <string name="yes_go_back">Yes, go back</string>
     <string name="compile_anyway">Compile anyway</string>
+
+    <!-- ERROR/WARNING DIALOGS -->
+
+    <string name="warning">Warning</string>
+    <string name="error">Error</string>
+    <string name="warnings">Warnings</string>
+    <string name="errors">Errors</string>
+    <string name="found">Found</string>
+    <string name="multiple_errors_found">Errors found</string>
+    <string name="multiple_warnings_found">Warnings found</string>
+    <string name="errors_list_message">The following errors and warnings were found:</string>
+    <string name="warnings_list_message">The following warnings were found:</string>
+    <string name="view">View</string>
+    <string name="ignore">Ignore</string>
+    <string name="ignore_all">Ignore All</string>
+    <string name="ok">OK</string>
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

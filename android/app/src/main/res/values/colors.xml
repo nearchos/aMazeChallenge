@@ -6,7 +6,11 @@
     <color name="lightGray">#AAAAAA</color>
 
     <color name="snackbarRed">#C00</color>
-    <color name="snackbarYellow">#880</color>
+    <color name="snackbarYellow">#990</color>
     <color name="snackbarBlue">#00C</color>
+    <color name="snackbarGreen">#090</color>
+
+    <color name="lightRed">#ff9e9e</color>
+    <color name="lightYellow">#fffd9e</color>
 
 </resources>

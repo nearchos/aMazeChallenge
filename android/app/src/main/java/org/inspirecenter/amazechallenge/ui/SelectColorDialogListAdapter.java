@@ -1,4 +1,4 @@
-package org.inspirecenter.amazechallenge.model;
+package org.inspirecenter.amazechallenge.ui;
 
 import android.content.Context;
 import android.graphics.Color;
