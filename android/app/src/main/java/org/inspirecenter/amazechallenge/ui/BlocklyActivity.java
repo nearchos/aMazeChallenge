@@ -713,7 +713,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 }
             }//end if parsingWhileLoop
         }//end foreach line
-        if (parsingWhileLoop) errorList.add(InterpreterError.INFINITE_LOOP);
+        if (infiniteLoopExists) errorList.add(InterpreterError.INFINITE_LOOP);
 
         //Check for function in function statements:
         boolean parsingFunction = false;
@@ -737,12 +737,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
         //Sort the list before returning it:
         ArrayList<InterpreterError> sortedErrorList = new ArrayList<>();
-        for (final InterpreterError e : errorList) {
-            if (e.type == InterpreterErrorType.ERROR) sortedErrorList.add(e);
-        }
-        for (final InterpreterError e : errorList) {
-            if (e.type == InterpreterErrorType.WARNING) sortedErrorList.add(e);
-        }
+        for (final InterpreterError e : errorList) { if (e.type == InterpreterErrorType.ERROR) sortedErrorList.add(e); }
+        for (final InterpreterError e : errorList) { if (e.type == InterpreterErrorType.WARNING) sortedErrorList.add(e); }
         return sortedErrorList;
     }//end checkCode()
 

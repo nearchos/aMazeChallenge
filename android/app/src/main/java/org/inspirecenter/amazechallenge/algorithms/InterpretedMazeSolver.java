@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     public static final String RUN_FUNCTION = "run";
     public static final String INIT_FUNCTION = "init";
     private String code;
+    int startTime = 0;
 
     public InterpretedMazeSolver(final Game game, final Player player) {
         super(game, player);
