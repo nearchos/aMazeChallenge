@@ -650,7 +650,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 onRunCode();
             }
         });
-        warningListDialog.setPositiveButton(R.string.try_again, new DialogInterface.OnClickListener() {
+        warningListDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -698,7 +698,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             if (!runHasStatements)  errorList.add(InterpreterError.EMPTY_RUN_FUNC);
         }//end if run exists
 
-        //Check for obvious infinite loops --> while(true):
+       //Check for obvious infinite loops --> while(true):
         boolean parsingWhileLoop = false;
         boolean infiniteLoopExists = false;
         for (final String line : lines) {

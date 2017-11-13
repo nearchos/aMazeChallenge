@@ -1,17 +1,14 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
-import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.InterpreterError;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,10 +16,11 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 
     private static final String TAG = "aMazeChallenge";
     public static final String PARAMETER_KEY_CODE = "code";
-    public static final String RUN_FUNCTION = "run";
-    public static final String INIT_FUNCTION = "init";
+    private static final String RUN_FUNCTION = "run";
+    private static final String INIT_FUNCTION = "init";
     private String code;
-    int startTime = 0;
+    private static final int TIME_LIMIT_SECONDS = 1;
+    private static int noMoveCounter = 0;
 
     public InterpretedMazeSolver(final Game game, final Player player) {
         super(game, player);
@@ -81,8 +79,14 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
             ScriptableObject scope = RHINO.initStandardObjects();
             RHINO.evaluateString(scope, code, RUN_FUNCTION, 1, null);
             Function function = (Function) scope.get(RUN_FUNCTION, scope);
-            Object result = function.call(RHINO, scope, scope, new Object[] { this });
-            nextMove = (PlayerMove) Context.jsToJava(result, PlayerMove.class);
+
+            //Object result = function.call(RHINO, scope, scope, new Object[] { this });
+            //nextMove = (PlayerMove) Context.jsToJava(result, PlayerMove.class);
+
+            InterpretedMazeSolverExecutor executor = new InterpretedMazeSolverExecutor(function, this, TIME_LIMIT_SECONDS);
+            nextMove = executor.execute();
+            if (nextMove == PlayerMove.NO_MOVE) noMoveCounter++;
+            //TODO: Kick the player out of the game after a certain amount of NO_MOVE moves?
         }
         catch (Exception e) { e.printStackTrace(); }
         finally { Context.exit(); }
@@ -156,7 +160,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
      * Filters the generated code so that only variable declarations and functions are allowed.
      * IMPORTANT: Requires that functions are terminated using //end after their ending brace ( }//end )
      * @param CODE The original generated code.
-     * @return A filtered string containing the processed code.
+     * @return A filtered string containing the processed/filtered code.
      */
     private static String filterCode(final String CODE) {
         StringBuilder builder = new StringBuilder();
