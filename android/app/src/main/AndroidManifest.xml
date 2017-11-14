@@ -61,16 +61,11 @@
         <activity
             android:name=".ui.OnlineChallengeActivity"
             android:label="@string/Online_challenge"
+            android:noHistory="true"
             android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
-        </activity>
-        <activity android:name=".ui.JoinActivity"
-            android:parentActivityName=".ui.OnlineChallengeActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.inspirecenter.amazechallenge.ui.OnlineChallengeActivity" />
         </activity>
         <activity
             android:name=".ui.AboutActivity"
