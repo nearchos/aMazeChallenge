@@ -29,6 +29,14 @@
         <servlet-name>JoinServlet</servlet-name>
         <url-pattern>/api/json/join</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>GameStateServlet</servlet-name>
+        <servlet-class>org.inspirecenter.amazechallenge.api.GameStateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GameStateServlet</servlet-name>
+        <url-pattern>/api/json/game-state</url-pattern>
+    </servlet-mapping>
 
     <!--Admin-->
     <servlet>
