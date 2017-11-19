@@ -14,7 +14,7 @@
     <string name="Selected_algorithm">Selected algorithm</string>
     <string name="Algorithm">Algorithm</string>
     <string name="Color">Color</string>
-    <string name="Selected_color">Selected color</string>
+    <string name="Selected_color">Selected colorName</string>
     <string name="Auto_play">Auto play</string>
     <string name="Next">Next</string>
     <string name="Interval">Interval</string>
@@ -57,7 +57,7 @@
     <string name="code_overwrite">Overwrite code?</string>
     <string name="code_overwrite_yes">Overwrite</string>
     <string name="code_overwrite_message">You have already stored code using this name. Would you like to overwrite it?</string>
-    <string name="color_select_title">Select color</string>>
+    <string name="color_select_title">Select colorName</string>>
     <string name="back_to_menu">Back to menu</string>
 
     <string name="instructions">Write your code below to get out of the grid:</string>
@@ -68,6 +68,8 @@
     <string name="Check_code">Check code</string>
     <string name="Apply">Apply</string>
     <string name="Code_editor">Code editor</string>
+    <string name="Submit_code">Submit code</string>
+    <string name="Edit_code">Editcode</string>
     <string name="Training">Training</string>
     <string name="Online_challenge">Online challenge</string>
     <string name="Code_is_auto_saved">Your code is automatically saved!</string>

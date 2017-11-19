@@ -1,23 +1,19 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.inspirecenter.amazechallenge.model.AmazeColor;
 import org.inspirecenter.amazechallenge.R;
-import org.inspirecenter.amazechallenge.ui.PersonalizeActivity;
-
-import static org.inspirecenter.amazechallenge.model.PlayerColor.PLAYER_COLORS;
 
 /**
- * Created by Nicos on 31-Oct-17.
+ * @author Nicos on 31-Oct-17.
  */
 
 public class SelectColorDialogListAdapter extends BaseAdapter {
@@ -30,7 +26,7 @@ public class SelectColorDialogListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return PLAYER_COLORS.length;
+        return AmazeColor.values().length;
     }
 
     @Override
@@ -47,14 +43,15 @@ public class SelectColorDialogListAdapter extends BaseAdapter {
     public View getView(final int i, View view, ViewGroup viewGroup) {
 
         view = inflater.inflate(R.layout.color_select_item, null);
-        TextView colorName = (TextView) view.findViewById(R.id.colorName);
-        colorName.setText(PLAYER_COLORS[i].getName());
+        TextView colorName = view.findViewById(R.id.colorName);
+        final AmazeColor amazeColor = AmazeColor.values()[i];
+        colorName.setText(amazeColor.getName());
 
-        ImageView colorDisplay = (ImageView) view.findViewById(R.id.colorDisplay);
-        colorDisplay.setBackgroundColor(Color.parseColor(PLAYER_COLORS[i].getHex()));
+        final ImageView colorDisplay = view.findViewById(R.id.colorDisplay);
+        colorDisplay.setBackgroundColor(amazeColor.getCode());
         colorDisplay.invalidate();
 
-        view.setBackgroundColor(Color.parseColor(PLAYER_COLORS[i].getHex()));
+        view.setBackgroundColor(amazeColor.getCode());
 
 
         return view;

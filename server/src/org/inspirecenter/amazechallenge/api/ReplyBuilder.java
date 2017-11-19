@@ -21,6 +21,10 @@ public class ReplyBuilder {
         return stringBuilder.toString();
     }
 
+    public static String createReply() {
+        return "{ \"status\": \"ok\" }";
+    }
+
     public static String createReplyWithOneParameter(@NotNull final String name, final String value) {
         return "{ \"status\": \"ok\", \"" + name + "\": " + value + "}";
     }

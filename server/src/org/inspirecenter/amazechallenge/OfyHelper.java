@@ -1,10 +1,7 @@
 package org.inspirecenter.amazechallenge;
 
 import com.googlecode.objectify.ObjectifyService;
-import org.inspirecenter.amazechallenge.data.Challenge;
-import org.inspirecenter.amazechallenge.data.Grid;
-import org.inspirecenter.amazechallenge.data.Parameter;
-import org.inspirecenter.amazechallenge.data.Position;
+import org.inspirecenter.amazechallenge.data.*;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -17,6 +14,10 @@ public class OfyHelper implements ServletContextListener {
         ObjectifyService.register(Challenge.class);
         ObjectifyService.register(Grid.class);
         ObjectifyService.register(Position.class);
+        ObjectifyService.register(ChallengeInstance.class);
+        ObjectifyService.register(GameState.class);
+        ObjectifyService.register(Player.class);
+        ObjectifyService.register(PlayerState.class);
         // todo add more?
     }
 

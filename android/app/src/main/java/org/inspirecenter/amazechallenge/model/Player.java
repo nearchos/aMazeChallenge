@@ -15,11 +15,11 @@ public class Player implements Serializable {
     private String name;
     private Position position;
     private Direction direction;
-    private ShapeColor color;
+    private AmazeColor color;
     private Shape shape;
     private Class<? extends MazeSolver> mazeSolverClass;
 
-    public Player(final String name, final ShapeColor color, final Shape shape, final Class<? extends MazeSolver> mazeSolverClass) {
+    public Player(final String name, final AmazeColor color, final Shape shape, final Class<? extends MazeSolver> mazeSolverClass) {
         this.name = name;
         this.position = new Position(0, 0);
         this.direction = NORTH;
@@ -71,7 +71,7 @@ public class Player implements Serializable {
         }
     }
 
-    public ShapeColor getColor() {
+    public AmazeColor getColor() {
         return color;
     }
 

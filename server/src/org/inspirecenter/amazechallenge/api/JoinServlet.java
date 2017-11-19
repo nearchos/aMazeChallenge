@@ -1,11 +1,7 @@
 package org.inspirecenter.amazechallenge.api;
 
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.ObjectifyService;
-import org.inspirecenter.amazechallenge.data.Challenge;
-import org.inspirecenter.amazechallenge.data.Parameter;
+import org.inspirecenter.amazechallenge.data.*;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -15,14 +11,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.Vector;
 
 public class JoinServlet extends HttpServlet {
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         final String magic = request.getParameter("magic");
         final String email = request.getParameter("email");
-        final String challengeId = request.getParameter("id");
+        final String name = request.getParameter("name");
+        final String colorName = request.getParameter("color");
+        final String challengeIdAsString = request.getParameter("id");
 
         final Vector<String> errors = new Vector<>();
 
@@ -34,19 +34,52 @@ public class JoinServlet extends HttpServlet {
             errors.add("Missing or empty 'email' parameter");
         } else if(!isValidEmailAddress(email)) {
             errors.add("Invalid 'email' parameter - must be a valid email: " + email);
-        } else if(challengeId == null || challengeId.isEmpty()) {
+        } else if(name == null || name.isEmpty()) {
+            errors.add("Missing or empty 'name' parameter");
+        } else if(colorName == null || colorName.isEmpty()) {
+            errors.add("Missing or empty 'color' parameter");
+        } else if(challengeIdAsString == null || challengeIdAsString.isEmpty()) {
             errors.add("Missing or empty challenge 'id'");
         } else {
             try {
-                final long id = Long.parseLong(challengeId);
-                final Challenge challenge = ObjectifyService.ofy().load().type(Challenge.class).id(id).now();
-                // todo add binding of user to challenge instance
+                final long challengeId = Long.parseLong(challengeIdAsString);
+                final Challenge challenge = ObjectifyService.ofy().load().type(Challenge.class).id(challengeId).now();
+                if(challenge == null) {
+                    errors.add("Invalid or unknown challenge for id: " + challengeId);
+                } else {
+                    final long now = System.currentTimeMillis();
+                    if(now < challenge.getStartTimestamp()) {
+                        errors.add("Challenge has not started yet. It starts on: " + new Date(challenge.getStartTimestamp()));
+                    } else if(now > challenge.getEndTimestamp()) {
+                        errors.add("Challenge has ended on: " + new Date(challenge.getEndTimestamp()));
+                    } else {
+                        // add binding of user to challenge instance
+                        ChallengeInstance challengeInstance = ObjectifyService.ofy().load()
+                                .type(ChallengeInstance.class)
+                                .filter("challengeId = ", challengeId)
+                                .first().now();
+
+                        if(challengeInstance == null) {
+                            challengeInstance = new ChallengeInstance(challengeId);
+                        }
+
+                        final AmazeColor playerColor = AmazeColor.getByName(colorName);
+                        final Shape playerShape = Shape.TRIANGLE; // todo
+                        challengeInstance.addPlayer(email, name, playerColor, playerShape);
+                        ObjectifyService.ofy().save().entity(challengeInstance).now();
+                    }
+                }
             } catch (NumberFormatException nfe) {
                 errors.add(nfe.getMessage());
             }
         }
 
-        final String reply = ReplyBuilder.createReplyWithErrors(errors);
+        final String reply;
+        if(errors.isEmpty()) {
+            reply = ReplyBuilder.createReply();
+        } else {
+            reply = ReplyBuilder.createReplyWithErrors(errors);
+        }
 
         final PrintWriter printWriter = response.getWriter();
         printWriter.println(reply);

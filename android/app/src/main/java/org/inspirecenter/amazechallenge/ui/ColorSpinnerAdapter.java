@@ -12,17 +12,17 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.inspirecenter.amazechallenge.R;
-import org.inspirecenter.amazechallenge.model.ShapeColor;
+import org.inspirecenter.amazechallenge.model.AmazeColor;
 
 /**
  * @author Nearchos
  *         Created: 19-Aug-17
  */
 
-public class ColorSpinnerAdapter extends ArrayAdapter<ShapeColor> {
+public class ColorSpinnerAdapter extends ArrayAdapter<AmazeColor> {
 
     public ColorSpinnerAdapter(@NonNull Context context, @LayoutRes int resource) {
-        super(context, resource, ShapeColor.getAll());
+        super(context, resource);
     }
 
     @NonNull
@@ -37,10 +37,10 @@ public class ColorSpinnerAdapter extends ArrayAdapter<ShapeColor> {
             view = layoutInflater.inflate(R.layout.item_player_color, null);
         }
 
-        final ShapeColor shapeColor = getItem(position);
-        if (shapeColor != null) {
-            ((TextView) view).setText(shapeColor.getName());
-            final int color = shapeColor.getCode();
+        final AmazeColor amazeColor = getItem(position);
+        if (amazeColor != null) {
+            ((TextView) view).setText(amazeColor.getName());
+            final int color = amazeColor.getCode();
             ((TextView) view).setTextColor(Color.parseColor("#" + Integer.toHexString(color)));
         }
 

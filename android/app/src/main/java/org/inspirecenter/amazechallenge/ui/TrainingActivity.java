@@ -20,7 +20,7 @@ import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Shape;
-import org.inspirecenter.amazechallenge.model.ShapeColor;
+import org.inspirecenter.amazechallenge.model.AmazeColor;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_COLOR;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
 
@@ -46,15 +47,20 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
-        final ImageView userImageView = findViewById(R.id.activity_training_user_image);
+        final String userColorName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_COLOR, "black");
+        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
         // todo set selected image/avatar
+        final ImageView userImageView = findViewById(R.id.activity_training_user_image);
+        userImageView.setColorFilter(userAmazeColor.getCode());
+
         final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
         final TextView nameTextView = findViewById(R.id.activity_training_user_name);
         nameTextView.setText(name);
+        nameTextView.setTextColor(userAmazeColor.getCode());
         final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
         final TextView emailTextView = findViewById(R.id.activity_training_user_email);
         emailTextView.setText(email);
-        // todo set selected color to image/avatar and possible the name/email
+        emailTextView.setTextColor(userAmazeColor.getCode());
 
         final RecyclerView challengesRecyclerView = findViewById(R.id.activity_training_mazes_list_view);
         challengesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -90,9 +96,10 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         parametersMap.put(InterpretedMazeSolver.PARAMETER_KEY_CODE, code);
 
         final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, "Guest");
-        final ShapeColor shapeColor = ShapeColor.PLAYER_COLOR_RED; // todo enable user selection
+        final String userColorName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_COLOR, "black");
+        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
         final Shape shape = Shape.TRIANGLE; // todo enable user selection
-        final Player player = new Player(name, shapeColor, shape, InterpretedMazeSolver.class);
+        final Player player = new Player(name, userAmazeColor, shape, InterpretedMazeSolver.class);
         game.addPlayer(player, parametersMap);
 
         final Intent intent = new Intent(this, GameActivity.class);

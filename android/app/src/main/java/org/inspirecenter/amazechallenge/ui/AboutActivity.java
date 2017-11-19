@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.BuildConfig;
+import org.inspirecenter.amazechallenge.R;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class AboutActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
 
             // Load the preferences from an XML resource
-            addPreferencesFromResource(org.inspirecenter.amazechallenge.R.xml.about);
+            addPreferencesFromResource(R.xml.about);
 
             {
                 final Preference applicationVersionPreference = findPreference("applicationVersion");

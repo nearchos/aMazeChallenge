@@ -45,7 +45,7 @@ public class AddChallengeServlet extends HttpServlet {
                 final int tpY = Integer.parseInt(targetPositionY);
                 final Grid grid = new Grid(width, height, gridAsHex, spX, spY, tpX, tpY);
                 // todo customize other fields
-                final Challenge challenge = new Challenge(name, 1, description, true, true, true, 0L, 0L, grid);
+                final Challenge challenge = new Challenge(name, 1, description, true, true, true, 0L, Long.MAX_VALUE, grid);
                 ObjectifyService.ofy().save().entity(challenge).now();
             } catch (NumberFormatException nfe) {
                 error += "Invalid number format of 'width' or 'height' or 'startingPositionX', 'startingPositionY', 'targetPositionX', 'targetPositionY' (" + nfe.getMessage() + ")";

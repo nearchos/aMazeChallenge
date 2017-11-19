@@ -6,7 +6,6 @@ import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -21,14 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.inspirecenter.amazechallenge.R;
-
-import static org.inspirecenter.amazechallenge.model.PlayerColor.PLAYER_COLORS;
+import org.inspirecenter.amazechallenge.model.AmazeColor;
 
 public class PersonalizeActivity extends AppCompatActivity {
 
     public static final String PREFERENCE_KEY_NAME = "pref-name";
     public static final String PREFERENCE_KEY_EMAIL = "pref-email";
-    public static final String PREFERENCE_KEY_COLOR_ID = "pref-color-id";
+    public static final String PREFERENCE_KEY_COLOR = "pref-color";
 
     private EditText nameEditText;
     private EditText emailEditText;
@@ -46,8 +44,9 @@ public class PersonalizeActivity extends AppCompatActivity {
         nameEditText = findViewById(R.id.activity_personalize_name);
         emailEditText = findViewById(R.id.activity_personalize_email);
         userImageView = findViewById(R.id.activity_personalize_user_image);
-        int userColorID = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR_ID, 0);
-        userImageView.setColorFilter(Color.parseColor(PLAYER_COLORS[userColorID].getHex()));
+        final String userColorName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_COLOR, "black");
+        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
+        userImageView.setColorFilter(userAmazeColor.getCode());
     }
 
     public static final int PERMISSIONS_REQUEST_GET_ACCOUNT = 42;
@@ -122,8 +121,9 @@ public class PersonalizeActivity extends AppCompatActivity {
         colorsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                PreferenceManager.getDefaultSharedPreferences(PersonalizeActivity.this).edit().putInt(PREFERENCE_KEY_COLOR_ID, i).apply();
-                userImageView.setColorFilter(Color.parseColor(PLAYER_COLORS[i].getHex()));
+                final AmazeColor selectedAmazeColor = AmazeColor.values()[i];
+                PreferenceManager.getDefaultSharedPreferences(PersonalizeActivity.this).edit().putString(PREFERENCE_KEY_COLOR, selectedAmazeColor.getName()).apply();
+                userImageView.setColorFilter(selectedAmazeColor.getCode());
                 colorDialog.dismiss();
             }
         });

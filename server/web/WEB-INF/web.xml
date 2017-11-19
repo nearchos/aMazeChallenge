@@ -30,6 +30,14 @@
         <url-pattern>/api/json/join</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>SubmitCodeServlet</servlet-name>
+        <servlet-class>org.inspirecenter.amazechallenge.api.SubmitCodeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SubmitCodeServlet</servlet-name>
+        <url-pattern>/api/json/submit-code</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>GameStateServlet</servlet-name>
         <servlet-class>org.inspirecenter.amazechallenge.api.GameStateServlet</servlet-class>
     </servlet>
