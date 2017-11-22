@@ -735,12 +735,45 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         }//end foreach line
         if (functionInFunctionExists) errorList.add(InterpreterError.FUNCTION_IN_FUNCTION);
 
+        //Check for empty conditions in loops and if statements:
+        for (int i = 0; i < lines.length; i++) {
+            if (i + 1 < lines.length) {
+                //Check if statements:
+                if (lines[i].contains("<block type=\"controls_if\"")) {
+                    if (!lines[i + 1].contains("<value name=\"IF0\">")) errorList.add(InterpreterError.EMPTY_CONDITIONAL);
+                }//end if -if block
+                //Check while statements:
+                else if (lines[i].contains("<block type=\"controls_whileUntil\"")) {
+                    if (!lines[i + 1].contains("<value name=\"BOOL\">")) errorList.add(InterpreterError.EMPTY_CONDITIONAL);
+                }//end if while block
+            }//end if next line exists
+            else {
+                if (lines[i].contains("<block type=\"controls_if\"") || lines[i].contains("<block type=\"controls_whileUntil\"")) {
+                    errorList.add(InterpreterError.EMPTY_CONDITIONAL);
+                }//end if currentline is a statement
+            }//end if no next line
+        }//end foreach line
+
+        //TODO: Check for empty statement bodies:
+
         //Sort the list before returning it:
         ArrayList<InterpreterError> sortedErrorList = new ArrayList<>();
         for (final InterpreterError e : errorList) { if (e.type == InterpreterErrorType.ERROR) sortedErrorList.add(e); }
         for (final InterpreterError e : errorList) { if (e.type == InterpreterErrorType.WARNING) sortedErrorList.add(e); }
         return sortedErrorList;
     }//end checkCode()
+
+    private boolean lineContainsCompoundStatement(String line) {
+        if (
+            //A list of all the statement types (in XML) that are compound:
+                line.contains("<block type=\"controls_if\"") ||
+                        line.contains("<block type=\"controls_repeat_ext\"") ||
+                        line.contains("<block type=\"controls_whileUntil\""))
+        {
+            return true;
+        }//end if
+        return false;
+    }//end lineContainsCompoundStatement()
 
     /**
      * Gets the contents of the temporary workspace as an XML file.
