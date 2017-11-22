@@ -21,15 +21,15 @@ public class ChallengeInstance {
 
     public ChallengeInstance() {
         super();
+        playerEmailToPlayer = new HashMap<>();
+        playerEmailToLatestSubmittedCode = new HashMap<>();
+        playerEmailToSubmissionTimestamps = new HashMap<>();
+        gameState = new GameState();
     }
 
     public ChallengeInstance(final long challengeId) {
         this();
         this.challengeId = challengeId;
-        playerEmailToPlayer = new HashMap<>();
-        playerEmailToLatestSubmittedCode = new HashMap<>();
-        playerEmailToSubmissionTimestamps = new HashMap<>();
-        gameState = new GameState();
     }
 
     public void addPlayer(final String playerEmail, final String playerName, final AmazeColor playerColor, final Shape playerShape) {
