@@ -3,9 +3,13 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android.iml" filepath="$PROJECT_DIR$/android.iml" />
+      <module fileurl="file://D:\Users\hfnov\Software Development\! Projects\Code Cyprus Maze\Apps\aMazeChallenge\android\android.iml" filepath="D:\Users\hfnov\Software Development\! Projects\Code Cyprus Maze\Apps\aMazeChallenge\android\android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\Users\hfnov\Software Development\! Projects\Code Cyprus Maze\Apps\aMazeChallenge\android\app\app.iml" filepath="D:\Users\hfnov\Software Development\! Projects\Code Cyprus Maze\Apps\aMazeChallenge\android\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/blocklylib-core-release/blocklylib-core-release.iml" filepath="$PROJECT_DIR$/blocklylib-core-release/blocklylib-core-release.iml" />
+      <module fileurl="file://D:\Users\hfnov\Software Development\! Projects\Code Cyprus Maze\Apps\aMazeChallenge\android\blocklylib-core-release\blocklylib-core-release.iml" filepath="D:\Users\hfnov\Software Development\! Projects\Code Cyprus Maze\Apps\aMazeChallenge\android\blocklylib-core-release\blocklylib-core-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/blocklylib-vertical-release/blocklylib-vertical-release.iml" filepath="$PROJECT_DIR$/blocklylib-vertical-release/blocklylib-vertical-release.iml" />
+      <module fileurl="file://D:\Users\hfnov\Software Development\! Projects\Code Cyprus Maze\Apps\aMazeChallenge\android\blocklylib-vertical-release\blocklylib-vertical-release.iml" filepath="D:\Users\hfnov\Software Development\! Projects\Code Cyprus Maze\Apps\aMazeChallenge\android\blocklylib-vertical-release\blocklylib-vertical-release.iml" />
     </modules>
   </component>
 </project>
