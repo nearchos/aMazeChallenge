@@ -710,7 +710,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     infiniteLoopExists = true;
                     parsingWhileLoop = true;
                     break;
-                }
+                }//end if
             }//end if parsingWhileLoop
         }//end foreach line
         if (infiniteLoopExists) errorList.add(InterpreterError.INFINITE_LOOP);
@@ -754,7 +754,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             }//end if no next line
         }//end foreach line
 
-        //TODO: Check for empty statement bodies:
+        //TODO: Check for empty statement bodies: (HARD)
 
         //Sort the list before returning it:
         ArrayList<InterpreterError> sortedErrorList = new ArrayList<>();
@@ -763,16 +763,17 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         return sortedErrorList;
     }//end checkCode()
 
+    /**
+     * Checks if the given line of code contains a compound statement declaration.
+     * @param line The line to check for compound statements.
+     * @return Returns true if compound statement exists, false otherwise.
+     */
     private boolean lineContainsCompoundStatement(String line) {
-        if (
+        return (
             //A list of all the statement types (in XML) that are compound:
                 line.contains("<block type=\"controls_if\"") ||
                         line.contains("<block type=\"controls_repeat_ext\"") ||
-                        line.contains("<block type=\"controls_whileUntil\""))
-        {
-            return true;
-        }//end if
-        return false;
+                        line.contains("<block type=\"controls_whileUntil\""));
     }//end lineContainsCompoundStatement()
 
     /**
