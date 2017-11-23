@@ -6,7 +6,7 @@
     <string name="Game">Game</string>
     <string name="Maze_challenge">Maze challenge!</string>
     <string name="Select_challenge">Select challenge</string>
-    <string name="Select_color">Select color</string>
+    <string name="Select_Personalization_Options">Select color and icon</string>
     <string name="Home">Home</string>
     <string name="Personalize">Personalize</string>
     <string name="Add_player">Add player</string>
@@ -184,5 +184,8 @@
     <string name="error_function_in_function">Function in function statement detected.</string>
     <string name="error_infinite_loop">Infinite loop detected.</string>
     <string name="error_noerror">No error.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

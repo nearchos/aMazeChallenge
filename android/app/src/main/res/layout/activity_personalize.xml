@@ -37,7 +37,7 @@
 
                 <Button
                     android:id="@+id/activity_personalize_button_select_color"
-                    android:text="@string/Select_color"
+                    android:text="@string/Select_Personalization_Options"
                     android:onClick="selectColor"
                     style="@style/Base.Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"

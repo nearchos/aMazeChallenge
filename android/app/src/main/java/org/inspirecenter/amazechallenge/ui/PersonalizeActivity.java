@@ -5,19 +5,16 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
@@ -102,32 +99,8 @@ public class PersonalizeActivity extends AppCompatActivity {
     }
 
     public void selectColor(final View view) {
-        AlertDialog.Builder colorSelectBuilder = new AlertDialog.Builder(this);
-        ListView colorsList = new ListView(PersonalizeActivity.this);
-
-        SelectColorDialogListAdapter listAdapter = new SelectColorDialogListAdapter(this, this);
-        colorsList.setAdapter(listAdapter);
-
-        LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        colorsList.setLayoutParams(lp_list);
-        colorSelectBuilder.setView(colorsList);
-        colorSelectBuilder.setTitle(R.string.color_select_title);
-        colorSelectBuilder.setMessage(" ");
-        final AlertDialog colorDialog = colorSelectBuilder.create();
-        colorDialog.show();
-
-        colorsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final AmazeColor selectedAmazeColor = AmazeColor.values()[i];
-                PreferenceManager.getDefaultSharedPreferences(PersonalizeActivity.this).edit().putString(PREFERENCE_KEY_COLOR, selectedAmazeColor.getName()).apply();
-                userImageView.setColorFilter(selectedAmazeColor.getCode());
-                colorDialog.dismiss();
-            }
-        });
-    }
+        startActivity(new Intent(this, PersonalizationSliderActivity.class));
+    }//end selectColor()
 
     public void done(final View view) {
         // todo verify name is non-empty and email is valid

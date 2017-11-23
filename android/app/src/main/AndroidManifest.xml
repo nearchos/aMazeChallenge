@@ -86,6 +86,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
         </activity>
+        <activity
+            android:name=".ui.PersonalizationSliderActivity"
+            android:label="@string/Personalize"
+            android:parentActivityName=".ui.PersonalizeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.inspirecenter.amazechallenge.ui.PersonalizeActivity" />
+        </activity>
     </application>
 
 </manifest>

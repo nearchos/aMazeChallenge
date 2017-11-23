@@ -26,9 +26,9 @@ public enum AmazeColor {
     COLOR_INDIGO("indigo", "#6600cc"),
     COLOR_MAGENTA("magenta", "#ff00ff"),
     COLOR_PINK("pink", "#ffb6c1"),
-    COLOR_LIGHT_GREY("light grey", "#cccccc"),
+    COLOR_LIGHT_GREY("light gray", "#cccccc"),
     COLOR_GREY("grey", "#666666"),
-    COLOR_DARK_GREY("dark grey", "#333333");
+    COLOR_DARK_GREY("dark gray", "#333333");
 
     private final String name;
     private final int code;
