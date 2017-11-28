@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/personalization_icon_fragment"
     >
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,13 +12,14 @@
         android:layout_height="match_parent"
         >
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/iconSelectImageView"
-            android:background="@color/snackbarBlue"
-            />
-
     </ScrollView>
 
-</LinearLayout>
+    <org.inspirecenter.amazechallenge.ui.GIFView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/gifView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout>

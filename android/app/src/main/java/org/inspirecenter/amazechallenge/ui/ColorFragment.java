@@ -15,7 +15,7 @@ import android.widget.TextView;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
 
-public class PersonalizationColorFragment extends Fragment {
+public class ColorFragment extends Fragment {
 
     @Override
     public void setArguments(Bundle args) {
@@ -33,7 +33,7 @@ public class PersonalizationColorFragment extends Fragment {
 
         Bundle bundle = getArguments();
         AmazeColor color = null;
-        if (bundle != null) color = (AmazeColor) bundle.getSerializable(PersonalizationSliderActivity.PERSONALIZATION_COLOR_FRAGMENT__COLOR_KEY);
+        if (bundle != null) color = (AmazeColor) bundle.getSerializable(PersonalizeActivity.PREFERENCE_KEY_COLOR);
         if (color != null) {
             colorView.setBackgroundColor(color.getCode());
             colorName.setText(color.getName());
@@ -56,4 +56,4 @@ public class PersonalizationColorFragment extends Fragment {
         return rtnValue;
     }//end isBrightColor()
 
-}//end class PersonalizationColorFragment
+}//end class ColorFragment

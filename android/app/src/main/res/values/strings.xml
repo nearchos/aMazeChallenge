@@ -81,6 +81,9 @@
     <string name="workspace_empty_message">Workspace is empty. Are you sure you would like to go back?</string>
     <string name="yes_go_back">Yes, go back</string>
     <string name="compile_anyway">Compile anyway</string>
+    <string name="changes_not_saved">Changes have not been saved. Save changes?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!-- ERROR/WARNING DIALOGS -->
 

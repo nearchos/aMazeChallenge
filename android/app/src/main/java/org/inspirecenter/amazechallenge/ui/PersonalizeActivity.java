@@ -18,16 +18,18 @@ import android.widget.ImageView;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
+import org.inspirecenter.amazechallenge.model.AmazeIcon;
 
 public class PersonalizeActivity extends AppCompatActivity {
 
     public static final String PREFERENCE_KEY_NAME = "pref-name";
     public static final String PREFERENCE_KEY_EMAIL = "pref-email";
     public static final String PREFERENCE_KEY_COLOR = "pref-color";
+    public static final String PREFERENCE_KEY_ICON = "pref-icon";
 
     private EditText nameEditText;
     private EditText emailEditText;
-    private ImageView userImageView;
+    private GIFView gifView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +42,9 @@ public class PersonalizeActivity extends AppCompatActivity {
 
         nameEditText = findViewById(R.id.activity_personalize_name);
         emailEditText = findViewById(R.id.activity_personalize_email);
-        userImageView = findViewById(R.id.activity_personalize_user_image);
-        final String userColorName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_COLOR, "black");
-        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
-        userImageView.setColorFilter(userAmazeColor.getCode());
+        gifView = findViewById(R.id.activity_personalize_icon);
+        updatePersonalization();
+        gifView.play();
     }
 
     public static final int PERMISSIONS_REQUEST_GET_ACCOUNT = 42;
@@ -53,6 +54,8 @@ public class PersonalizeActivity extends AppCompatActivity {
         super.onResume();
         final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
         nameEditText.setText(name);
+
+        updatePersonalization();
 
         final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
         if(email.isEmpty()) {
@@ -106,4 +109,13 @@ public class PersonalizeActivity extends AppCompatActivity {
         // todo verify name is non-empty and email is valid
         finish();
     }
+
+    private void updatePersonalization() {
+        final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
+        final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
+        int userIconIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_ICON, 0);
+        gifView.setImageResource(AmazeIcon.values()[userIconIndex].getResourceID());
+        //gifView.setBackgroundColor(userAmazeColor.getCode());
+    }//end updatePersonalization()
+
 }

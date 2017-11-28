@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:alertDialogTheme">@style/ErrorDialogStyle</item>
         <item name="android:alertDialogTheme">@style/WarningDialogStyle</item>
+        <item name="android:alertDialogTheme">@style/DefaultDialogStyle</item>
     </style>
 
     <style name="BlocklyAppTheme" parent="BlocklyVerticalTheme">
@@ -25,6 +26,17 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="DefaultDialogStyle">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
 
     <style name="WarningDialogStyle">
         <item name="android:windowBackground">@color/snackbarYellow</item>
