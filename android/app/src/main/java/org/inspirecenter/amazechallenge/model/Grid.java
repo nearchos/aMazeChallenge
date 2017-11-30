@@ -83,8 +83,10 @@ public class Grid implements Serializable { // consider renaming the class to Gr
                 grid[row][col] = Integer.parseInt(Character.toString(data.charAt(row * width + col)), 16);
             }
         }
-        final Position startingPosition = Position.parseJSON(jsonObject.getJSONObject("startingPosition"));
-        final Position targetPosition = Position.parseJSON(jsonObject.getJSONObject("targetPosition"));
+        final JSONObject startingPositionJsonObject = jsonObject.getJSONObject("startingPosition");
+        final JSONObject targetPositionJsonObject = jsonObject.getJSONObject("targetPosition");
+        final Position startingPosition = new Position(startingPositionJsonObject.getInt("row"), startingPositionJsonObject.getInt("col"));
+        final Position targetPosition = new Position(targetPositionJsonObject.getInt("row"), targetPositionJsonObject.getInt("col"));
         return new Grid(width, height, grid, startingPosition, targetPosition);
     }
 }

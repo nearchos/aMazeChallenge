@@ -40,7 +40,7 @@ public class ColorSpinnerAdapter extends ArrayAdapter<AmazeColor> {
         final AmazeColor amazeColor = getItem(position);
         if (amazeColor != null) {
             ((TextView) view).setText(amazeColor.getName());
-            final int color = amazeColor.getCode();
+            final int color = Color.parseColor(amazeColor.getCode());
             ((TextView) view).setTextColor(Color.parseColor("#" + Integer.toHexString(color)));
         }
 

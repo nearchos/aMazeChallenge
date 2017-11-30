@@ -81,7 +81,7 @@ public class InterpreterInstrumentedTest2 {
         final String json = TrainingActivity.convertStreamToString(context.getAssets().open("challenges/challenge0.json"));
         final Challenge challenge = Challenge.parseJSON(new JSONObject(json));
 
-        final Player player = new Player("test", AmazeColor.PLAYER_COLOR_BLACK, Shape.CIRCLE, InterpretedMazeSolver.class);
+        final Player player = new Player("test", AmazeColor.COLOR_BLACK, Shape.CIRCLE, InterpretedMazeSolver.class);
         final Grid grid = challenge.getGrid();
         final Game game = new Game(grid);
         final InterpretedMazeSolver interpretedMazeSolver = new InterpretedMazeSolver(game, player);

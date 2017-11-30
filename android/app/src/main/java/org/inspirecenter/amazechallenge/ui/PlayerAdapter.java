@@ -80,7 +80,7 @@ class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.ViewHolder> {
         holder.nameTextView.setText(player.getName());
         holder.algorithmTextView.setText(player.getMazeSolverClass().getSimpleName());
         holder.colorTextView.setText(player.getColor().getName());
-        holder.colorTextView.setTextColor(Color.parseColor("#" + Integer.toHexString(player.getColor().getCode())));
+        holder.colorTextView.setTextColor(Color.parseColor("#" + Integer.toHexString(Color.parseColor(player.getColor().getCode()))));
     }
 
     // Return the size of your dataset (invoked by the layout manager)

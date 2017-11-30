@@ -1,6 +1,7 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,10 +49,10 @@ public class SelectColorDialogListAdapter extends BaseAdapter {
         colorName.setText(amazeColor.getName());
 
         final ImageView colorDisplay = view.findViewById(R.id.colorDisplay);
-        colorDisplay.setBackgroundColor(amazeColor.getCode());
+        colorDisplay.setBackgroundColor(Color.parseColor(amazeColor.getCode()));
         colorDisplay.invalidate();
 
-        view.setBackgroundColor(amazeColor.getCode());
+        view.setBackgroundColor(Color.parseColor(amazeColor.getCode()));
 
 
         return view;

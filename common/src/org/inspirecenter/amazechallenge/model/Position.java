@@ -1,7 +1,7 @@
 package org.inspirecenter.amazechallenge.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
 
 import java.io.Serializable;
 
@@ -10,12 +10,19 @@ import java.io.Serializable;
  *         Created: 15-Aug-17
  */
 
+@Entity
 public class Position implements Serializable {
 
-    private final int row;
-    private final int col;
+    @Id private long id;
+    private int row;
+    private int col;
 
-    Position(int row, int col) {
+    public Position() {
+        super();
+    }
+
+    public Position(final int row, final int col) {
+        this();
         this.row = row;
         this.col = col;
     }
@@ -63,12 +70,6 @@ public class Position implements Serializable {
 
     @Override
     public String toString() {
-        return "Position{row=" + row + ", col=" + col + "}";
-    }
-
-    public static Position parseJSON(final JSONObject jsonObject) throws JSONException {
-        final int row = jsonObject.getInt("row");
-        final int col = jsonObject.getInt("col");
-        return new Position(row, col);
+        return "Position{id=" + id + ", row=" + row + ", col=" + col + '}';
     }
 }

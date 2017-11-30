@@ -31,7 +31,7 @@ public class SubmitCodeServlet extends HttpServlet {
 
         if(magic == null || magic.isEmpty()) {
             errors.add("Missing or empty 'magic' parameter");
-        } else if(!checkMagic(magic)) {
+        } else if(!Common.checkMagic(magic)) {
             errors.add("Invalid 'magic' parameter");
         } else if(email == null || email.isEmpty()) {
             errors.add("Missing or empty 'email' parameter");
@@ -76,10 +76,5 @@ public class SubmitCodeServlet extends HttpServlet {
 
         final PrintWriter printWriter = response.getWriter();
         printWriter.println(reply);
-    }
-
-    private static boolean checkMagic(final String magic) {
-        final Parameter parameter = ObjectifyService.ofy().load().type(Parameter.class).filter("name", "magic").first().now();
-        return parameter != null && parameter.value.equals(magic);
     }
 }

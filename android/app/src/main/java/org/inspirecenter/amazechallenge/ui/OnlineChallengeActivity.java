@@ -104,7 +104,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
                 // show message in snackbar
                 Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while joining challenge: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
                 // log error
-                Log.e("challenges", "Error: " + e.getMessage());
+                Log.e(TAG, "Error: " + e.getMessage());
                 return new ChallengesReply("error", new String [] { e.getMessage()}, null);
             }
        }
@@ -158,7 +158,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
                 // show message in snackbar
                 Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while joining challenge: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
                 // log error
-                Log.e("challenges", "Error: " + Arrays.toString(e.getStackTrace()));
+                Log.e(TAG, "Error: " + Arrays.toString(e.getStackTrace()));
                 return "Error: " + Arrays.toString(e.getStackTrace());
             }
         }

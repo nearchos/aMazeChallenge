@@ -5,6 +5,7 @@ package org.inspirecenter.amazechallenge.model;
  * 17/08/2017.
  */
 public enum Shape {
+
     CIRCLE("circle"),
     EMPTY_CIRCLE("empty_circle"),
     TRIANGLE("triangle");

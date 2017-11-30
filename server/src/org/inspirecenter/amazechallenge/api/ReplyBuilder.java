@@ -1,6 +1,9 @@
 package org.inspirecenter.amazechallenge.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.istack.internal.NotNull;
+import org.inspirecenter.amazechallenge.data.GameState;
 
 import java.util.Vector;
 
@@ -26,6 +29,12 @@ public class ReplyBuilder {
     }
 
     public static String createReplyWithOneParameter(@NotNull final String name, final String value) {
-        return "{ \"status\": \"ok\", \"" + name + "\": " + value + "}";
+        return "{ \"status\": \"ok\", \"" + name + "\": " + value + " }";
+    }
+
+    static String createReplyWithGameState(final GameState gameState) {
+        final Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+        final String gameStateJson = gson.toJson(gameState);
+        return "{ \"status\": \"ok\", \"game-state\": " + gameStateJson + " }";
     }
 }

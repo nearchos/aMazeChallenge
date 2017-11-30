@@ -3,6 +3,7 @@ package org.inspirecenter.amazechallenge.ui;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -51,16 +52,16 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
         // todo set selected image/avatar
         final ImageView userImageView = findViewById(R.id.activity_training_user_image);
-        userImageView.setColorFilter(userAmazeColor.getCode());
+        userImageView.setColorFilter(Color.parseColor(userAmazeColor.getCode()));
 
         final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
         final TextView nameTextView = findViewById(R.id.activity_training_user_name);
         nameTextView.setText(name);
-        nameTextView.setTextColor(userAmazeColor.getCode());
+        nameTextView.setTextColor(Color.parseColor(userAmazeColor.getCode()));
         final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
         final TextView emailTextView = findViewById(R.id.activity_training_user_email);
         emailTextView.setText(email);
-        emailTextView.setTextColor(userAmazeColor.getCode());
+        emailTextView.setTextColor(Color.parseColor(userAmazeColor.getCode()));
 
         final RecyclerView challengesRecyclerView = findViewById(R.id.activity_training_mazes_list_view);
         challengesRecyclerView.setLayoutManager(new LinearLayoutManager(this));

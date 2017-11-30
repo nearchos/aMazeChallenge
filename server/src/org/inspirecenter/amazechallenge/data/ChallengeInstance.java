@@ -17,7 +17,7 @@ public class ChallengeInstance {
     public Map<String, Player> playerEmailToPlayer; // holds the player details
     public Map<String, String> playerEmailToLatestSubmittedCode; // holds the latest submitted code for each player - a null value means no javascript was submitted yet
     public Map<String, Vector<Long>> playerEmailToSubmissionTimestamps; // holds for each player the ordered list of timestamps indicating when code was submitted
-    public GameState gameState;
+    GameState gameState;
 
     public ChallengeInstance() {
         super();
@@ -36,6 +36,7 @@ public class ChallengeInstance {
         assert !playerEmailToLatestSubmittedCode.containsKey(playerEmail);
         playerEmailToPlayer.put(playerEmail, new Player(playerEmail, playerName, playerColor, playerShape));
         playerEmailToLatestSubmittedCode.put(playerEmail, null);
+        playerEmailToSubmissionTimestamps = new HashMap<>();
     }
 
     public boolean containsPlayer(final String playerEmail) {

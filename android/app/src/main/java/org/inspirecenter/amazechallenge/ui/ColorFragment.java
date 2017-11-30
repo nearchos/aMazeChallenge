@@ -35,13 +35,13 @@ public class ColorFragment extends Fragment {
         AmazeColor color = null;
         if (bundle != null) color = (AmazeColor) bundle.getSerializable(PersonalizeActivity.PREFERENCE_KEY_COLOR);
         if (color != null) {
-            colorView.setBackgroundColor(color.getCode());
+            colorView.setBackgroundColor(Color.parseColor(color.getCode()));
             colorName.setText(color.getName());
-            if (isBrightColor(color.getCode())) colorName.setTextColor(Color.BLACK);
+            if (isBrightColor(Color.parseColor(color.getCode()))) colorName.setTextColor(Color.BLACK);
         }//end if nonnull
         else {
-            colorView.setBackgroundColor(AmazeColor.COLOR_MAGENTA.getCode());
-            colorName.setText("UNDEFINED COLOR");
+            colorView.setBackgroundColor(Color.parseColor(AmazeColor.getDefaultColor().getCode()));
+            colorName.setText(R.string.Undefined_Color);
         }//end if null
 
         return rootView;

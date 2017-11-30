@@ -12,9 +12,10 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.util.Collections.EMPTY_MAP;
 
 /**
  * @author Nearchos
@@ -26,6 +27,7 @@ public class Game implements Serializable {
     private final Grid grid;
     private Map<String,Player> players = new HashMap<>();
     private Map<String,MazeSolver> playerNamesToMazeSolvers = new HashMap<>();
+    private Map<String,PlayerStatistics> playerNamesToStatistics = new HashMap<>();
 
     public Game(final Grid grid) {
         this.grid = grid;
@@ -58,7 +60,7 @@ public class Game implements Serializable {
      * @return true if the player was replaced, false if added for the first time
      */
     public boolean addPlayer(@NonNull final Player player) {
-        return addPlayer(player, Collections.EMPTY_MAP);
+        return addPlayer(player, EMPTY_MAP);
     }
 
     /**
@@ -77,6 +79,7 @@ public class Game implements Serializable {
             mazeSolver.setParameter(entry.getKey(), entry.getValue());
         }
         playerNamesToMazeSolvers.put(player.getName(), mazeSolver);
+        playerNamesToStatistics.put(player.getName(), new PlayerStatistics());
         return replaced;
     }
 
@@ -89,6 +92,7 @@ public class Game implements Serializable {
             final MazeSolver mazeSolver = playerNamesToMazeSolvers.get(player.getName());
             final PlayerMove nextPlayerMove = mazeSolver.getNextMove();
             this.applyPlayerMove(nextPlayerMove, player);
+            this.playerNamesToStatistics.get(player.getName()).increaseMoves(nextPlayerMove);
         }
         final Position targetPosition = getTargetPosition();
         boolean someoneWon = false;
@@ -98,7 +102,31 @@ public class Game implements Serializable {
                 Toast.makeText(activity, "Player " + player.getName() + " won!", Toast.LENGTH_SHORT).show();
             }
         }
-        if(someoneWon) activity.finish();//todo perhaps show ranking
+        if(someoneWon) {
+            activity.finish();//todo perhaps show ranking
+        }
+    }
+
+    public String getStatisticsDescription(final String playerName) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        final PlayerStatistics playerStatistics = playerNamesToStatistics.get(playerName);
+        for(final PlayerMove playerMove : PlayerMove.values()) {
+            stringBuilder
+                    .append(playerMove.getCode())
+                    .append(": ")
+                    .append(playerStatistics.getNumOfMoves(playerMove))
+                    .append(", ");
+        }
+        stringBuilder.append("T: ").append(playerStatistics.getNumOfMoves());
+        return stringBuilder.toString();
+    }
+
+    public String getStatisticsDescription() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        for(final String playerName : playerNamesToStatistics.keySet()) {
+            stringBuilder.append(getStatisticsDescription(playerName)).append("\n");
+        }
+        return stringBuilder.toString();
     }
 
     private void applyPlayerMove(final PlayerMove playerMove, final Player player) {

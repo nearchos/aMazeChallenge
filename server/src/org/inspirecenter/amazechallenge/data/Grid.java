@@ -4,6 +4,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Parent;
+import org.inspirecenter.amazechallenge.model.Position;
 
 import java.util.ArrayList;
 import java.util.List;

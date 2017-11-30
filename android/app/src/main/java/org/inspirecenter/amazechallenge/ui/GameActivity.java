@@ -81,6 +81,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // todo show a dialog displaying the details of all players' moves
+
             }
         });
 
@@ -119,6 +120,7 @@ public class GameActivity extends AppCompatActivity {
     private void makeNextMove() {
         game.applyNextMove(this);
         gameView.invalidate();
+        movesDataTextView.setText(game.getStatisticsDescription());
         // todo update movesDataTextView
     }
 

@@ -2,6 +2,7 @@ package org.inspirecenter.amazechallenge.data;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import org.inspirecenter.amazechallenge.model.Position;
 
 @Entity
 public class PlayerState {

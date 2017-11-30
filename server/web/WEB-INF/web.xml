@@ -87,6 +87,22 @@
         <servlet-name>AddChallengeServlet</servlet-name>
         <url-pattern>/admin/add-challenge</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>PrepareEngineServlet</servlet-name>
+        <servlet-class>org.inspirecenter.amazechallenge.admin.PrepareEngineServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PrepareEngineServlet</servlet-name>
+        <url-pattern>/admin/prepare-engine</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>RunEngineServlet</servlet-name>
+        <servlet-class>org.inspirecenter.amazechallenge.admin.RunEngineServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RunEngineServlet</servlet-name>
+        <url-pattern>/admin/run-engine</url-pattern>
+    </servlet-mapping>
 
     <!--Objectify Filters-->
     <filter>

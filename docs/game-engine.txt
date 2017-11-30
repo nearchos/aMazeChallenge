@@ -1,0 +1,12 @@
+The game engine is responsible to update the game state.
+
+The "/admin/prepare-engine" service runs every 10 minutes via CRON.
+Its only purpose is to look if any challenges start in the next 10 minutes, and if yes add a new task to the queue.
+
+The "/admin/run-engine" runs every one second, while the challenge is active. It generates the following two outputs:
+1. the roster (active players, names, avatars, colors)
+2. the leaderboard (including player statistics etc.)
+3. the game state (player positions, and directions)
+
+Perhaps we can limit the amount of time allocated to each task using something like in this answer:
+https://stackoverflow.com/questions/18818482/how-to-run-a-thread-for-a-user-specified-amount-of-time#3

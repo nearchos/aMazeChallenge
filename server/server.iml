@@ -31,9 +31,10 @@
       </library>
     </orderEntry>
     <orderEntry type="library" scope="PROVIDED" name="javax.servlet:jstl:1.2" level="project" />
-    <orderEntry type="library" name="com.googlecode.objectify:objectify:Release" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="library" name="com.google.appengine:appengine-api-1.0-sdk:Release" level="project" />
     <orderEntry type="library" name="com.googlecode.objectify:objectify:Release" level="project" />
+    <orderEntry type="library" name="com.google.code.gson:gson:2.8.2" level="project" />
+    <orderEntry type="module" module-name="common" />
   </component>
 </module>
