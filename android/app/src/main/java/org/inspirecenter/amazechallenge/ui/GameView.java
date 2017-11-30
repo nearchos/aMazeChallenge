@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import org.inspirecenter.amazechallenge.model.Player;
@@ -83,6 +84,7 @@ public class GameView extends View {
             for(int row = 0; row < game.getGridWidth(); row++) {
                 for(int col = 0; col < game.getGridHeight(); col++) {
                     final int shape = game.getCell(row, col);
+                    Log.d("aMaze", "row: " + row + ", col: " + col + " -> shape: " + shape);
                     drawGridCell(row, col, tile_size, padding, shape, COLOR_BLACK, canvas);
                 }
             }

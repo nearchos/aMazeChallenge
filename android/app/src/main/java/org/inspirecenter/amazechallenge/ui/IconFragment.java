@@ -1,11 +1,8 @@
 package org.inspirecenter.amazechallenge.ui;
 
-
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +32,7 @@ public class IconFragment extends Fragment {
         Bundle bundle = getArguments();
         AmazeIcon icon = null;
         if (bundle != null) icon = (AmazeIcon) bundle.getSerializable(PersonalizeActivity.PREFERENCE_KEY_ICON);
-        if (icon != null) gifView.setImageResource(icon.getResourceID());
+        if (icon != null) gifView.setImageResource(getDrawableResourceId(icon));
         else gifView.setBackgroundColor(Color.BLACK);
 
         return rootView;
@@ -43,14 +40,19 @@ public class IconFragment extends Fragment {
 
     public void playGIF() {
         stopAllGIFs();
-        System.out.println("GIFVIEW: " + gifView);
+        System.out.println("GIFVIEW: " + gifView); // todo remove asap
         if (gifView != null) gifView.play();
     }//end playGIF()
 
-    public void stopGIF() { gifView.stop(); }
+    public void stopGIF() {
+        gifView.stop();
+    }
 
     public void stopAllGIFs() {
         for (GIFView g : gifViews) if (g != null) g.stop();
     }//end stopAllGIFs()
 
+    int getDrawableResourceId(final AmazeIcon amazeIcon) {
+        return getResources().getIdentifier(amazeIcon.getResourceName(), "drawable", getActivity().getPackageName());
+    }
 }//end class IconFragment

@@ -1,7 +1,5 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
-import android.util.Log;
-
 import org.inspirecenter.amazechallenge.model.Direction;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Game;
@@ -22,9 +20,8 @@ public abstract class AbstractMazeSolver implements MazeSolver {
         this.player = player;
     }
 
-    @Override
     public void setParameter(String name, Serializable value) {
-        Log.i("maze-challenge", "setting " + this + "'s parameter: " + name + " -> " + value);
+        // must be over-written
     }
 
     public boolean canMoveForward() {

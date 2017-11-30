@@ -1,8 +1,5 @@
 package org.inspirecenter.amazechallenge.model;
 
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-
 import java.io.Serializable;
 
 /**
@@ -10,10 +7,12 @@ import java.io.Serializable;
  *         Created: 15-Aug-17
  */
 
-@Entity
+@com.googlecode.objectify.annotation.Entity
 public class Position implements Serializable {
 
-    @Id private long id;
+    @com.googlecode.objectify.annotation.Id
+    Long id;
+
     private int row;
     private int col;
 

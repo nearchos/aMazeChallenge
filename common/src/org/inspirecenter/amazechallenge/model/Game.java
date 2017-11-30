@@ -1,10 +1,5 @@
 package org.inspirecenter.amazechallenge.model;
 
-import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.util.Log;
-import android.widget.Toast;
-
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
 
@@ -42,7 +37,7 @@ public class Game implements Serializable {
     }
 
     public int getCell(final int row, final int col) {
-        return grid.get(row, col);
+        return grid.getGridCell(row, col);
     }
 
     public Position getStartingPosition() {
@@ -59,7 +54,7 @@ public class Game implements Serializable {
      * @param player the {@link Player} to be added to the {@link Game}.
      * @return true if the player was replaced, false if added for the first time
      */
-    public boolean addPlayer(@NonNull final Player player) {
+    public boolean addPlayer(final Player player) {
         return addPlayer(player, EMPTY_MAP);
     }
 
@@ -70,7 +65,7 @@ public class Game implements Serializable {
      * @param parametersMap a map of {@link String} to {@link Serializable} objects, as parameters
      * @return true if the player was replaced, false if added for the first time
      */
-    public boolean addPlayer(@NonNull final Player player, final Map<String, Serializable> parametersMap) {
+    public boolean addPlayer(final Player player, final Map<String, Serializable> parametersMap) {
         final boolean replaced = players.containsKey(player.getName());
         player.init(grid.getStartingPosition(), DEFAULT_STARTING_DIRECTION);
         players.put(player.getName(), player);
@@ -87,24 +82,24 @@ public class Game implements Serializable {
         return players.values();
     }
 
-    public void applyNextMove(final Activity activity) {
+    public void applyNextMove() {
         for(final Player player : players.values()) {
             final MazeSolver mazeSolver = playerNamesToMazeSolvers.get(player.getName());
             final PlayerMove nextPlayerMove = mazeSolver.getNextMove();
             this.applyPlayerMove(nextPlayerMove, player);
             this.playerNamesToStatistics.get(player.getName()).increaseMoves(nextPlayerMove);
         }
+    }
+
+    public boolean hasSomeoneReachedTheTargetPosition() {
         final Position targetPosition = getTargetPosition();
-        boolean someoneWon = false;
+        boolean someoneHasReachedTheTargetPosition = false;
         for(final Player player : players.values()) {
             if(targetPosition.equals(player.getPosition())) {
-                someoneWon = true;
-                Toast.makeText(activity, "Player " + player.getName() + " won!", Toast.LENGTH_SHORT).show();
+                someoneHasReachedTheTargetPosition = true;
             }
         }
-        if(someoneWon) {
-            activity.finish();//todo perhaps show ranking
-        }
+        return someoneHasReachedTheTargetPosition;
     }
 
     public String getStatisticsDescription(final String playerName) {
@@ -141,7 +136,7 @@ public class Game implements Serializable {
                 if(canMoveForward(player)) player.moveForward();
                 break;
             case NO_MOVE:
-                Log.d("grid-challenge", "move: " + playerMove);
+                // Log.d("grid-challenge", "move: " + playerMove);
                 break;
             default:
                 throw new RuntimeException("Invalid PlayerMove: " + playerMove);
@@ -219,7 +214,6 @@ public class Game implements Serializable {
             final Constructor<?> constructor = clazz.getConstructor(Game.class, Player.class);
             return (MazeSolver) constructor.newInstance(this, player);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            Log.e("challenges", "Error while instantiating object for algorithm: " + clazz, e);
             throw new RuntimeException(e);
         }
     }

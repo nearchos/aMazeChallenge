@@ -20,10 +20,10 @@ public class AddParameterServlet extends HttpServlet {
         final String value = request.getParameter("value");
 
         if(name == null || name.trim().isEmpty()) {
-            error += "Invalid or missing 'name' argument.\n";
+            error += "Invalid or missing 'name' argument.";
         }
         if(value == null || value.trim().isEmpty()) {
-            error += "Invalid or missing 'value' argument.\n";
+            error += "Invalid or missing 'value' argument.";
         }
 
         if(name != null && !name.isEmpty() && value != null && !value.isEmpty()) {

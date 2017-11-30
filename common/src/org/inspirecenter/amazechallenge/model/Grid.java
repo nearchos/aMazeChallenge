@@ -1,16 +1,14 @@
 package org.inspirecenter.amazechallenge.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Nearchos
  *         Created: 14-Aug-17
  */
+@com.googlecode.objectify.annotation.Entity
 public class Grid implements Serializable { // consider renaming the class to Grid to accommodate more general grids (instead of just mazes)
 
     public static final int SHAPE_ONLY_UPPER_SIDE = 0x1; // -
@@ -18,18 +16,38 @@ public class Grid implements Serializable { // consider renaming the class to Gr
     public static final int SHAPE_ONLY_LEFT_SIDE  = 0x4; // |
     public static final int SHAPE_ONLY_RIGHT_SIDE = 0x8; //  |
 
-    private final int width;
-    private final int height;
-    private final int[][] grid;
+    @com.googlecode.objectify.annotation.Id
+    public Long id;
+
+    private int width;
+    private int height;
+    private List<Integer> grid; // all the cells, from top-left, rightwards and then next line, etc. until bottom-right
     private Position startingPosition;
     private Position targetPosition;
 
-    public Grid(final int width, final int height, final int[][] grid, final Position startingPosition, final Position targetPosition) {
+    public Grid() {
+        super();
+    }
+
+    public Grid(int width, int height, List<Integer> grid, Position startingPosition, Position targetPosition) {
+        this();
         this.width = width;
         this.height = height;
         this.grid = grid;
         this.startingPosition = startingPosition;
         this.targetPosition = targetPosition;
+    }
+
+    public Grid(int width, int height, String gridAsHex, int startingPositionX, int startingPositionY, int targetPositionX, int targetPositionY) {
+        this(width, height, convertGridAsHexToInts(gridAsHex, width, height), new Position(startingPositionX, startingPositionY), new Position(targetPositionX, targetPositionY));
+    }
+
+    public Grid(int width, int height, String gridAsHex, Position startingPosition, Position targetPosition) {
+        this(width, height, convertGridAsHexToInts(gridAsHex, width, height), startingPosition, targetPosition);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public int getWidth() {
@@ -40,8 +58,10 @@ public class Grid implements Serializable { // consider renaming the class to Gr
         return height;
     }
 
-    int get(final int row, final int col) {
-        return grid[row][col];
+    public int getGridCell(final int row, final int col) throws IndexOutOfBoundsException {
+        if(col < 0 || col > width) throw new IndexOutOfBoundsException("col not in bounds [0, " + width + ")");
+        if(row < 0 || row > height) throw new IndexOutOfBoundsException("row not in bounds [0, " + height + ")");
+        return grid.get(row * width + col);
     }
 
     public Position getStartingPosition() {
@@ -53,7 +73,7 @@ public class Grid implements Serializable { // consider renaming the class to Gr
     }
 
     boolean hasWall(final Position position, final Direction direction) {
-        final int shape = get(position.getRow(), position.getCol());
+        final int shape = getGridCell(position.getRow(), position.getCol());
         switch (direction) {
             case NORTH:
                 return (shape & SHAPE_ONLY_UPPER_SIDE) != 0;
@@ -73,14 +93,15 @@ public class Grid implements Serializable { // consider renaming the class to Gr
         return "Grid " + width + "x" + height;
     }
 
+    // todo convert to GSON
     public static Grid parseJSON(final JSONObject jsonObject) throws JSONException {
         final int width = jsonObject.getInt("width");
         final int height = jsonObject.getInt("height");
-        final int[][] grid = new int[width][height];
+        final List<Integer> grid = new ArrayList<>(width * height);
         final String data = jsonObject.getString("data");
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
-                grid[row][col] = Integer.parseInt(Character.toString(data.charAt(row * width + col)), 16);
+                grid.add(Integer.parseInt(Character.toString(data.charAt(row * width + col)), 16));
             }
         }
         final JSONObject startingPositionJsonObject = jsonObject.getJSONObject("startingPosition");
@@ -88,5 +109,14 @@ public class Grid implements Serializable { // consider renaming the class to Gr
         final Position startingPosition = new Position(startingPositionJsonObject.getInt("row"), startingPositionJsonObject.getInt("col"));
         final Position targetPosition = new Position(targetPositionJsonObject.getInt("row"), targetPositionJsonObject.getInt("col"));
         return new Grid(width, height, grid, startingPosition, targetPosition);
+    }
+
+    private static List<Integer> convertGridAsHexToInts(final String gridAsHex, final int width, final int height) {
+        final List<Integer> grid = new ArrayList<>(width * height);
+        for(int i = 0; i < width * height; i++) {
+            final char c = gridAsHex.charAt(i);
+            grid.add(Integer.parseInt(Character.toString(c), 16));
+        }
+        return grid;
     }
 }

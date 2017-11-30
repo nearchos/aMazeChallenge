@@ -3,7 +3,6 @@ package org.inspirecenter.amazechallenge.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.inspirecenter.amazechallenge.R;
-import org.inspirecenter.amazechallenge.model.InterpreterError;
+import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
 
 import java.util.ArrayList;
 

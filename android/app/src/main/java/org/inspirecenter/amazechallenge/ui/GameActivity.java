@@ -118,10 +118,13 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void makeNextMove() {
-        game.applyNextMove(this);
+        game.applyNextMove();
         gameView.invalidate();
+        // update movesDataTextView
         movesDataTextView.setText(game.getStatisticsDescription());
-        // todo update movesDataTextView
+        if(game.hasSomeoneReachedTheTargetPosition()) {
+            finish();
+        }
     }
 
     private class MazeRunner extends TimerTask {

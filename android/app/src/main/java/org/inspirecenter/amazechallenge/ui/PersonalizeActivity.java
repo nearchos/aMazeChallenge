@@ -114,8 +114,12 @@ public class PersonalizeActivity extends AppCompatActivity {
         final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
         final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
         int userIconIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_ICON, 0);
-        gifView.setImageResource(AmazeIcon.values()[userIconIndex].getResourceID());
+        final AmazeIcon selectedAmazeIcon = AmazeIcon.values()[userIconIndex];
+        gifView.setImageResource(getDrawableResourceId(selectedAmazeIcon));
         //gifView.setBackgroundColor(userAmazeColor.getCode());
     }//end updatePersonalization()
 
+    int getDrawableResourceId(final AmazeIcon amazeIcon) {
+        return getResources().getIdentifier(amazeIcon.getResourceName(), "drawable", this.getPackageName());
+    }
 }

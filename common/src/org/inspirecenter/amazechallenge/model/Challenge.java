@@ -1,10 +1,12 @@
 package org.inspirecenter.amazechallenge.model;
 
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * Models a challenge by describing its properties (e.g. grid, num of players, whether its
@@ -13,9 +15,11 @@ import java.util.Collection;
  * @author Nearchos
  *         Created: 23-Oct-17
  */
+
+@Entity
 public class Challenge implements Serializable {
 
-    private final long id;
+    @Id private final Long id;
     private final String name;
     private final int apiVersion; // used to determine if the player can 'support' this challenge
     private final String description; // brief description of the challenge

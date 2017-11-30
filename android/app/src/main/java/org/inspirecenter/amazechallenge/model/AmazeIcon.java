@@ -1,40 +1,31 @@
 package org.inspirecenter.amazechallenge.model;
 
-import org.inspirecenter.amazechallenge.R;
-
 public enum AmazeIcon {
 
-    ICON_1("Icon_1", R.drawable.icon_1),
-    ICON_2("Icon_2", R.drawable.icon_2),
-    ICON_3("Icon_3", R.drawable.icon_3),
-    ICON_4("Icon_4", R.drawable.icon_4),
-    ICON_5("Icon_5", R.drawable.icon_5),
-    ICON_6("Icon_6", R.drawable.icon_6),
-    ICON_7("Icon_7", R.drawable.icon_7),
-    ICON_8("Icon_8", R.drawable.icon_8),
-    ICON_9("Icon_9", R.drawable.icon_9),
-    ICON_10("Icon_10", R.drawable.icon_10);
+    ICON_1("Cool name 1", "icon_1"),
+    ICON_2("Cool name 2", "icon_2"),
+    ICON_3("Cool name 3", "icon_3"),
+    ICON_4("Cool name 4", "icon_4"),
+    ICON_5("Cool name 5", "icon_5"),
+    ICON_6("Cool name 6", "icon_6"),
+    ICON_7("Cool name 7", "icon_7"),
+    ICON_8("Cool name 8", "icon_8"),
+    ICON_9("Cool name 9", "icon_9"),
+    ICON_10("Cool name 10", "icon_10");
 
     private final String name;
-    private final int resourceID;
+    private final String resourceName;
 
     public String getName() {
         return name;
     }
 
-    public int getResourceID() { return resourceID; }
+    public String getResourceName() { return resourceName; }
 
-    AmazeIcon(final String name, final int resourceID) {
+    AmazeIcon(final String name, final String resourceName) {
         this.name = name;
-        this.resourceID = resourceID;
-    }//end AmazeIcon()
-
-    public static AmazeIcon getByName(final String name) {
-        for(final AmazeIcon amazeIcon : values()) {
-            if(amazeIcon.name.equalsIgnoreCase(name)) return amazeIcon;
-        }//end for
-        return ICON_1;
-    }//end getByName()
+        this.resourceName = resourceName;
+    }
 
     @Override
     public String toString() {

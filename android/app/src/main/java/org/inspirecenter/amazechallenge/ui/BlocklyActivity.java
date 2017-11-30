@@ -1,17 +1,3 @@
-/*
- *  Copyright 2016 Google Inc. All Rights Reserved.
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
@@ -43,8 +29,7 @@ import com.google.blockly.model.DefaultBlocks;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.Grid;
-import org.inspirecenter.amazechallenge.model.InterpreterError;
-import org.inspirecenter.amazechallenge.model.InterpreterErrorType;
+import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -57,6 +42,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.inspirecenter.amazechallenge.algorithms.InterpreterError.InterpreterErrorType.ERROR;
+import static org.inspirecenter.amazechallenge.algorithms.InterpreterError.InterpreterErrorType.WARNING;
 
 public class BlocklyActivity extends AbstractBlocklyActivity {
 
@@ -125,8 +113,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         int warnings = 0;
         int errors = 0;
         for (final InterpreterError e : errorList) {
-            if (e.type == InterpreterErrorType.WARNING) warnings++;
-            else if (e.type == InterpreterErrorType.ERROR) errors++;
+            if (e.type == WARNING) warnings++;
+            else if (e.type == ERROR) errors++;
         }//end for
 
         if (errorList.isEmpty()) {
@@ -758,8 +746,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
         //Sort the list before returning it:
         ArrayList<InterpreterError> sortedErrorList = new ArrayList<>();
-        for (final InterpreterError e : errorList) { if (e.type == InterpreterErrorType.ERROR) sortedErrorList.add(e); }
-        for (final InterpreterError e : errorList) { if (e.type == InterpreterErrorType.WARNING) sortedErrorList.add(e); }
+        for (final InterpreterError e : errorList) { if (e.type == ERROR) sortedErrorList.add(e); }
+        for (final InterpreterError e : errorList) { if (e.type == WARNING) sortedErrorList.add(e); }
         return sortedErrorList;
     }//end checkCode()
 
@@ -802,7 +790,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
      * @return Returns null of no errors found, otherwise returns the first error found in the array.
      */
     private InterpreterError getNextError(ArrayList<InterpreterError> list) {
-        for (final InterpreterError e : list) if (e.type == InterpreterErrorType.ERROR) return e;
+        for (final InterpreterError e : list) if (e.type == ERROR) return e;
         return null;
     }//end getNextError()
 
@@ -812,7 +800,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
      * @return Returns null of no warnings found, otherwise returns the first error found in the array.
      */
     private InterpreterError getNextWarning(ArrayList<InterpreterError> list) {
-        for (final InterpreterError e : list) if (e.type == InterpreterErrorType.WARNING) return e;
+        for (final InterpreterError e : list) if (e.type == WARNING) return e;
         return null;
     }//end getNextWarning()
 
