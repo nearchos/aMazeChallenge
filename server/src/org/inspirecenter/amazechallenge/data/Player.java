@@ -2,6 +2,8 @@ package org.inspirecenter.amazechallenge.data;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import org.inspirecenter.amazechallenge.model.AmazeColor;
+import org.inspirecenter.amazechallenge.model.Shape;
 
 import java.io.Serializable;
 

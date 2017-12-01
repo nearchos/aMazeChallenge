@@ -4,9 +4,9 @@ import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.googlecode.objectify.ObjectifyService;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
-import org.inspirecenter.amazechallenge.data.Challenge;
 import org.inspirecenter.amazechallenge.data.ChallengeInstance;
 import org.inspirecenter.amazechallenge.data.GameState;
+import org.inspirecenter.amazechallenge.model.Challenge;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -62,13 +62,13 @@ public class RunEngineServlet extends HttpServlet {
         final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
 
         // 1. update game state
-        final GameState gameState = (GameState) memcacheService.get(KEY_CACHED_GAME_STATE.replaceAll("%", challenge.id.toString()));
+        final GameState gameState = (GameState) memcacheService.get(KEY_CACHED_GAME_STATE.replaceAll("%", Long.toString(challenge.getId())));
         // todo ...
-        memcacheService.put(KEY_CACHED_GAME_STATE.replaceAll("%", challenge.id.toString()), gameState);
+        memcacheService.put(KEY_CACHED_GAME_STATE.replaceAll("%", Long.toString(challenge.getId())), gameState);
 
         // 2. update leader board
-        final Object leaderBoard = memcacheService.get(KEY_CACHED_LEADER_BOARD.replaceAll("%", challenge.id.toString()));
+        final Object leaderBoard = memcacheService.get(KEY_CACHED_LEADER_BOARD.replaceAll("%", Long.toString(challenge.getId())));
         // todo ... update leader board
-        memcacheService.put(KEY_CACHED_LEADER_BOARD.replaceAll("%", challenge.id.toString()), leaderBoard);
+        memcacheService.put(KEY_CACHED_LEADER_BOARD.replaceAll("%", Long.toString(challenge.getId())), leaderBoard);
     }
 }

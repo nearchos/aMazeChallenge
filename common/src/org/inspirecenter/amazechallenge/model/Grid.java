@@ -93,24 +93,6 @@ public class Grid implements Serializable { // consider renaming the class to Gr
         return "Grid " + width + "x" + height;
     }
 
-    // todo convert to GSON
-    public static Grid parseJSON(final JSONObject jsonObject) throws JSONException {
-        final int width = jsonObject.getInt("width");
-        final int height = jsonObject.getInt("height");
-        final List<Integer> grid = new ArrayList<>(width * height);
-        final String data = jsonObject.getString("data");
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                grid.add(Integer.parseInt(Character.toString(data.charAt(row * width + col)), 16));
-            }
-        }
-        final JSONObject startingPositionJsonObject = jsonObject.getJSONObject("startingPosition");
-        final JSONObject targetPositionJsonObject = jsonObject.getJSONObject("targetPosition");
-        final Position startingPosition = new Position(startingPositionJsonObject.getInt("row"), startingPositionJsonObject.getInt("col"));
-        final Position targetPosition = new Position(targetPositionJsonObject.getInt("row"), targetPositionJsonObject.getInt("col"));
-        return new Grid(width, height, grid, startingPosition, targetPosition);
-    }
-
     private static List<Integer> convertGridAsHexToInts(final String gridAsHex, final int width, final int height) {
         final List<Integer> grid = new ArrayList<>(width * height);
         for(int i = 0; i < width * height; i++) {

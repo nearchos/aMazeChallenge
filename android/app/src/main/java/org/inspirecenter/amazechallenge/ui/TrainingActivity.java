@@ -22,6 +22,7 @@ import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Shape;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
+import org.inspirecenter.amazechallenge.util.JsonParsers;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -74,7 +75,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
                 final InputStream inputStream = getAssets().open(CHALLENGES_PATH + "/" + asset);
                 final String data = convertStreamToString(inputStream);
                 inputStream.close();
-                final Challenge challenge = Challenge.parseJSON(new JSONObject(data));
+                final Challenge challenge = JsonParsers.parseChallenge(data);
                 challengeAdapter.add(challenge);
                 inputStream.close();
             }

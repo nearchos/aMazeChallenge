@@ -2,6 +2,9 @@ package org.inspirecenter.amazechallenge.api;
 
 import com.googlecode.objectify.ObjectifyService;
 import org.inspirecenter.amazechallenge.data.*;
+import org.inspirecenter.amazechallenge.model.AmazeColor;
+import org.inspirecenter.amazechallenge.model.Challenge;
+import org.inspirecenter.amazechallenge.model.Shape;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;

@@ -4,7 +4,7 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.googlecode.objectify.ObjectifyService;
-import org.inspirecenter.amazechallenge.data.Challenge;
+import org.inspirecenter.amazechallenge.model.Challenge;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,11 +29,11 @@ public class PrepareEngineServlet extends HttpServlet {
         final Queue queue = QueueFactory.getDefaultQueue();
 
         for(final Challenge upcomingChallenge : upcomingChallenges) {
-            final long startTime = upcomingChallenge.startTimestamp;
+            final long startTime = upcomingChallenge.getStartTimestamp();
             final long delay = startTime - System.currentTimeMillis();
             TaskOptions taskOptions = TaskOptions.Builder
                     .withUrl("/admin/run-engine")
-                    .param("challenge-id", upcomingChallenge.id.toString())
+                    .param("challenge-id", Long.toString(upcomingChallenge.getId()))
                     .countdownMillis(delay)
                     .method(TaskOptions.Method.GET);
             queue.add(taskOptions);

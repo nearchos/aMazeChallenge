@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="org.mozilla:rhino:1.7.7" type="repository">
+    <properties maven-id="org.mozilla:rhino:1.7.7" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/rhino-1.7.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/rhino-1.7.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/rhino-1.7.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

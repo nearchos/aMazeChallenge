@@ -2,6 +2,8 @@ package org.inspirecenter.amazechallenge;
 
 import com.googlecode.objectify.ObjectifyService;
 import org.inspirecenter.amazechallenge.data.*;
+import org.inspirecenter.amazechallenge.model.Challenge;
+import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Position;
 
 import javax.servlet.ServletContextEvent;

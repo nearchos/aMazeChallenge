@@ -17,8 +17,8 @@ import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.api.ChallengesReply;
-import org.inspirecenter.amazechallenge.api.JsonParser;
 import org.inspirecenter.amazechallenge.model.Challenge;
+import org.inspirecenter.amazechallenge.util.JsonParsers;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -99,7 +99,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
                 final URL apiURL = new URL(apiUrlBase + "/challenges");
                 final InputStream inputStream = apiURL.openStream();
                 final String json = convertStreamToString(inputStream);
-                return JsonParser.parseChallengesMessage(json);
+                return JsonParsers.parseChallengesMessage(json);
             } catch (IOException | JSONException e) {
                 // show message in snackbar
                 Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while joining challenge: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();

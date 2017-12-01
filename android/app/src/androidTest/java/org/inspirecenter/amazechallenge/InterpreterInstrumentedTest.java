@@ -13,7 +13,7 @@ import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Shape;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
 import org.inspirecenter.amazechallenge.ui.TrainingActivity;
-import org.json.JSONObject;
+import org.inspirecenter.amazechallenge.util.JsonParsers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mozilla.javascript.Function;
@@ -64,7 +64,7 @@ public class InterpreterInstrumentedTest {
         final Context context = InstrumentationRegistry.getTargetContext();
 
         final String json = TrainingActivity.convertStreamToString(context.getAssets().open("challenges/challenge0.json"));
-        final Challenge challenge = Challenge.parseJSON(new JSONObject(json));
+        final Challenge challenge = JsonParsers.parseChallenge(json);
 
         final Player player = new Player("test", AmazeColor.COLOR_BLACK, Shape.CIRCLE, InterpretedMazeSolver.class);
         final Grid grid = challenge.getGrid();

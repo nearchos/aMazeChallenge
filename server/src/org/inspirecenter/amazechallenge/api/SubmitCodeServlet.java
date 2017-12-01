@@ -1,7 +1,8 @@
 package org.inspirecenter.amazechallenge.api;
 
 import com.googlecode.objectify.ObjectifyService;
-import org.inspirecenter.amazechallenge.data.*;
+import org.inspirecenter.amazechallenge.data.ChallengeInstance;
+import org.inspirecenter.amazechallenge.model.Challenge;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

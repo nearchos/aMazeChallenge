@@ -1,7 +1,7 @@
 package org.inspirecenter.amazechallenge.api;
 
 import com.googlecode.objectify.ObjectifyService;
-import org.inspirecenter.amazechallenge.data.Challenge;
+import org.inspirecenter.amazechallenge.model.Challenge;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Vector;
 
 public class ChallengeServlet extends HttpServlet {

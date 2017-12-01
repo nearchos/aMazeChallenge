@@ -14,6 +14,7 @@
           <element id="library" level="project" name="com.google.appengine:appengine-api-1.0-sdk:Release" />
           <element id="library" level="project" name="com.googlecode.objectify:objectify:Release" />
           <element id="library" level="project" name="com.google.code.gson:gson:2.8.2" />
+          <element id="library" level="project" name="org.mozilla:rhino:1.7.7" />
         </element>
       </element>
     </root>

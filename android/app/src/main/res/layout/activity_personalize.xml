@@ -8,26 +8,6 @@
     tools:context="org.inspirecenter.amazechallenge.ui.PersonalizeActivity">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="4">
-
-        <org.inspirecenter.amazechallenge.ui.GIFView
-            android:id="@+id/activity_personalize_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@string/User_image">
-        </org.inspirecenter.amazechallenge.ui.GIFView>
-
-    </RelativeLayout>
-
-
-
-    <RelativeLayout
         android:padding="@dimen/personalization_card_padding"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -48,16 +28,14 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="16dp">
-<!--
-                <ImageView
-                    android:id="@+id/activity_personalize_user_image"
+
+                <org.inspirecenter.amazechallenge.ui.GIFView
+                    android:id="@+id/activity_personalize_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/User_image"
-                    android:tint="@color/colorAccent"
-                    app:srcCompat="@drawable/ic_person_outline_black_24dp" />
-
-                    -->
+                    android:padding="16dp"
+                    android:contentDescription="@string/User_image">
+                </org.inspirecenter.amazechallenge.ui.GIFView>
 
                 <Button
                     android:id="@+id/activity_personalize_button_select_color"

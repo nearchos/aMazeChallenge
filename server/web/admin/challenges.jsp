@@ -1,6 +1,6 @@
-<%@ page import="org.inspirecenter.amazechallenge.data.Challenge" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.googlecode.objectify.ObjectifyService" %><%--
+<%@ page import="com.googlecode.objectify.ObjectifyService" %>
+<%@ page import="org.inspirecenter.amazechallenge.model.Challenge" %><%--
   Created by IntelliJ IDEA.
   User: Nearchos
   Date: 02-Nov-17
