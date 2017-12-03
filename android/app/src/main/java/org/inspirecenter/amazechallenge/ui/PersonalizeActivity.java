@@ -111,6 +111,7 @@ public class PersonalizeActivity extends AppCompatActivity {
     private void updatePersonalization() {
         final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
         final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
+        // todo use selected color?
         int userIconIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_ICON, 0);
         final AmazeIcon selectedAmazeIcon = AmazeIcon.values()[userIconIndex];
         gifView.setImageResource(getDrawableResourceId(selectedAmazeIcon));

@@ -49,8 +49,8 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
-        final String userColorName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_COLOR, "black");
-        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
+        final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
+        final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
         // todo set selected image/avatar
         final ImageView userImageView = findViewById(R.id.activity_training_user_image);
         userImageView.setColorFilter(Color.parseColor(userAmazeColor.getCode()));
@@ -98,8 +98,8 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         parametersMap.put(InterpretedMazeSolver.PARAMETER_KEY_CODE, code);
 
         final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, "Guest");
-        final String userColorName = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_COLOR, "black");
-        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
+        final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
+        final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
         final Shape shape = Shape.TRIANGLE; // todo enable user selection
         final Player player = new Player(name, userAmazeColor, shape, InterpretedMazeSolver.class);
         game.addPlayer(player, parametersMap);
