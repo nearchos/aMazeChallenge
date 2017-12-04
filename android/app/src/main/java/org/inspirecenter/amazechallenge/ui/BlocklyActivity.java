@@ -108,7 +108,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         catch (FileNotFoundException | BlocklySerializerException e) { e.printStackTrace(); }
 
         //Check the code:
-        ArrayList<InterpreterError> errorList = new ArrayList<>(); // checkCode(); // todo fix by re-enabling code checks
+        ArrayList<InterpreterError> errorList = checkCode();
 
         int warnings = 0;
         int errors = 0;
@@ -728,7 +728,12 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             if (i + 1 < lines.length) {
                 //Check if statements:
                 if (lines[i].contains("<block type=\"controls_if\"")) {
-                    if (!lines[i + 1].contains("<value name=\"IF0\">")) errorList.add(InterpreterError.EMPTY_CONDITIONAL);
+                    if (!lines[i + 1].contains("<value name=\"IF0\">")) {
+                        if (i + 2 < lines.length) {
+                            if (!lines[i + 2].contains("<value name=\"IF0\">")) errorList.add(InterpreterError.EMPTY_CONDITIONAL);
+                        }
+                        else errorList.add(InterpreterError.EMPTY_CONDITIONAL);
+                    }
                 }//end if -if block
                 //Check while statements:
                 else if (lines[i].contains("<block type=\"controls_whileUntil\"")) {
@@ -742,7 +747,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             }//end if no next line
         }//end foreach line
 
-        //TODO: Check for empty statement bodies: (HARD)
+        //TODO: Check for empty statement bodies.
 
         //Sort the list before returning it:
         ArrayList<InterpreterError> sortedErrorList = new ArrayList<>();
