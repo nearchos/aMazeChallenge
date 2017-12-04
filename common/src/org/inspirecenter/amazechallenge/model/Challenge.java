@@ -1,8 +1,5 @@
 package org.inspirecenter.amazechallenge.model;
 
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-
 import java.io.Serializable;
 
 /**
@@ -13,12 +10,14 @@ import java.io.Serializable;
  *         Created: 23-Oct-17
  */
 
-@Entity
+@com.googlecode.objectify.annotation.Entity
 public class Challenge implements Serializable {
 
-    @Id private Long id;
+    @com.googlecode.objectify.annotation.Id
+    private Long id;
+    @com.googlecode.objectify.annotation.Index
     private String name;
-    private int apiVersion; // used to determine if the player can 'support' this challenge
+    private int apiVersion; // used to determine if the client/player can 'support' this challenge
     private String description; // brief description of the challenge
     private boolean canRepeat; // whether a player can play again and again
     private boolean canJoinAfterStart; // whether a player can join after the start of the challenge
@@ -65,7 +64,7 @@ public class Challenge implements Serializable {
         return description;
     }
 
-    public boolean isCanRepeat() {
+    public boolean canRepeat() {
         return canRepeat;
     }
 
@@ -102,20 +101,5 @@ public class Challenge implements Serializable {
                 ", endTimestamp=" + endTimestamp +
                 ", grid=" + grid +
                 '}';
-    }
-
-    public String toJson() {
-        return "{" +
-                // todo
-//                "\"name\": \"" + name + "\", " +
-//                "\"apiVersion\": " + apiVersion + ", " +
-//                "\"description\": \"" + description + "\", " +
-//                "\"canRepeat\": " + canRepeat +
-//                "\"canJoinAfterStart\": " + canJoinAfterStart +
-//                "\"canStepOnEachOther\": " + canStepOnEachOther +
-//                "\"startTimestamp\": " + startTimestamp +
-//                "\"endTimestamp\": " + endTimestamp +
-//                "\"grid\": " + grid +
-                "}";
     }
 }

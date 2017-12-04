@@ -55,7 +55,7 @@
         <p><label>Starting position | Row: <input type="number" name="startingPositionY" /></label><label>Col: <input type="number" name="startingPositionX" /></label></p>
         <p><label>Target position | Row: <input type="number" name="targetPositionY" /></label><label>Col: <input type="number" name="targetPositionX" /></label></p>
         <p><label>Grid as Hex: <textarea rows="4" cols="80" name="grid" form="add-challenge-form"></textarea></label></p>
-        <input type="submit" value="Add JSON">
+        <input type="submit" value="Add Challenge">
     </form>
 </body>
 </html>

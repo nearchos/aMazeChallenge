@@ -108,7 +108,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         catch (FileNotFoundException | BlocklySerializerException e) { e.printStackTrace(); }
 
         //Check the code:
-        ArrayList<InterpreterError> errorList = checkCode();
+        ArrayList<InterpreterError> errorList = new ArrayList<>(); // checkCode(); // todo fix by re-enabling code checks
 
         int warnings = 0;
         int errors = 0;

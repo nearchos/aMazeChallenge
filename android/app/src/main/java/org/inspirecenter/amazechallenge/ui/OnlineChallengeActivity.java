@@ -15,10 +15,11 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.api.ChallengesReply;
 import org.inspirecenter.amazechallenge.model.Challenge;
-import org.inspirecenter.amazechallenge.util.JsonParsers;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,6 +33,7 @@ import java.util.Vector;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_COLOR;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
+import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_SHAPE_CODE;
 
 public class OnlineChallengeActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener {
 
@@ -79,7 +81,8 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, "guest@example.com");
         final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, "guest");
         final String colorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, "black");
-        new JoinChallengeAsyncTask(email, name, colorName, challenge).execute();
+        final String shapeCode = sharedPreferences.getString(PREFERENCE_SHAPE_CODE, "triangle");
+        new JoinChallengeAsyncTask(email, name, colorName, shapeCode, challenge).execute();
     }
 
     private class FetchChallengesAsyncTask extends AsyncTask<Void, Void, ChallengesReply> {
@@ -97,12 +100,16 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
             try {
                 final String apiUrlBase = getString(R.string.api_url);
                 final URL apiURL = new URL(apiUrlBase + "/challenges");
+                Log.d(TAG, "Opening URL: " + apiURL.toString());
                 final InputStream inputStream = apiURL.openStream();
                 final String json = convertStreamToString(inputStream);
-                return JsonParsers.parseChallengesMessage(json);
-            } catch (IOException | JSONException e) {
+                Log.v(TAG, "Read JSON: " + json);
+                final Gson gson = new Gson();
+                final ChallengesReply challengesReply = gson.fromJson(json, ChallengesReply.class);
+                return challengesReply;
+            } catch (IOException e) {
                 // show message in snackbar
-                Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while joining challenge: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while accessing list of challenges: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
                 // log error
                 Log.e(TAG, "Error: " + e.getMessage());
                 return new ChallengesReply("error", new String [] { e.getMessage()}, null);
@@ -130,12 +137,14 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         private final String email;
         private final String name;
         private final String colorName;
+        private final String shapeCode;
         private final Challenge challenge;
 
-        JoinChallengeAsyncTask(final String email, final String name, final String colorName, final Challenge challenge) {
+        JoinChallengeAsyncTask(final String email, final String name, final String colorName, final String shapeCode, final Challenge challenge) {
             this.email = email;
             this.name = name;
             this.colorName = colorName;
+            this.shapeCode = shapeCode;
             this.challenge = challenge;
         }
 
@@ -150,7 +159,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
             try {
                 final String apiUrlBase = getString(R.string.api_url);
                 final String magic = getString(R.string.magic);
-                final URL apiURL = new URL(apiUrlBase + "/join?magic=" + magic + "&name=" + name + "&email=" + email + "&color=" + colorName + "&id=" + challenge.getId());
+                final URL apiURL = new URL(apiUrlBase + "/join?magic=" + magic + "&name=" + name + "&email=" + email + "&color=" + colorName + "&shape=" + shapeCode + "&id=" + challenge.getId());
                 Log.d(TAG, "apiURL: " + apiURL.toString());
                 final InputStream inputStream = apiURL.openStream();
                 return convertStreamToString(inputStream);

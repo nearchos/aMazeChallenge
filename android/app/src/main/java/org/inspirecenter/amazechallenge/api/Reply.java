@@ -8,8 +8,8 @@ import java.util.Arrays;
  */
 
 public class Reply {
-    protected String status;
-    protected String [] messages;
+    String status;
+    String [] messages;
 
     public String getStatus() {
         return status;

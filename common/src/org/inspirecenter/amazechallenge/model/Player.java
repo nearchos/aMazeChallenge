@@ -1,7 +1,5 @@
 package org.inspirecenter.amazechallenge.model;
 
-import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
-
 import java.io.Serializable;
 
 import static org.inspirecenter.amazechallenge.model.Direction.NORTH;
@@ -10,22 +8,39 @@ import static org.inspirecenter.amazechallenge.model.Direction.NORTH;
  * @author Nearchos Paspallis
  * 17/08/2017.
  */
+@com.googlecode.objectify.annotation.Entity
 public class Player implements Serializable {
 
+    @com.googlecode.objectify.annotation.Id
+    private String email;
+
     private String name;
-    private Position position;
-    private Direction direction;
     private AmazeColor color;
     private Shape shape;
-    private Class<? extends MazeSolver> mazeSolverClass;
 
-    public Player(final String name, final AmazeColor color, final Shape shape, final Class<? extends MazeSolver> mazeSolverClass) {
+    private Position position;
+    private Direction direction;
+
+    public Player() {
+        super();
+    }
+
+    public Player(final String email, final String name, final AmazeColor color, final Shape shape, final Position startingPosition) {
+        this();
+        this.email = email;
         this.name = name;
-        this.position = new Position(0, 0);
-        this.direction = NORTH;
         this.color = color;
         this.shape = shape;
-        this.mazeSolverClass = mazeSolverClass;
+        this.position = startingPosition;
+        this.direction = NORTH;
+    }
+
+    public Player(final String email, final String name, final AmazeColor color, final Shape shape) {
+        this(email, name, color, shape, new Position(0, 0));
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getName() {
@@ -77,10 +92,6 @@ public class Player implements Serializable {
 
     public Shape getShape() {
         return shape;
-    }
-
-    public Class<? extends MazeSolver> getMazeSolverClass() {
-        return mazeSolverClass;
     }
 
     @Override public String toString() {

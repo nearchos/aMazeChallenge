@@ -1,7 +1,6 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
 import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.Player;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -19,8 +18,8 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     private static final int TIME_LIMIT_SECONDS = 1;
     private static int noMoveCounter = 0;
 
-    public InterpretedMazeSolver(final Game game, final Player player) {
-        super(game, player);
+    public InterpretedMazeSolver(final Game game, final String playerEmail) {
+        super(game, playerEmail);
     }
 
     // todo consider upgrading top latest rhino: https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Download_Rhino

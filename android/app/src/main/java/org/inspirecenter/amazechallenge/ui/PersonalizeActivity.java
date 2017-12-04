@@ -23,6 +23,7 @@ public class PersonalizeActivity extends AppCompatActivity {
     public static final String PREFERENCE_KEY_NAME = "pref-name";
     public static final String PREFERENCE_KEY_EMAIL = "pref-email";
     public static final String PREFERENCE_KEY_COLOR = "pref-color";
+    public static final String PREFERENCE_SHAPE_CODE = "pref-shape";
     public static final String PREFERENCE_KEY_ICON = "pref-icon";
 
     private EditText nameEditText;

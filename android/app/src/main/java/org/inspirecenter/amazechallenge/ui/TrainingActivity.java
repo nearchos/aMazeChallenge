@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.model.Challenge;
@@ -22,9 +24,6 @@ import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Shape;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
-import org.inspirecenter.amazechallenge.util.JsonParsers;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +37,8 @@ import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
 
 public class TrainingActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener {
+
+    public static final String TAG = "aMaze";
 
     public static final String CHALLENGES_PATH = "challenges";
 
@@ -68,19 +69,20 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         challengesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         challengesRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
+        final Gson gson = new Gson();
         final ChallengeAdapter challengeAdapter = new ChallengeAdapter(this);
         try {
             final String [] allAssets = getAssets().list(CHALLENGES_PATH);
             for(final String asset : allAssets) {
                 final InputStream inputStream = getAssets().open(CHALLENGES_PATH + "/" + asset);
-                final String data = convertStreamToString(inputStream);
+                final String json = convertStreamToString(inputStream);
                 inputStream.close();
-                final Challenge challenge = JsonParsers.parseChallenge(data);
+                final Challenge challenge = gson.fromJson(json, Challenge.class);
                 challengeAdapter.add(challenge);
                 inputStream.close();
             }
             challengesRecyclerView.setAdapter(challengeAdapter);
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("challenges", "Error: " + e.getMessage());
             finish();
@@ -90,19 +92,22 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
     @Override
     public void onChallengeSelected(final Challenge challenge) {
         final Grid selectedGrid = challenge.getGrid();
-        final Game game = new Game(selectedGrid);
+        Log.d(TAG, "selectedGrid: " + selectedGrid );
+        final Game game = new Game(challenge.getId(), selectedGrid);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final Map<String,Serializable> parametersMap = new HashMap<>();
+//        final Map<String,Serializable> parametersMap = new HashMap<>();
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
-        parametersMap.put(InterpretedMazeSolver.PARAMETER_KEY_CODE, code);
+//        parametersMap.put(InterpretedMazeSolver.PARAMETER_KEY_CODE, code);
 
+        final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, "guest@example.com");
         final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, "Guest");
         final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
         final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
         final Shape shape = Shape.TRIANGLE; // todo enable user selection
-        final Player player = new Player(name, userAmazeColor, shape, InterpretedMazeSolver.class);
-        game.addPlayer(player, parametersMap);
+        final Player player = new Player(email, name, userAmazeColor, shape);
+//        game.addPlayer(player, InterpretedMazeSolver.class, parametersMap);
+        game.addPlayer(player, code);
 
         final Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra(GameActivity.SELECTED_GAME_KEY, game);

@@ -13,11 +13,11 @@ import java.io.Serializable;
 public abstract class AbstractMazeSolver implements MazeSolver {
 
     private final Game game;
-    private final Player player;
+    private final String playerEmail;
 
-    protected AbstractMazeSolver(final Game game, final Player player) {
+    protected AbstractMazeSolver(final Game game, final String playerEmail) {
         this.game = game;
-        this.player = player;
+        this.playerEmail = playerEmail;
     }
 
     public void setParameter(String name, Serializable value) {
@@ -25,24 +25,24 @@ public abstract class AbstractMazeSolver implements MazeSolver {
     }
 
     public boolean canMoveForward() {
-        return game.canMoveForward(player);
+        return game.canMoveForward(playerEmail);
     }
 
     public boolean canMoveLeft() {
-        return game.canMoveLeft(player);
+        return game.canMoveLeft(playerEmail);
     }
 
     public boolean canMoveRight() {
-        return game.canMoveRight(player);
+        return game.canMoveRight(playerEmail);
     }
 
-    public boolean canMoveBackward() { return game.canMoveBackward(player); }
+    public boolean canMoveBackward() { return game.canMoveBackward(playerEmail); }
 
     public Direction getDirection() {
-        return game.getDirection(player);
+        return game.getDirection(playerEmail);
     }
 
-    protected Player getPlayer() { return player; }
+    protected String getPlayerEmail() { return playerEmail; }
 
     protected Game getGame() { return game; }
 

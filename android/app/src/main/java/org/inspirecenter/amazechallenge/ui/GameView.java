@@ -71,11 +71,13 @@ public class GameView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if(game == null) return;
+
         // compute tile_size and padding
         final int width = canvas.getWidth();
         final int height = canvas.getHeight();
         final int smallestSide = Math.min(width, height);
-        // todo adjust id non-square grids are to be supported at drawn stage
+        // todo adjust if non-square grids are to be supported at drawn stage
         final int tile_size = smallestSide / game.getGridWidth();
         final int padding = (smallestSide - (tile_size * game.getGridWidth())) / 2;
 

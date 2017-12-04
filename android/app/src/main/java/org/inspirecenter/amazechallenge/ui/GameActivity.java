@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +23,8 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 public class GameActivity extends AppCompatActivity {
+
+    public static final String TAG = "aMaze";
 
     public static final String SELECTED_GAME_KEY = "selected_game";
 

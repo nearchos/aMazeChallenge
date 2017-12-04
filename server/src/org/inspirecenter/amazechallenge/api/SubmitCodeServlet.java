@@ -1,6 +1,8 @@
 package org.inspirecenter.amazechallenge.api;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.VoidWork;
 import org.inspirecenter.amazechallenge.data.ChallengeInstance;
 import org.inspirecenter.amazechallenge.model.Challenge;
 
@@ -13,6 +15,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Vector;
 
+import static com.googlecode.objectify.ObjectifyService.ofy;
+
 public class SubmitCodeServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -21,12 +25,12 @@ public class SubmitCodeServlet extends HttpServlet {
         final String challengeIdAsString = request.getParameter("id");
 
         final BufferedReader bufferedReader = request.getReader();
-        final StringBuilder stringstringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
         String line;
         while((line = bufferedReader.readLine()) != null) {
-            stringstringBuilder.append(line);
+            stringBuilder.append(line);
         }
-        final String code = stringstringBuilder.toString();
+        final String code = stringBuilder.toString();
 
         final Vector<String> errors = new Vector<>();
 
@@ -47,21 +51,38 @@ public class SubmitCodeServlet extends HttpServlet {
                 if(challenge == null) {
                     errors.add("Invalid or unknown challenge for id: " + challengeId);
                 } else {
-                    // add binding of user to challenge instance
-                    ChallengeInstance challengeInstance = ObjectifyService.ofy().load()
+
+                    final ChallengeInstance challengeInstance = ofy().load()
                             .type(ChallengeInstance.class)
                             .filter("challengeId = ", challengeId)
                             .first().now();
+                    final long challengeInstanceId = challengeInstance == null ? 0L : challengeInstance.id;
 
-                    if(challengeInstance == null) {
-                        errors.add("Invalid or missing challenge instance for id: " + challengeId);
-                    } else {
-                        if(!challengeInstance.containsPlayer(email)) {
-                            errors.add("Player not found in challenge instance for email: " + email);
-                        } else {
-                            challengeInstance.submitCode(email, code);
+                    // handle the addition of a new player in a transaction to ensure atomicity
+                    ofy().transact(new VoidWork() {
+                        public void vrun() {
+                            // add binding of user to challenge instance
+                            ChallengeInstance challengeInstance = ofy().load()
+                                    .key(Key.create(ChallengeInstance.class, challengeInstanceId))
+                                    .now();
+
+                            // modify
+                            if(challengeInstance == null) {
+                                errors.add("Invalid or missing challenge instance for id: " + challengeId);
+                            } else {
+                                if(!challengeInstance.containsPlayer(email)) {
+                                    errors.add("Player not found in challenge instance for email: " + email);
+                                } else {
+                                    challengeInstance.submitCode(email, code);
+                                }
+                            }
+
+                            // save
+                            ObjectifyService.ofy().save().entity(challengeInstance).now();
                         }
-                    }
+                    });
+
+
                 }
             } catch (NumberFormatException nfe) {
                 errors.add(nfe.getMessage());

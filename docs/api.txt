@@ -1,10 +1,6 @@
 /api/json/challenges {gets list of available challenges}
 - status: ok, return: JSON-formatted list of available challenges
 
-/api/json/leaderboard?challenge-id=123 {returns the leaderboard of the specified challenge (no need to join)}
-- status: ok, return: JSON-formatted version of leaderboard
-- status: error, messages: ["missing or empty challenge-id" | "invalid challenge-id" | "unknown challenge-id" | "specified id not found"]
-
 /api/json/join?challenge-id=123&email=...&name=...&avatar=...&color=... {joins specified challenge, creates a new session for given player/email}
 - status: ok, return: session-id
 - status: redirect, return: url
@@ -27,3 +23,10 @@
 - status: error, messages: ["challenge associated to this session is not active - will start on ..."]
 - status: error, messages: ["challenge associated to this session is not active - ended on ..."]
 - status: error, messages: ["challenge associated to this session is unavailable"]
+
+/api/json/withdraw? {withdraws from the game - if in action, waits till finished - if in queue immediately withdrawn - leaderboards stay unaffected}
+
+/api/json/leaderboard?challenge-id=123 {returns the leaderboard of the specified challenge (no need to join)}
+- status: ok, return: JSON-formatted version of leaderboard
+- status: error, messages: ["missing or empty challenge-id" | "invalid challenge-id" | "unknown challenge-id" | "specified id not found"]
+

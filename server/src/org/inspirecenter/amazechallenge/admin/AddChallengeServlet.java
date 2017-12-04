@@ -9,8 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class AddChallengeServlet extends HttpServlet {
+
+    private Logger log = Logger.getAnonymousLogger();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String error = "";
@@ -49,6 +52,7 @@ public class AddChallengeServlet extends HttpServlet {
 System.out.println("--challenge: " + challenge);
                 ObjectifyService.ofy().save().entity(challenge).now();
             } catch (NumberFormatException nfe) {
+                log.severe(request.getParameterMap() + " ... -> " + nfe.getMessage());
                 error += "Invalid number format of 'width' or 'height' or 'startingPositionX', 'startingPositionY', 'targetPositionX', 'targetPositionY' (" + nfe.getMessage() + ")";
             }
         }

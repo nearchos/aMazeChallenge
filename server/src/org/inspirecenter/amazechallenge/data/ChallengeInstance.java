@@ -1,32 +1,24 @@
 package org.inspirecenter.amazechallenge.data;
 
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
+import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Shape;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
-@Entity
+@com.googlecode.objectify.annotation.Entity
 public class ChallengeInstance {
 
-    @Id public Long id;
-    @Index public Long challengeId;
-    public Map<String, Player> playerEmailToPlayer; // holds the player details
-    public Map<String, String> playerEmailToLatestSubmittedCode; // holds the latest submitted code for each player - a null value means no javascript was submitted yet
-    public Map<String, Vector<Long>> playerEmailToSubmissionTimestamps; // holds for each player the ordered list of timestamps indicating when code was submitted
-    GameState gameState;
+    @com.googlecode.objectify.annotation.Id
+    public Long id;
+    @com.googlecode.objectify.annotation.Index
+    public Long challengeId;
+    public Map<String,Player> playerEmailToPlayer = new HashMap<>();
+    public Map<String, String> playerEmailToLatestSubmittedCode = new HashMap<>();
+    public List<SubmissionDetails> sortedSubmissions = Collections.synchronizedList(new Vector<>());
 
     public ChallengeInstance() {
         super();
-        playerEmailToPlayer = new HashMap<>();
-        playerEmailToLatestSubmittedCode = new HashMap<>();
-        playerEmailToSubmissionTimestamps = new HashMap<>();
-        gameState = new GameState();
     }
 
     public ChallengeInstance(final long challengeId) {
@@ -35,18 +27,31 @@ public class ChallengeInstance {
     }
 
     public void addPlayer(final String playerEmail, final String playerName, final AmazeColor playerColor, final Shape playerShape) {
-        assert !playerEmailToLatestSubmittedCode.containsKey(playerEmail);
-        playerEmailToPlayer.put(playerEmail, new Player(playerEmail, playerName, playerColor, playerShape));
-        playerEmailToLatestSubmittedCode.put(playerEmail, null);
-        playerEmailToSubmissionTimestamps = new HashMap<>();
+        final Player player = new Player(playerEmail, playerName, playerColor, playerShape);
+        playerEmailToPlayer.put(playerEmail, player);
     }
-
     public boolean containsPlayer(final String playerEmail) {
         return playerEmailToPlayer.containsKey(playerEmail);
     }
 
+    public boolean hasPendingPlayers() {
+        return sortedSubmissions.size() > 0;
+    }
+
+    public String peekPendingPlayerEmail() {
+        return sortedSubmissions.get(0).getEmail();
+    }
+
+    public SubmissionDetails pollPendingPlayer() {
+        return sortedSubmissions.remove(0);
+    }
+
+    public Player getPlayer(final String playerEmail) {
+        return playerEmailToPlayer.get(playerEmail);
+    }
+
     public Set<String> getPlayerEmails() {
-        return playerEmailToLatestSubmittedCode.keySet();
+        return playerEmailToPlayer.keySet();
     }
 
     public String getLatestSubmittedCode(final String playerEmail) {
@@ -54,14 +59,30 @@ public class ChallengeInstance {
     }
 
     public void submitCode(final String playerEmail, final String code) {
+        sortedSubmissions.add(new SubmissionDetails(System.currentTimeMillis(), playerEmail));
         playerEmailToLatestSubmittedCode.put(playerEmail, code);
-        if(!playerEmailToSubmissionTimestamps.containsKey(playerEmail)) {
-            playerEmailToSubmissionTimestamps.put(playerEmail, new Vector<>());
-        }
-        playerEmailToSubmissionTimestamps.get(playerEmail).add(System.currentTimeMillis());
     }
 
-    public GameState getGameState() {
-        return gameState;
+    public static class SubmissionDetails {
+        private long timestamp;
+        private String email;
+
+        public SubmissionDetails() {
+            super();
+        }
+
+        SubmissionDetails(final long timestamp, final String email) {
+            this();
+            this.timestamp = timestamp;
+            this.email = email;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+
+        public String getEmail() {
+            return email;
+        }
     }
 }

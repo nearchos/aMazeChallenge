@@ -2,7 +2,7 @@ package org.inspirecenter.amazechallenge.api;
 
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
-import org.inspirecenter.amazechallenge.data.GameState;
+import org.inspirecenter.amazechallenge.model.Game;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,10 +12,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Vector;
 
-public class GameStateServlet extends HttpServlet {
+import static org.inspirecenter.amazechallenge.admin.RunEngineServlet.KEY_CACHED_GAME;
 
-    public static final String KEY_CACHED_GAME_STATE  = "CACHED_GAME_STATE";
-    public static final String KEY_LAST_UPDATED_TIMESTAMP = "KEY_LAST_UPDATED_TIMESTAMP";
+public class GameStateServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -25,7 +24,7 @@ public class GameStateServlet extends HttpServlet {
 
         final Vector<String> errors = new Vector<>();
 
-        GameState gameState = null;
+        Game game = null;
 
         if(magic == null || magic.isEmpty()) {
             errors.add("Missing or empty 'magic' parameter");
@@ -37,23 +36,15 @@ public class GameStateServlet extends HttpServlet {
             errors.add("Missing or empty challenge 'id'");
         } else {
             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
-            final long lastUpdated = memcacheService.contains(KEY_LAST_UPDATED_TIMESTAMP) ? (long) memcacheService.get(KEY_LAST_UPDATED_TIMESTAMP) : 0L;
-            final long now = System.currentTimeMillis();
 
-            if(now - lastUpdated <= 1000L) {
-                // get stored state from memcache
-                gameState = (GameState) memcacheService.get(KEY_CACHED_GAME_STATE);
-            } else {
-                // generate new state and store on memcache
-                gameState = new GameState(); // todo generate new state
-                memcacheService.put(KEY_CACHED_GAME_STATE, gameState);
-            }
+            game = (Game) memcacheService.get(KEY_CACHED_GAME.replaceAll("%", challengeIdAsString));
+            if(game == null) errors.add("Could not find game for challenge id '" + challengeIdAsString + "' in memcache");
         }
 
         // return cached or generated value
         final String reply;
         if(errors.isEmpty()) {
-            reply = ReplyBuilder.createReplyWithGameState(gameState);
+            reply = ReplyBuilder.createReplyWithGame(game);
         } else {
             reply = ReplyBuilder.createReplyWithErrors(errors);
         }

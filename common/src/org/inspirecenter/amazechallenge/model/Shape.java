@@ -16,6 +16,15 @@ public enum Shape {
         this.code = code;
     }
 
+    public static Shape getShapeByCode(final String shapeCode) {
+        for(final Shape shape : values()) {
+            if (shape.code.equals(shapeCode)) {
+                return shape;
+            }
+        }
+        return TRIANGLE; // return triangle by default
+    }
+
     @Override
     public String toString() {
         return code;

@@ -2,9 +2,7 @@ package org.inspirecenter.amazechallenge;
 
 import com.googlecode.objectify.ObjectifyService;
 import org.inspirecenter.amazechallenge.data.*;
-import org.inspirecenter.amazechallenge.model.Challenge;
-import org.inspirecenter.amazechallenge.model.Grid;
-import org.inspirecenter.amazechallenge.model.Position;
+import org.inspirecenter.amazechallenge.model.*;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -13,14 +11,16 @@ public class OfyHelper implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent event) {
         // This will be invoked as part of a warm-up request, or the first user request if no warm-up request.
+
+        // server-specific data types
         ObjectifyService.register(Parameter.class);
-        ObjectifyService.register(Challenge.class);
-        ObjectifyService.register(Grid.class);
-        ObjectifyService.register(Position.class);
         ObjectifyService.register(ChallengeInstance.class);
-        ObjectifyService.register(GameState.class);
+
+        // common data types
+        ObjectifyService.register(Challenge.class);
+        ObjectifyService.register(Game.class);
         ObjectifyService.register(Player.class);
-        ObjectifyService.register(PlayerState.class);
+        ObjectifyService.register(Position.class);
         // todo add more?
     }
 

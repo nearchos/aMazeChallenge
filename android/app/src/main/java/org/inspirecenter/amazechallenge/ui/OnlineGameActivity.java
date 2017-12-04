@@ -2,16 +2,21 @@ package org.inspirecenter.amazechallenge.ui;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.api.ReplyWithGame;
 import org.inspirecenter.amazechallenge.model.Challenge;
+import org.inspirecenter.amazechallenge.model.Game;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -20,6 +25,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
 
@@ -27,21 +34,33 @@ public class OnlineGameActivity extends AppCompatActivity {
 
     public static final String TAG = "aMazeChallenge";
 
-    private ProgressBar progressBar;
+    public static final long ONE_SECOND = 1000L;
+
+    private GameView gameView;
+    private TextView textView; // todo delete after debugging
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_online_game);
 
-        progressBar = findViewById(R.id.activity_online_game_progress_bar);
+        gameView = findViewById(R.id.activity_online_game_game_view);
+        textView = findViewById(R.id.activity_online_game_text_view);
     }
 
     private Challenge challenge;
+    private String email = null;
+
+    private Handler handler;
+    private OnlineMazeRunner onlineMazeRunner;
+    private Timer timer = new Timer();
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(OnlineGameActivity.this);
+        email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
 
         // get challenge from intent
         challenge = (Challenge) getIntent().getSerializableExtra(OnlineChallengeActivity.PREFERENCE_KEY_CHALLENGE);
@@ -49,14 +68,23 @@ public class OnlineGameActivity extends AppCompatActivity {
             Log.e(TAG, "Invalid null argument 'challenge'in Intent");
             finish();
         }
+
+        handler = new Handler();
+        onlineMazeRunner = new OnlineMazeRunner();
+
+        timer.schedule(onlineMazeRunner, 0L, ONE_SECOND);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        timer.cancel();
+
+        // todo ask user to confirm and withdraw
     }
 
     public void editCode(final View view) {
         // todo
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
-        Log.d(TAG, "getting game-state for challenge: " + challenge.getName());
-        new GetGameStateAsyncTask(email).execute();
     }
 
     public void submitCode(final View view) {
@@ -83,7 +111,6 @@ public class OnlineGameActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -119,7 +146,6 @@ public class OnlineGameActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String reply) {
             super.onPostExecute(reply);
-            progressBar.setVisibility(View.GONE);
             Snackbar.make(findViewById(R.id.activity_online_game), "Code uploaded \n" + reply, Snackbar.LENGTH_SHORT).show();
             Log.d(TAG, "reply: " + reply);
         }
@@ -136,7 +162,6 @@ public class OnlineGameActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -175,13 +200,29 @@ public class OnlineGameActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String reply) {
             super.onPostExecute(reply);
-            progressBar.setVisibility(View.GONE);
             Log.d(TAG, "reply: " + reply);
+            final ReplyWithGame replyWithGame = new Gson().fromJson(reply, ReplyWithGame.class);
+            final Game game = replyWithGame.getGame();
+            gameView.setGame(game);
+            textView.setText("counter: " + game.getCounter()); // todo
         }
     }
 
     public static String convertStreamToString(final InputStream inputStream) {
         final Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
         return scanner.hasNext() ? scanner.next() : "";
+    }
+
+    private class OnlineMazeRunner extends TimerTask {
+        @Override
+        public void run() {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "getting game-state for challenge: " + challenge.getName());
+                    new GetGameStateAsyncTask(email).execute();
+                }
+            });
+        }
     }
 }
