@@ -2,21 +2,19 @@ package org.inspirecenter.amazechallenge.api;
 
 import org.inspirecenter.amazechallenge.model.Game;
 
-import java.io.Serializable;
-
 /**
- * @author npaspallis
- * 05/12/2017
+ * @author Nearchos
+ *         Created: 04-Dec-17
  */
 
-public class ReplyWithGame implements Serializable {
+public class ReplyWithGame {
 
     private String status;
+
+    @com.google.gson.annotations.SerializedName("game-state")
     private Game game;
 
-    public ReplyWithGame(String status, Game game) {
-        this.status = status;
-        this.game = game;
+    public ReplyWithGame() {
     }
 
     public String getStatus() {
