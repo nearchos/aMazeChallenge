@@ -30,12 +30,14 @@ public class LoadDialogListAdapter extends BaseAdapter {
 
     private ArrayList<String> fileNames;
     private ArrayList<String> codeNames;
+    private ArrayList<String> dateModifiedList;
     private final BlocklyActivity activity;
     private LayoutInflater inflater;
 
-    public LoadDialogListAdapter(@NonNull Context context, ArrayList<String> codeNames, ArrayList<String> fileNames, BlocklyActivity activity) {
+    public LoadDialogListAdapter(@NonNull Context context, ArrayList<String> codeNames, ArrayList<String> fileNames, ArrayList<String> dateModifiedList, BlocklyActivity activity) {
         this.fileNames = fileNames;
         this.codeNames = codeNames;
+        this.dateModifiedList = dateModifiedList;
         this.activity = activity;
         inflater = LayoutInflater.from(context);
     }
@@ -59,8 +61,10 @@ public class LoadDialogListAdapter extends BaseAdapter {
     public View getView(final int i, View view, ViewGroup viewGroup) {
         view = inflater.inflate(R.layout.loaddialog_listitem, null);
         TextView codeName = (TextView) view.findViewById(R.id.codeName);
+        TextView dateModified = view.findViewById(R.id.dateModified);
         codeName.setText(codeNames.get(i));
-        ImageView delete = (ImageView) view.findViewById(R.id.deleteCode);
+        dateModified.setText(dateModifiedList.get(i));
+        ImageView delete = view.findViewById(R.id.deleteCode);
         if (fileNames.get(i).startsWith("playercode_")) delete.setVisibility(View.VISIBLE);
         else delete.setVisibility(View.INVISIBLE);
         delete.setOnClickListener(new View.OnClickListener() {

@@ -38,9 +38,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import static org.inspirecenter.amazechallenge.algorithms.InterpreterError.InterpreterErrorType.ERROR;
@@ -56,6 +60,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     public static final String ASSETS_CODES_DIR = "defaultCodes";
     public static ArrayList<String> codeNamesList = new ArrayList<>();
     public static ArrayList<String> codeFilesList = new ArrayList<>();
+    public static ArrayList<String> codeFilesLastModifiedList = new ArrayList<>();
     public static AlertDialog loadDialog;
     public static int snackbarDuration_MS = 5000;
 
@@ -400,6 +405,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         //Clear the arrays first:
         codeNamesList.clear();
         codeFilesList.clear();
+        codeFilesLastModifiedList.clear();
 
         //Get all files from the internal files directory:
         File mydir = this.getFilesDir();
@@ -412,17 +418,39 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     codeFilesList.add(aListFile.getName());
                     String filteredName = aListFile.getName().replace("defaultcode_", "");
                     filteredName = filteredName.replace(".xml", "");
-                    codeNamesList.add(filteredName + " (DEMO)");
+                    codeNamesList.add(filteredName);
+                    codeFilesLastModifiedList.add("(Sample code)");
                 }//end if
             }//end for (default codes)
 
             //Player codes:
+            ArrayList<File> unsortedFiles = new ArrayList<>();
             for (File aListFile : listFile) {
+                if (aListFile.isFile() && aListFile.getName().startsWith("playercode_"))
+                    unsortedFiles.add(aListFile);
+            }//end for (player codes)
+
+            //Sort the player's code files from latest to newest:
+            Collections.sort(unsortedFiles, new Comparator<File>() {
+                @Override
+                public int compare(File file1, File file2) {
+                    long difference = file1.lastModified() - file2.lastModified();
+                    if(difference < 0) return 1;
+                    else if (difference == 0) return 0;
+                    else return -1;
+                }//end compare()
+            });
+
+            //Put the sorted items into the lists:
+            for (File aListFile : unsortedFiles) {
                 if (aListFile.isFile() && aListFile.getName().startsWith("playercode_")) {
                     codeFilesList.add(aListFile.getName());
                     String filteredName = aListFile.getName().replace("playercode_", "");
                     filteredName = filteredName.replace(".xml", "");
                     codeNamesList.add(filteredName);
+                    Date lastModifiedDate = new Date(aListFile.lastModified());
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    codeFilesLastModifiedList.add("(Modified: " + dateFormat.format(lastModifiedDate) + ")");
                 }//end if
             }//end for (player codes)
 
@@ -573,7 +601,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
      */
     private AlertDialog createLoadDialog(ListView list) {
         final AlertDialog.Builder loadDialog = new AlertDialog.Builder(this);
-        LoadDialogListAdapter listAdapter = new LoadDialogListAdapter(this, codeNamesList, codeFilesList, this);
+        LoadDialogListAdapter listAdapter = new LoadDialogListAdapter(this, codeNamesList, codeFilesList, codeFilesLastModifiedList,  this);
         list.setAdapter(listAdapter);
 
         LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
@@ -651,6 +679,9 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
      * Checks the code for obvious user mistakes such as missing or empty functions etc.
      * @return Returns an InterpreterError to describe the error that occured.
      */
+    //TODO: Remove this implementation from the UI.
+    //TODO: Implement checks in each InterpreterError's ErrorFinder.
+    //TODO: Run each check using InterpreterError.executeErrorFinder();
     private ArrayList<InterpreterError> checkCode() {
         final String code = getTempWorkspaceContents();
 
@@ -660,6 +691,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         //Check if run function exists:
         if (!code.contains("<block type=\"maze_run_function\"")) errorList.add(InterpreterError.MISSING_RUN_FUNC);
         else runFunctionExists = true;
+
+        //Check if run function exists twice:
+        if (getOccurencesOfSubstring("<block type=\"maze_run_function\"", code) > 1)
+            errorList.add(InterpreterError.REDEFINITION_RUN_FUNC);
 
         //Check if init function exists:
         if (!code.contains("<block type=\"maze_init_function\"")) errorList.add(InterpreterError.MISSING_INIT_FUNC);
@@ -780,13 +815,26 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
      * @param line The line to check for compound statements.
      * @return Returns true if compound statement exists, false otherwise.
      */
-    private boolean lineContainsCompoundStatement(String line) {
+    private static boolean lineContainsCompoundStatement(String line) {
         return (
             //A list of all the statement types (in XML) that are compound:
                 line.contains("<block type=\"controls_if\"") ||
                         line.contains("<block type=\"controls_repeat_ext\"") ||
                         line.contains("<block type=\"controls_whileUntil\""));
     }//end lineContainsCompoundStatement()
+
+    private static int getOccurencesOfSubstring(final String stringToFind, final String str) {
+        int lastIndex = 0;
+        int count = 0;
+        while(lastIndex != -1){
+            lastIndex = str.indexOf(stringToFind,lastIndex);
+            if(lastIndex != -1){
+                count++;
+                lastIndex += stringToFind.length();
+            }//end if
+        }//end while
+        return count;
+    }//end getOccurencesOfSubstring()
 
     /**
      * Gets the contents of the temporary workspace as an XML file.
