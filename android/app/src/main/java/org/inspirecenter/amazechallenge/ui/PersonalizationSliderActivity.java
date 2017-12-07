@@ -55,6 +55,7 @@ public class PersonalizationSliderActivity extends FragmentActivity {
             @Override
             public void onPageSelected(int position) {
                 newIconIndex = position;
+                //TODO: Makes this work if possible --> Playing only the GIF that is currently viewable
                 //IconFragment currentFragment = iconPagerAdapter.getRegisteredFragment(iconPager.getCurrentItem());
                 //currentFragment.playGIF();
             }//end onPageSelected()

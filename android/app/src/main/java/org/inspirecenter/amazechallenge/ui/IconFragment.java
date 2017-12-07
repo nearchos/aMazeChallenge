@@ -40,7 +40,7 @@ public class IconFragment extends Fragment {
 
     public void playGIF() {
         stopAllGIFs();
-        System.out.println("GIFVIEW: " + gifView); // todo remove asap
+        //System.out.println("GIFVIEW: " + gifView);
         if (gifView != null) gifView.play();
     }//end playGIF()
 

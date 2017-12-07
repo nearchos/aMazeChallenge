@@ -42,11 +42,8 @@ public class GIFView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//Log.d("aMaze", "widthMeasureSpec: " + widthMeasureSpec + ", heightMeasureSpec: " + heightMeasureSpec);
         int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
         int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-//Log.d("aMaze", "parentWidth: " + parentWidth+ ", parentHeight: " + parentHeight);
-//        this.setMeasuredDimension(parentWidth, parentHeight);
         setMeasuredDimension(movieWidth, movieHeight);
     }//end onMeasure()
 
@@ -54,11 +51,6 @@ public class GIFView extends View {
     protected void onDraw(Canvas canvas) {
         float scaleX = (float) this.getWidth() / (float) movie.width();
         float scaleY = (float) this.getHeight() / (float) movie.height();
-Log.d("aMaze", "w/h: " + getWidth() + "," + getHeight() + "  || movie: " + movie.width() + "," + movie.height());
-Log.d("aMaze", "scaleX: " + scaleX + ", scaleY: " + scaleY);
-//        lesserGradientScale = Math.min(scaleX, scaleY);
-//        canvas.scale(lesserGradientScale, lesserGradientScale);
-
         int posX = (getWidth() - movie.width()) / 2;
         int posY = 0;
         drawGif(canvas, posX, posY);
@@ -84,8 +76,6 @@ Log.d("aMaze", "scaleX: " + scaleX + ", scaleY: " + scaleY);
     private void drawGif(Canvas canvas, final int posX, final int posY) {
         movie.setTime(currentAnimationTime);
         movie.draw(canvas, posX , posY);
-        //System.out.println((canvas.getWidth() - movie.width()) / 2);
-        //canvas.restore();
     }//end drawGif()
 
     public void play() { isPlaying = true; }
