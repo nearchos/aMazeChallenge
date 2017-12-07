@@ -11,7 +11,7 @@ public enum InterpreterError {
     FUNCTION_IN_FUNCTION("Function in function statement found.", ERROR),
     INFINITE_LOOP("Infinite loop found.", ERROR),
     EMPTY_CONDITIONAL("Empty conditional found.", ERROR),
-    EMPTY_STATEMENT_BODY("Empty statement found.", WARNING);
+    EMPTY_STATEMENT_BODY("Empty compound statement body found.", WARNING);
 
     public final String name;
     public final InterpreterErrorType type;

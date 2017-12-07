@@ -747,7 +747,26 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             }//end if no next line
         }//end foreach line
 
-        //TODO: Check for empty statement bodies.
+        //Check for empty compound statement bodies:
+        final String nextDeclaration = "<next>";
+        final String statementDeclaration = "<statement name=\"DO";
+        for (int i = 0; i < lines.length; i++) {
+            if (lineContainsCompoundStatement(lines[i])) {
+                boolean foundNextOrStatementDecl = false;
+                for (int j = i; j < lines.length; j++) {
+                    if (lines[j].contains(nextDeclaration)) {
+                        errorList.add(InterpreterError.EMPTY_STATEMENT_BODY);
+                        foundNextOrStatementDecl = true;
+                        break;
+                    }//end if line contains next decl
+                    else if (lines[j].contains(statementDeclaration)) {
+                        foundNextOrStatementDecl = true;
+                        break;
+                    }//end if line contains statement decl
+                }//end foreach subsequent line
+                if (!foundNextOrStatementDecl) errorList.add(InterpreterError.EMPTY_STATEMENT_BODY);
+            }//end if compound statement found
+        }//end foreach line
 
         //Sort the list before returning it:
         ArrayList<InterpreterError> sortedErrorList = new ArrayList<>();
