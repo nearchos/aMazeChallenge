@@ -41,7 +41,7 @@ public class ColorFragment extends Fragment {
         }//end if nonnull
         else {
             colorView.setBackgroundColor(Color.parseColor(AmazeColor.getDefaultColor().getCode()));
-            colorName.setText(R.string.Undefined_Color);
+            colorName.setText("error");
         }//end if null
 
         return rootView;

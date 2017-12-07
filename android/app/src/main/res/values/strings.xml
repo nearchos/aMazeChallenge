@@ -101,6 +101,9 @@
     <string name="ignore_all">Ignore All</string>
     <string name="ok">OK</string>
 
+    <!-- PERSONALIZATION STRINGS -->
+    <string name="personalizationslider_instructions_icon">Select your avatar:</string>
+    <string name="personalizationslider_instructions_color">Select your color:</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -187,9 +190,5 @@
     <string name="error_function_in_function">Function in function statement detected.</string>
     <string name="error_infinite_loop">Infinite loop detected.</string>
     <string name="error_noerror">No error.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="Undefined_Color">UNDEFINED COLOR</string>
 
 </resources>
