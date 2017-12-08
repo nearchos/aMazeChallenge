@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
+import org.inspirecenter.amazechallenge.model.AmazeIcon;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.Grid;
@@ -39,7 +40,6 @@ import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE
 public class TrainingActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener {
 
     public static final String TAG = "aMaze";
-
     public static final String CHALLENGES_PATH = "challenges";
 
     @Override
@@ -52,9 +52,12 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
 
         final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
         final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
-        // todo set selected image/avatar
-        final ImageView userImageView = findViewById(R.id.activity_training_user_image);
-        userImageView.setColorFilter(Color.parseColor(userAmazeColor.getCode()));
+        final int userIconIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PersonalizeActivity.PREFERENCE_KEY_ICON, 0);
+        final AmazeIcon userAmazeIcon = AmazeIcon.values()[userIconIndex];
+
+        final GIFView gifView = findViewById(R.id.activity_training_icon);
+        gifView.setImageResource(getResources().getIdentifier(userAmazeIcon.getResourceName(), "drawable", this.getPackageName()));
+        gifView.play();
 
         final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
         final TextView nameTextView = findViewById(R.id.activity_training_user_name);
