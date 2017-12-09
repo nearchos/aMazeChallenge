@@ -33,6 +33,7 @@ public class Game implements Serializable {
     private Grid grid;
     private Map<String,Player> playerEmailsToPlayers = new HashMap<>();
     private Map<String,String> playerEmailsToMazeSolverCodes = new HashMap<>();
+    private Map<String,MazeSolver> playerEmailsToMazeSolvers = new HashMap<>();
 
     private Map<String,PlayerStatistics> playerEmailsToStatistics = new HashMap<>();
 
@@ -108,11 +109,15 @@ public class Game implements Serializable {
      * @return true if the player was replaced, false if added for the first time
      */
     public boolean addPlayer(final Player player, final String code) {
-        final boolean replaced = playerEmailsToPlayers.containsKey(player.getEmail());
+        final String playerEmail = player.getEmail();
+        final boolean replaced = playerEmailsToPlayers.containsKey(playerEmail);
         player.init(grid.getStartingPosition(), DEFAULT_STARTING_DIRECTION);
-        playerEmailsToPlayers.put(player.getEmail(), player);
-        playerEmailsToMazeSolverCodes.put(player.getEmail(), code);
-        playerEmailsToStatistics.put(player.getEmail(), new PlayerStatistics());
+        playerEmailsToPlayers.put(playerEmail, player);
+        playerEmailsToMazeSolverCodes.put(playerEmail, code);
+        playerEmailsToStatistics.put(playerEmail, new PlayerStatistics());
+        final MazeSolver mazeSolver = new InterpretedMazeSolver(this, player.getEmail());
+        mazeSolver.setParameter(InterpretedMazeSolver.PARAMETER_KEY_CODE, playerEmailsToMazeSolverCodes.get(player.getEmail()));
+        playerEmailsToMazeSolvers.put(playerEmail, mazeSolver);
         return replaced;
     }
 
@@ -120,6 +125,7 @@ public class Game implements Serializable {
         playerEmailsToPlayers.remove(playerEmail);
         playerEmailsToMazeSolverCodes.remove(playerEmail);
         playerEmailsToStatistics.remove(playerEmail);
+        playerEmailsToMazeSolvers.remove(playerEmail);
     }
 
     public Collection<Player> getAllPlayers() {
@@ -128,8 +134,7 @@ public class Game implements Serializable {
 
     public void applyNextMove() {
         for(final Player player : getAllPlayers()) {
-            final MazeSolver mazeSolver = new InterpretedMazeSolver(this, player.getEmail());
-            mazeSolver.setParameter(InterpretedMazeSolver.PARAMETER_KEY_CODE, playerEmailsToMazeSolverCodes.get(player.getEmail()));
+            final MazeSolver mazeSolver = playerEmailsToMazeSolvers.get(player.getEmail());
             final PlayerMove nextPlayerMove = mazeSolver.getNextMove();
             this.applyPlayerMove(nextPlayerMove, player);
             this.playerEmailsToStatistics.get(player.getEmail()).increaseMoves(nextPlayerMove);

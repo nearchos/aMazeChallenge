@@ -86,7 +86,7 @@ public class GameView extends View {
             for(int row = 0; row < game.getGridWidth(); row++) {
                 for(int col = 0; col < game.getGridHeight(); col++) {
                     final int shape = game.getCell(row, col);
-                    Log.d("aMaze", "row: " + row + ", col: " + col + " -> shape: " + shape);
+//                    Log.d("aMaze", "row: " + row + ", col: " + col + " -> shape: " + shape);
                     drawGridCell(row, col, tile_size, padding, shape, COLOR_BLACK, canvas);
                 }
             }

@@ -22,18 +22,17 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         super(game, playerEmail);
     }
 
-    // todo consider upgrading top latest rhino: https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Download_Rhino
+    // todo consider upgrading to latest rhino: https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Download_Rhino
     public void setParameter(final String name, final Serializable value) {
         if(PARAMETER_KEY_CODE.equals(name)) {
             code = (String) value;
 
             //Wrap the code:
             code = processCode(code);
-
+//            Log.d(TAG, "Code:\n" + code);
 
             //Call the Initialization function
             try {
-
                 Context RHINO = Context.enter();
                 RHINO.setOptimizationLevel(-1);
                 ScriptableObject scope = RHINO.initStandardObjects();
@@ -51,7 +50,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 
         PlayerMove nextMove = PlayerMove.NO_MOVE;
 
-        // todo set a deadline (e.. 1 sec) and if no return from RHINO, stop it and return NO_MOVE
+        // todo set a deadline (e.g. 1 sec) and if no return from RHINO, stop it and return NO_MOVE
         try {
             Context RHINO = Context.enter();
             RHINO.setOptimizationLevel(-1);
@@ -76,14 +75,26 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     @Override
     public String toString() { return "Interpreted Grid"; }
 
-    private Map<String,Object> javascriptArguments = new HashMap<>();
+    private Map<String,Serializable> javascriptArguments = new HashMap<>();
+
+    @Override
+    public Map<String, Serializable> getState() {
+        return javascriptArguments;
+    }
+
+    @Override
+    public void setState(Map<String, Serializable> stateMap) {
+        javascriptArguments.putAll(stateMap);
+    }
 
     public Object getJavascriptArgument(final String key) {
+//        Log.d(TAG, "getJavascriptArgument - key: " + key + " (" + javascriptArguments.get(key) + " of type: " + javascriptArguments.get(key).getClass() + ")");
         return javascriptArguments.get(key);
     }
 
     public Object setJavascriptArgument(final String key, final Object value) {
-        return javascriptArguments.put(key, value);
+//        Log.d(TAG, "setJavascriptArgument - key->value: " + key + " -> " + value + " (of type: " + value.getClass() + ")");
+        return javascriptArguments.put(key, (Serializable) value);
     }
 
     private static String processCode(final String code) {

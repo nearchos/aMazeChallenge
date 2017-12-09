@@ -1,6 +1,7 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author Nearchos
@@ -10,6 +11,10 @@ import java.io.Serializable;
 public interface MazeSolver extends Serializable {
 
     void setParameter(final String name, final Serializable  value);
+
+    Map<String,Serializable> getState();
+
+    void setState(Map<String,Serializable> stateMap);
 
     PlayerMove getNextMove();
 }
