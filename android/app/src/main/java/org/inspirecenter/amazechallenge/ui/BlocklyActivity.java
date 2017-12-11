@@ -28,6 +28,8 @@ import com.google.blockly.model.BlocklySerializerException;
 import com.google.blockly.model.DefaultBlocks;
 
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.algorithms.errorfinder.EmptyRunFunctionFinder;
+import org.inspirecenter.amazechallenge.algorithms.errorfinder.MissingRunFunctionFinder;
 import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
 
@@ -679,129 +681,16 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
      * Checks the code for obvious user mistakes such as missing or empty functions etc.
      * @return Returns an InterpreterError to describe the error that occured.
      */
-    //TODO: Remove this implementation from the UI.
-    //TODO: Implement checks in each InterpreterError's ErrorFinder.
-    //TODO: Run each check using InterpreterError.executeErrorFinder();
     private ArrayList<InterpreterError> checkCode() {
         final String code = getTempWorkspaceContents();
-
         ArrayList<InterpreterError> errorList = new ArrayList<>();
-        boolean runFunctionExists = false;
 
-        //Check if run function exists:
-        if (!code.contains("<block type=\"maze_run_function\"")) errorList.add(InterpreterError.MISSING_RUN_FUNC);
-        else runFunctionExists = true;
-
-        //Check if run function exists twice:
-        if (getOccurencesOfSubstring("<block type=\"maze_run_function\"", code) > 1)
-            errorList.add(InterpreterError.REDEFINITION_RUN_FUNC);
-
-        //Check if init function exists:
-        if (!code.contains("<block type=\"maze_init_function\"")) errorList.add(InterpreterError.MISSING_INIT_FUNC);
-
-        final String[] lines = code.split("\n");
-
-        //Check if the run function contains code:
-        if (runFunctionExists) {
-            boolean runHasStatements = false;
-            boolean parsingRunFunction = false;
-            for (final String line : lines) {
-                if (!parsingRunFunction) {
-                    if (line.contains("<block type=\"maze_run_function\""))
-                        parsingRunFunction = true;
-                }//end if not parsingRunFunction
-                else {
-                    if (line.contains("<block")) {
-                        runHasStatements = true;
-                        break;
-                    }//end if line has block decl
-                    if (line.contains("</block>")) parsingRunFunction = false;
-                }//end if parsingRunFunction
-            }//end for all lines
-            if (!runHasStatements)  errorList.add(InterpreterError.EMPTY_RUN_FUNC);
-        }//end if run exists
-
-       //Check for obvious infinite loops --> while(true):
-        boolean parsingWhileLoop = false;
-        boolean infiniteLoopExists = false;
-        for (final String line : lines) {
-            if (!parsingWhileLoop) {
-                if (line.contains("<block type=\"controls_whileUntil\"")) parsingWhileLoop = true;
-            }//end if not parsingWhileLoop
-            else {
-                if (line.contains("<field name=\"BOOL\">TRUE</field>")) {
-                    infiniteLoopExists = true;
-                    parsingWhileLoop = true;
-                    break;
-                }//end if
-            }//end if parsingWhileLoop
-        }//end foreach line
-        if (infiniteLoopExists) errorList.add(InterpreterError.INFINITE_LOOP);
-
-        //Check for function in function statements:
-        boolean parsingFunction = false;
-        boolean functionInFunctionExists = false;
-        boolean nextStatementClauseFound = false;
-        for (final String line : lines) {
-            if (!parsingFunction) {
-                if (line.contains("<block type=\"maze_init_function\"")) parsingFunction = true;
-                else if (line.contains("<block type=\"maze_run_function\"")) parsingFunction = true;
-            }//end if not parsing function
-            else {
-                if (line.contains("<next>")) nextStatementClauseFound = true;
-                else if (line.contains("</next>")) nextStatementClauseFound = false;
-                if (!nextStatementClauseFound && (line.contains("<block type=\"maze_run_function\"") || line.contains("<block type=\"maze_init_function\""))) {
-                    functionInFunctionExists = true;
-                    break;
-                }//end if
-            }//end if parsing function
-        }//end foreach line
-        if (functionInFunctionExists) errorList.add(InterpreterError.FUNCTION_IN_FUNCTION);
-
-        //Check for empty conditions in loops and if statements:
-        for (int i = 0; i < lines.length; i++) {
-            if (i + 1 < lines.length) {
-                //Check if statements:
-                if (lines[i].contains("<block type=\"controls_if\"")) {
-                    if (!lines[i + 1].contains("<value name=\"IF0\">")) {
-                        if (i + 2 < lines.length) {
-                            if (!lines[i + 2].contains("<value name=\"IF0\">")) errorList.add(InterpreterError.EMPTY_CONDITIONAL);
-                        }
-                        else errorList.add(InterpreterError.EMPTY_CONDITIONAL);
-                    }
-                }//end if -if block
-                //Check while statements:
-                else if (lines[i].contains("<block type=\"controls_whileUntil\"")) {
-                    if (!lines[i + 1].contains("<value name=\"BOOL\">")) errorList.add(InterpreterError.EMPTY_CONDITIONAL);
-                }//end if while block
-            }//end if next line exists
-            else {
-                if (lines[i].contains("<block type=\"controls_if\"") || lines[i].contains("<block type=\"controls_whileUntil\"")) {
-                    errorList.add(InterpreterError.EMPTY_CONDITIONAL);
-                }//end if currentline is a statement
-            }//end if no next line
-        }//end foreach line
-
-        //Check for empty compound statement bodies:
-        final String nextDeclaration = "<next>";
-        final String statementDeclaration = "<statement name=\"DO";
-        for (int i = 0; i < lines.length; i++) {
-            if (lineContainsCompoundStatement(lines[i])) {
-                boolean foundNextOrStatementDecl = false;
-                for (int j = i; j < lines.length; j++) {
-                    if (lines[j].contains(nextDeclaration)) {
-                        errorList.add(InterpreterError.EMPTY_STATEMENT_BODY);
-                        foundNextOrStatementDecl = true;
-                        break;
-                    }//end if line contains next decl
-                    else if (lines[j].contains(statementDeclaration)) {
-                        foundNextOrStatementDecl = true;
-                        break;
-                    }//end if line contains statement decl
-                }//end foreach subsequent line
-                if (!foundNextOrStatementDecl) errorList.add(InterpreterError.EMPTY_STATEMENT_BODY);
-            }//end if compound statement found
-        }//end foreach line
+        //For each type of error, run its error finder and return a list of errors found:
+        for (InterpreterError e : InterpreterError.values()) {
+            ArrayList<InterpreterError> currentErrorList = e.executeErrorFinder(code);
+            if (!currentErrorList.isEmpty() && currentErrorList != null)
+                errorList.addAll(currentErrorList);
+        }//end foreach InterpreterError
 
         //Sort the list before returning it:
         ArrayList<InterpreterError> sortedErrorList = new ArrayList<>();
@@ -809,32 +698,6 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         for (final InterpreterError e : errorList) { if (e.type == WARNING) sortedErrorList.add(e); }
         return sortedErrorList;
     }//end checkCode()
-
-    /**
-     * Checks if the given line of code contains a compound statement declaration.
-     * @param line The line to check for compound statements.
-     * @return Returns true if compound statement exists, false otherwise.
-     */
-    private static boolean lineContainsCompoundStatement(String line) {
-        return (
-            //A list of all the statement types (in XML) that are compound:
-                line.contains("<block type=\"controls_if\"") ||
-                        line.contains("<block type=\"controls_repeat_ext\"") ||
-                        line.contains("<block type=\"controls_whileUntil\""));
-    }//end lineContainsCompoundStatement()
-
-    private static int getOccurencesOfSubstring(final String stringToFind, final String str) {
-        int lastIndex = 0;
-        int count = 0;
-        while(lastIndex != -1){
-            lastIndex = str.indexOf(stringToFind,lastIndex);
-            if(lastIndex != -1){
-                count++;
-                lastIndex += stringToFind.length();
-            }//end if
-        }//end while
-        return count;
-    }//end getOccurencesOfSubstring()
 
     /**
      * Gets the contents of the temporary workspace as an XML file.
