@@ -10,7 +10,7 @@ public class GameFullState extends GameLightState {
     private Map<String,Player> playerEmailsToPlayers = new HashMap<>();
     private Grid grid;
     private long lastUpdated = 0;
-    private long counter = 0;
+    private long counter = 0; // todo move to light state
 
     public GameFullState(
             final Map<String,PlayerPositionAndDirection> playerEmailsToPositionAndDirections,

@@ -97,6 +97,8 @@ public class RunEngineServlet extends HttpServlet {
                 // todo ... update leader board
 //        memcacheService.put(KEY_CACHED_LEADER_BOARD.replaceAll("%", Long.toString(challenge.getId())), leaderBoard);
 
+                log.info("Scheduling next run...");
+
                 // check if active or queued players players, then repeat
                 if(!gameFullState.getAllPlayerEmails().isEmpty()) {
                     // schedule next run
@@ -155,6 +157,8 @@ public class RunEngineServlet extends HttpServlet {
             // activate players as needed
             game.activateNextPlayer();
         }
+
+System.out.println("ActivePlayers: " + game.getActivePlayers()); // todo delete
 
         // todo ... revise to make multi-threaded and with deadlines?
         RuntimeController.makeMove(game);
