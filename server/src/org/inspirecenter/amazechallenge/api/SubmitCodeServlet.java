@@ -1,10 +1,15 @@
 package org.inspirecenter.amazechallenge.api;
 
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.VoidWork;
 import org.inspirecenter.amazechallenge.data.ChallengeInstance;
 import org.inspirecenter.amazechallenge.model.Challenge;
+import org.inspirecenter.amazechallenge.model.Game;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +23,8 @@ import java.util.Vector;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class SubmitCodeServlet extends HttpServlet {
+
+    private final Gson gson = new Gson();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final String magic = request.getParameter("magic");
@@ -82,7 +89,22 @@ public class SubmitCodeServlet extends HttpServlet {
                         }
                     });
 
+                    final Game game = ofy().load().type(Game.class).filter("challengeId =", challengeId).first().now();
+                    final long gameId = game == null ? 0L : game.id;
 
+                    // trigger processing of game state
+                    if(gameId != 0L) {
+                        final Queue queue = QueueFactory.getDefaultQueue();
+                        TaskOptions taskOptions = TaskOptions.Builder
+                                .withUrl("/admin/run-engine")
+                                .param("magic", magic)
+                                .param("challenge-id", Long.toString(challengeId))
+                                .param("challenge-instance-id", Long.toString(challengeInstanceId))
+                                .param("game-id", Long.toString(gameId))
+                                .countdownMillis(1000) // wait 1 second before the call
+                                .method(TaskOptions.Method.GET);
+                        queue.add(taskOptions);
+                    }
                 }
             } catch (NumberFormatException nfe) {
                 errors.add(nfe.getMessage());
@@ -91,9 +113,9 @@ public class SubmitCodeServlet extends HttpServlet {
 
         final String reply;
         if(errors.isEmpty()) {
-            reply = ReplyBuilder.createReply();
+            reply = gson.toJson(new Reply());
         } else {
-            reply = ReplyBuilder.createReplyWithErrors(errors);
+            reply = gson.toJson(new ReplyWithErrors(errors));
         }
 
         final PrintWriter printWriter = response.getWriter();

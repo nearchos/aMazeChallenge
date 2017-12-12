@@ -21,6 +21,7 @@
     <string name="Name">Name</string>
     <string name="Email">Email</string>
     <string name="Maze_name">Maze name</string>
+    <string name="Maze_description">Maze description</string>
     <string name="Add">Add</string>
     <string name="Save">Save</string>
     <string name="Cancel">Cancel</string>

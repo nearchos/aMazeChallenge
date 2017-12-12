@@ -6,6 +6,8 @@
     "canRepeat": true,
     "canJoinAfterStart": true,
     "canStepOnEachOther": true,
+    "minActivePlayers": 1,
+    "maxActivePlayers": 10,
     "startTimestamp": 0,
     "endTimestamp": 0,
     "grid": {

@@ -15,6 +15,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class ChallengesServlet extends HttpServlet {
 
+    private final Gson gson = new Gson();
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         final List<Challenge> allChallenges = ofy()
@@ -23,23 +25,7 @@ public class ChallengesServlet extends HttpServlet {
                 .order("name")
                 .list();
 
-        final StringBuilder reply = new StringBuilder();
-        // todo use gson
-        reply.append(
-                "{" +
-                "  \"status\": \"ok\"," +
-                "  \"challenges\": [");
-
-        final Gson gson = new Gson();
-        for(int i = 0; i < allChallenges.size(); i++) {
-            final Challenge challenge = allChallenges.get(i);
-            final String json = gson.toJson(challenge);
-            reply.append(json).append(i < allChallenges.size() - 1 ? ", " : " ");
-        }
-
-        reply.append(
-                "  ]" +
-                "}");
+        final String reply = gson.toJson(new ChallengesReply(allChallenges));
 
         final PrintWriter printWriter = response.getWriter();
         printWriter.println(reply);

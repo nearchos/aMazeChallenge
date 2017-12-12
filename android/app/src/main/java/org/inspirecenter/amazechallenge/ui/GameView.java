@@ -11,13 +11,20 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import org.inspirecenter.amazechallenge.controller.RuntimeController;
+import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.GameFullState;
+import org.inspirecenter.amazechallenge.model.GameLightState;
+import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Direction;
-import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.PlayerPositionAndDirection;
 import org.inspirecenter.amazechallenge.model.Position;
 import org.inspirecenter.amazechallenge.model.Shape;
 
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LEFT_SIDE;
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LOWER_SIDE;
@@ -32,7 +39,6 @@ import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_UPPER_SIDE;
 public class GameView extends View {
 
     public static final int COLOR_BLACK         = Color.rgb(0, 0, 0);
-    public static final int COLOR_RED           = Color.rgb(255, 0, 0);
     public static final int COLOR_LIGHT_RED     = Color.rgb(255, 192, 192);
     public static final int COLOR_LIGHT_GREEN   = Color.rgb(192, 255, 192);
 
@@ -44,10 +50,31 @@ public class GameView extends View {
         super(context, attrs);
     }
 
-    private Game game = null;
+//    private Game game = null;
+    private Grid grid = null;
+    public Map<String,Player> allPlayers;
+    public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
+    public List<String> queuedPlayerEmails;
 
-    void setGame(final Game game) {
-        this.game = game;
+    void update(final Game game) {
+        this.grid = game.getGrid();
+        this.allPlayers = game.getPlayerEmailsToPlayers();
+        for(final String activePlayerEmail : game.getActivePlayers()) {
+            activePlayerPositionAndDirectionMap.put(activePlayerEmail, game.getPlayerPositionAndDirection(activePlayerEmail));
+        }
+        queuedPlayerEmails = game.getQueuedPlayers();
+    }
+
+    void update(final GameFullState gameFullState) {
+        this.grid = gameFullState.getGrid();
+        allPlayers = gameFullState.getAllPlayers();
+        activePlayerPositionAndDirectionMap = gameFullState.getActivePlayerPositionsAndDirections();
+        queuedPlayerEmails = gameFullState.getQueuedPlayerEmails();
+        invalidate();
+    }
+
+    void update(final GameLightState gameLightState) {
+        // todo
         invalidate();
     }
 
@@ -71,37 +98,36 @@ public class GameView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(game == null) return;
+        if(grid == null) return;
 
         // compute tile_size and padding
         final int width = canvas.getWidth();
         final int height = canvas.getHeight();
         final int smallestSide = Math.min(width, height);
         // todo adjust if non-square grids are to be supported at drawn stage
-        final int tile_size = smallestSide / game.getGridWidth();
-        final int padding = (smallestSide - (tile_size * game.getGridWidth())) / 2;
+        final int tile_size = smallestSide / grid.getWidth();
+        final int padding = (smallestSide - (tile_size * grid.getWidth())) / 2;
 
         // draw maze grid (row 0 is top, and col 0 is left (so move from top left rightwards, then next row, and so on)
-        if(game != null) {
-            for(int row = 0; row < game.getGridWidth(); row++) {
-                for(int col = 0; col < game.getGridHeight(); col++) {
-                    final int shape = game.getCell(row, col);
-//                    Log.d("aMaze", "row: " + row + ", col: " + col + " -> shape: " + shape);
-                    drawGridCell(row, col, tile_size, padding, shape, COLOR_BLACK, canvas);
-                }
+        for(int row = 0; row < grid.getWidth(); row++) {
+            for(int col = 0; col < grid.getHeight(); col++) {
+                final int shape = RuntimeController.getGridCell(grid, row, col);
+//                Log.d("aMaze", "row: " + row + ", col: " + col + " -> shape: " + shape);
+                drawGridCell(row, col, tile_size, padding, shape, COLOR_BLACK, canvas);
             }
         }
 
         // draw starting and target positions
-        final Position startingPosition = game.getStartingPosition();
+        final Position startingPosition = grid.getStartingPosition();
         drawGridCell(startingPosition.getRow(), startingPosition.getCol(), tile_size, padding, 0x0, COLOR_BLACK, COLOR_LIGHT_RED, canvas);
-        final Position targetPosition = game.getTargetPosition();
+        final Position targetPosition = grid.getTargetPosition();
         drawGridCell(targetPosition.getRow(), targetPosition.getCol(), tile_size, padding, 0x0, COLOR_BLACK, COLOR_LIGHT_GREEN, canvas);
 
-        // draw players
-        final Collection<Player> players = game.getAllPlayers();
-        for(final Player player : players) {
-            drawPlayer(player, tile_size, padding, canvas);
+        // draw active players
+        for(final Map.Entry<String,PlayerPositionAndDirection> entry : activePlayerPositionAndDirectionMap.entrySet()) {
+            final String activePlayerEmail = entry.getKey();
+            final PlayerPositionAndDirection playerPositionAndDirection = entry.getValue();
+            drawPlayer(allPlayers.get(activePlayerEmail), playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection(), tile_size, padding, canvas);
         }
     }
 
@@ -142,8 +168,8 @@ public class GameView extends View {
         if((shape & SHAPE_ONLY_LOWER_SIDE) != 0) { canvas.drawLine(topLeftX, topLeftY + tile_size, topLeftX + tile_size, topLeftY + tile_size, paint); }
     }
 
-    private void drawPlayer(final Player player, final int tile_size, final int padding, final Canvas canvas) {
-        drawShape(player.getPosition(), player.getShape(), player.getDirection(), Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
+    private void drawPlayer(final Player player, final Position position, final Direction direction, final int tile_size, final int padding, final Canvas canvas) {
+        drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
     }
 
     private void drawShape(final Position position, final Shape shape, final Direction direction, final int color, final int tile_size, final int padding, final Canvas canvas) {

@@ -27,7 +27,6 @@ class InterpretedMazeSolverExecutor {
 
         try {
             future.get(DELAY_S, TimeUnit.SECONDS);
-//            System.out.println(future.get( DELAY_S, TimeUnit.SECONDS));
             executor.shutdownNow();
             return future.get();
         }//end try

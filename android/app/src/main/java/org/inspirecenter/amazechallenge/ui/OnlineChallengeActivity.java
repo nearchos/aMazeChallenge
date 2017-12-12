@@ -19,6 +19,10 @@ import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.api.ChallengesReply;
+import org.inspirecenter.amazechallenge.api.Reply;
+import org.inspirecenter.amazechallenge.api.ReplyWithErrors;
+import org.inspirecenter.amazechallenge.model.AmazeColor;
+import org.inspirecenter.amazechallenge.model.AmazeIcon;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,11 +31,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Scanner;
 import java.util.Vector;
 
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_COLOR;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
+import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_ICON;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_SHAPE_CODE;
 
@@ -67,7 +73,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
     protected void onResume() {
         super.onResume();
 
-        // todo check if 'code' is empty first
+        // todo if no code was submitted yet, advise the player
 
         // start online request
         new FetchChallengesAsyncTask().execute();
@@ -78,14 +84,15 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         Snackbar.make(findViewById(R.id.activity_online_challenge), "Joining " + challenge.getName() + " ...", Snackbar.LENGTH_SHORT).show();
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(OnlineChallengeActivity.this);
-        final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, "guest@example.com");
-        final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, "guest");
-        final String colorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, "black");
+        final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
+        final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
+        final String colorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().getName());
+        final String iconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.getDefault().getName());
         final String shapeCode = sharedPreferences.getString(PREFERENCE_SHAPE_CODE, "triangle");
-        new JoinChallengeAsyncTask(email, name, colorName, shapeCode, challenge).execute();
+        new JoinChallengeAsyncTask(email, name, colorName, iconName, shapeCode, challenge).execute();
     }
 
-    private class FetchChallengesAsyncTask extends AsyncTask<Void, Void, ChallengesReply> {
+    private class FetchChallengesAsyncTask extends AsyncTask<Void, Void, Reply> {
 
         @Override
         protected void onPreExecute() {
@@ -95,7 +102,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         }
 
         @Override
-        protected ChallengesReply doInBackground(Void... v) {
+        protected Reply doInBackground(Void... v) {
             final Vector<Challenge> challenges = new Vector<>();
             try {
                 final String apiUrlBase = getString(R.string.api_url);
@@ -112,22 +119,24 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
                 Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while accessing list of challenges: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
                 // log error
                 Log.e(TAG, "Error: " + e.getMessage());
-                return new ChallengesReply("error", new String [] { e.getMessage()}, null);
+                return new ReplyWithErrors(e.getMessage());
             }
        }
 
         @Override
-        protected void onPostExecute(final ChallengesReply challengesReply) {
-            super.onPostExecute(challengesReply);
+        protected void onPostExecute(final Reply reply) {
+            super.onPostExecute(reply);
             progressBar.setVisibility(View.GONE);
-            if(challengesReply.isOk()) {
-                challengeAdapter.addAll(challengesReply.getChallenges());
+            if(reply.isOk()) {
+                final Collection<Challenge> challenges = ((ChallengesReply) reply).getChallenges();
+                challengeAdapter.addAll(challenges);
                 challengesRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                // show message in snackbar
-                Snackbar.make(findViewById(R.id.activity_online_challenge), "Reply: " + challengesReply, Snackbar.LENGTH_SHORT).show();
+                // show message in snack-bar
+                final Vector<String> messages = ((ReplyWithErrors) reply).getErrors();
+                Snackbar.make(findViewById(R.id.activity_online_challenge), "Error(s): " + messages, Snackbar.LENGTH_SHORT).show();
                 // also log warning
-                Log.w(TAG, challengesReply.toString());
+                Log.w(TAG, "Error messages: " + messages);
             }
         }
     }
@@ -137,13 +146,15 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         private final String email;
         private final String name;
         private final String colorName;
+        private final String iconName;
         private final String shapeCode;
         private final Challenge challenge;
 
-        JoinChallengeAsyncTask(final String email, final String name, final String colorName, final String shapeCode, final Challenge challenge) {
+        JoinChallengeAsyncTask(final String email, final String name, final String colorName, final String iconName, final String shapeCode, final Challenge challenge) {
             this.email = email;
             this.name = name;
             this.colorName = colorName;
+            this.iconName = iconName;
             this.shapeCode = shapeCode;
             this.challenge = challenge;
         }
@@ -159,7 +170,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
             try {
                 final String apiUrlBase = getString(R.string.api_url);
                 final String magic = getString(R.string.magic);
-                final URL apiURL = new URL(apiUrlBase + "/join?magic=" + magic + "&name=" + name + "&email=" + email + "&color=" + colorName + "&shape=" + shapeCode + "&id=" + challenge.getId());
+                final URL apiURL = new URL(apiUrlBase + "/join?magic=" + magic + "&name=" + name + "&email=" + email + "&color=" + colorName + "&icon=" + iconName + "&shape=" + shapeCode + "&id=" + challenge.getId());
                 Log.d(TAG, "apiURL: " + apiURL.toString());
                 final InputStream inputStream = apiURL.openStream();
                 return convertStreamToString(inputStream);

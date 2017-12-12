@@ -2,10 +2,11 @@ package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,7 +16,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.controller.RuntimeController;
+import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.Player;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -26,11 +30,14 @@ public class GameActivity extends AppCompatActivity {
 
     public static final String TAG = "aMaze";
 
-    public static final String SELECTED_GAME_KEY = "selected_game";
+//    public static final String SELECTED_GAME_KEY = "selected_game";
+    public static final String SELECTED_CHALLENGE_KEY = "selected_challenge";
+    public static final String SELECTED_PLAYER_KEY = "selected_player";
 
     public static final int DEFAULT_PERIOD_INDEX = 3;
     public static final long [] PERIOD_OPTIONS = new long [] { 100L, 200L, 500L, 1000L, 2000L, 5000L };
 
+    private Challenge challenge;
     private Game game;
 
     private GameView gameView;
@@ -84,13 +91,8 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // todo show a dialog displaying the details of all players' moves
-
             }
         });
-
-//        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(GameActivity.this);
-//        String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "Error retrieving code");
-//        Toast.makeText(this, code, Toast.LENGTH_LONG).show();
     }
 
     private Handler handler;
@@ -104,12 +106,18 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
 
         final Intent intent = getIntent();
-        this.game = (Game) intent.getSerializableExtra(SELECTED_GAME_KEY);
+        this.challenge = (Challenge) intent.getSerializableExtra(SELECTED_CHALLENGE_KEY);
+        this.game = new Game(challenge.getId(), challenge.getGrid());
+        final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
+        game.addPlayer(player, code);
+        game.activateNextPlayer();
 
         handler = new Handler();
         mazeRunner = new MazeRunner();
 
-        gameView.setGame(game);
+        gameView.update(game);
 
         timer.schedule(mazeRunner, 0L, PERIOD_OPTIONS[0]);
     }
@@ -121,11 +129,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void makeNextMove() {
-        game.applyNextMove();
+        RuntimeController.makeMove(game);
+        gameView.update(game);
         gameView.invalidate();
         // update movesDataTextView
         movesDataTextView.setText(game.getStatisticsDescription());
-        if(game.hasSomeoneReachedTheTargetPosition()) {
+        if(RuntimeController.hasSomeoneReachedTheTargetPosition(game)) {
             finish();
         }
     }

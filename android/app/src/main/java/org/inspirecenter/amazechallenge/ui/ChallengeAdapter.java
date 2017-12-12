@@ -31,12 +31,14 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        final TextView mazeNameTextView;
+        final TextView challengeNameTextView;
+        final TextView challengeDescriptionTextView;
         Challenge challenge;
 
         ViewHolder(final View view, final OnChallengeSelectedListener onChallengeSelectedListener) {
             super(view);
-            this.mazeNameTextView = view.findViewById(R.id.item_challenge_name);
+            this.challengeNameTextView = view.findViewById(R.id.item_challenge_name);
+            this.challengeDescriptionTextView = view.findViewById(R.id.item_challenge_description);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     onChallengeSelectedListener.onChallengeSelected(challenge);
@@ -95,7 +97,8 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
         // - replace the contents of the view with that element
         final Challenge challenge = challenges.elementAt(position);
         holder.challenge = challenge;
-        holder.mazeNameTextView.setText(challenge.getName());
+        holder.challengeNameTextView.setText(challenge.getName());
+        holder.challengeDescriptionTextView.setText(challenge.getDescription());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

@@ -1,6 +1,7 @@
 package org.inspirecenter.amazechallenge.data;
 
 import org.inspirecenter.amazechallenge.model.AmazeColor;
+import org.inspirecenter.amazechallenge.model.AmazeIcon;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Shape;
 
@@ -26,10 +27,11 @@ public class ChallengeInstance {
         this.challengeId = challengeId;
     }
 
-    public void addPlayer(final String playerEmail, final String playerName, final AmazeColor playerColor, final Shape playerShape) {
-        final Player player = new Player(playerEmail, playerName, playerColor, playerShape);
+    public void addPlayer(final String playerEmail, final String playerName, final AmazeColor playerColor, final AmazeIcon playerIcon, final Shape playerShape) {
+        final Player player = new Player(playerEmail, playerName, playerColor, playerIcon, playerShape);
         playerEmailToPlayer.put(playerEmail, player);
     }
+
     public boolean containsPlayer(final String playerEmail) {
         return playerEmailToPlayer.containsKey(playerEmail);
     }

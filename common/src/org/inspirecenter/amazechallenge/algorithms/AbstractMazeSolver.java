@@ -45,5 +45,4 @@ public abstract class AbstractMazeSolver implements MazeSolver {
     protected String getPlayerEmail() { return playerEmail; }
 
     protected Game getGame() { return game; }
-
 }

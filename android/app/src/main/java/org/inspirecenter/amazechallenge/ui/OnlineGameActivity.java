@@ -14,9 +14,9 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.R;
-import org.inspirecenter.amazechallenge.api.ReplyWithGame;
+import org.inspirecenter.amazechallenge.api.ReplyWithGameFullState;
 import org.inspirecenter.amazechallenge.model.Challenge;
-import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.GameFullState;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -93,7 +94,7 @@ public class OnlineGameActivity extends AppCompatActivity {
         final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
 
-        new SubmitCodeAsyncTask(email, code, challenge).execute();
+        new SubmitCodeAsyncTask(email, code, challenge, getString(R.string.api_url), getString(R.string.magic)).execute();
     }
 
     private class SubmitCodeAsyncTask extends AsyncTask<Void, Void, String> {
@@ -101,11 +102,15 @@ public class OnlineGameActivity extends AppCompatActivity {
         private final String email;
         private final String code;
         private final Challenge challenge;
+        private final String apiUrlBase;
+        private final String magic;
 
-        SubmitCodeAsyncTask(final String email, final String code, final Challenge challenge) {
+        SubmitCodeAsyncTask(final String email, final String code, final Challenge challenge, final String apiUrlBase, final String magic) {
             this.email = email;
             this.code = code;
             this.challenge = challenge;
+            this.apiUrlBase = apiUrlBase;
+            this.magic = magic;
         }
 
         @Override
@@ -116,8 +121,6 @@ public class OnlineGameActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(final Void... ignore) {
             try {
-                final String apiUrlBase = getString(R.string.api_url);
-                final String magic = getString(R.string.magic);
                 final URL apiURL = new URL(apiUrlBase + "/submit-code?magic=" + magic + "&email=" + email + "&id=" + challenge.getId());
                 Log.d(TAG, "apiURL: " + apiURL.toString());
                 final HttpURLConnection httpURLConnection = (HttpURLConnection) apiURL.openConnection();
@@ -154,9 +157,11 @@ public class OnlineGameActivity extends AppCompatActivity {
     private class GetGameStateAsyncTask extends AsyncTask<Void, Void, String> {
 
         private final String email;
+        private final long challengeId;
 
-        GetGameStateAsyncTask(final String email) {
+        GetGameStateAsyncTask(final String email, final long challengeId) {
             this.email = email;
+            this.challengeId = challengeId;
         }
 
         @Override
@@ -170,7 +175,7 @@ public class OnlineGameActivity extends AppCompatActivity {
             try {
                 final String apiUrlBase = getString(R.string.api_url);
                 final String magic = getString(R.string.magic);
-                final URL apiURL = new URL(apiUrlBase + "/game-state?magic=" + magic + "&email=" + email + "&id=" + challenge.getId());
+                final URL apiURL = new URL(apiUrlBase + "/game-state?magic=" + magic + "&email=" + email + "&id=" + challengeId);
                 Log.d(TAG, "apiURL: " + apiURL.toString());
                 final HttpURLConnection httpURLConnection = (HttpURLConnection) apiURL.openConnection();
                 httpURLConnection.setDoInput(true); // Allow Inputs
@@ -201,10 +206,9 @@ public class OnlineGameActivity extends AppCompatActivity {
         protected void onPostExecute(final String reply) {
             super.onPostExecute(reply);
             Log.d(TAG, "reply: " + reply);
-            final ReplyWithGame replyWithGame = new Gson().fromJson(reply, ReplyWithGame.class);
-            final Game game = replyWithGame.getGame();
-            gameView.setGame(game);
-            textView.setText("counter: " + game.getCounter()); // todo
+            final ReplyWithGameFullState replyWithFullGameState = new Gson().fromJson(reply, ReplyWithGameFullState.class);
+            final GameFullState gameFullState = replyWithFullGameState.getGameFullState();
+            if(gameFullState != null) gameView.update(gameFullState);
         }
     }
 
@@ -220,7 +224,7 @@ public class OnlineGameActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     Log.d(TAG, "getting game-state for challenge: " + challenge.getName());
-                    new GetGameStateAsyncTask(email).execute();
+                    new GetGameStateAsyncTask(email, challenge.getId()).execute();
                 }
             });
         }

@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @author Nearchos
  *         Created: 14-Aug-17
  */
-public class Grid implements Serializable { // consider renaming the class to Grid to accommodate more general grids (instead of just mazes)
+public class Grid implements Serializable {
 
     public static final int SHAPE_ONLY_UPPER_SIDE = 0x1; // -
     public static final int SHAPE_ONLY_LOWER_SIDE = 0x2; // _
@@ -35,7 +35,7 @@ public class Grid implements Serializable { // consider renaming the class to Gr
     }
 
     public Grid(int width, int height, String gridAsHex, int startingPositionX, int startingPositionY, int targetPositionX, int targetPositionY) {
-        this(width, height, gridAsHex, new Position(startingPositionX, startingPositionY), new Position(targetPositionX, targetPositionY));
+        this(width, height, gridAsHex, new Position(startingPositionY, startingPositionX), new Position(targetPositionY, targetPositionX));
     }
 
     public Long getId() {
@@ -54,13 +54,6 @@ public class Grid implements Serializable { // consider renaming the class to Gr
         return data;
     }
 
-    public int getGridCell(final int row, final int col) throws IndexOutOfBoundsException {
-        if(col < 0 || col > width) throw new IndexOutOfBoundsException("col not in bounds [0, " + width + ")");
-        if(row < 0 || row > height) throw new IndexOutOfBoundsException("row not in bounds [0, " + height + ")");
-        final char c = data.charAt(row * width + col);
-        return Integer.parseInt(Character.toString(c), 16);
-    }
-
     public Position getStartingPosition() {
         return startingPosition;
     }
@@ -68,29 +61,4 @@ public class Grid implements Serializable { // consider renaming the class to Gr
     public Position getTargetPosition() {
         return targetPosition;
     }
-
-    boolean hasWall(final Position position, final Direction direction) {
-        final int shape = getGridCell(position.getRow(), position.getCol());
-        switch (direction) {
-            case NORTH:
-                return (shape & SHAPE_ONLY_UPPER_SIDE) != 0;
-            case SOUTH:
-                return (shape & SHAPE_ONLY_LOWER_SIDE) != 0;
-            case WEST:
-                return (shape & SHAPE_ONLY_LEFT_SIDE) != 0;
-            case EAST:
-                return (shape & SHAPE_ONLY_RIGHT_SIDE) != 0;
-            default:
-                throw new RuntimeException("Invalid direction: " + direction);
-        }
-    }
-
-//    private static List<Integer> convertGridAsHexToInts(final String gridAsHex, final int width, final int height) {
-//        final List<Integer> grid = new ArrayList<>(width * height);
-//        for(int i = 0; i < width * height; i++) {
-//            final char c = gridAsHex.charAt(i);
-//            grid.add(Integer.parseInt(Character.toString(c), 16));
-//        }
-//        return grid;
-//    }
 }

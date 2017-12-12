@@ -2,7 +2,8 @@ package org.inspirecenter.amazechallenge.api;
 
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
-import org.inspirecenter.amazechallenge.model.Game;
+import com.google.gson.Gson;
+import org.inspirecenter.amazechallenge.model.GameFullState;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +17,8 @@ import static org.inspirecenter.amazechallenge.admin.RunEngineServlet.KEY_CACHED
 
 public class GameStateServlet extends HttpServlet {
 
+    private final Gson gson = new Gson();
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         final String magic = request.getParameter("magic");
@@ -24,7 +27,7 @@ public class GameStateServlet extends HttpServlet {
 
         final Vector<String> errors = new Vector<>();
 
-        Game game = null;
+        GameFullState gameFullState = null;
 
         if(magic == null || magic.isEmpty()) {
             errors.add("Missing or empty 'magic' parameter");
@@ -37,16 +40,16 @@ public class GameStateServlet extends HttpServlet {
         } else {
             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
 
-            game = (Game) memcacheService.get(KEY_CACHED_GAME.replaceAll("%", challengeIdAsString));
-            if(game == null) errors.add("Could not find game for challenge id '" + challengeIdAsString + "' in memcache");
+            gameFullState = (GameFullState) memcacheService.get(KEY_CACHED_GAME.replaceAll("%", challengeIdAsString));
+            if(gameFullState == null) errors.add("Could not find game for challenge id '" + challengeIdAsString + "' in memcache");
         }
 
         // return cached or generated value
         final String reply;
         if(errors.isEmpty()) {
-            reply = ReplyBuilder.createReplyWithGame(game);
+            reply = gson.toJson(new ReplyWithGameFullState(gameFullState));
         } else {
-            reply = ReplyBuilder.createReplyWithErrors(errors);
+            reply = gson.toJson(new ReplyWithErrors(errors));
         }
 
         final PrintWriter printWriter = response.getWriter();

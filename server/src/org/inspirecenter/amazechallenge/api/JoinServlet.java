@@ -3,14 +3,12 @@ package org.inspirecenter.amazechallenge.api;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.VoidWork;
 import org.inspirecenter.amazechallenge.data.*;
-import org.inspirecenter.amazechallenge.model.AmazeColor;
-import org.inspirecenter.amazechallenge.model.Challenge;
-import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.Shape;
+import org.inspirecenter.amazechallenge.model.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,12 +25,15 @@ import static org.inspirecenter.amazechallenge.api.Common.isValidEmailAddress;
 
 public class JoinServlet extends HttpServlet {
 
+    private final Gson gson = new Gson();
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         final String magic = request.getParameter("magic");
         final String name = request.getParameter("name");
         final String email = request.getParameter("email");
         final String colorName = request.getParameter("color");
+        final String iconName = request.getParameter("icon");
         final String shapeCode = request.getParameter("shape");
         final String challengeIdAsString = request.getParameter("id");
 
@@ -50,6 +51,8 @@ public class JoinServlet extends HttpServlet {
             errors.add("Missing or empty 'name' parameter");
         } else if(colorName == null || colorName.isEmpty()) {
             errors.add("Missing or empty 'color' parameter");
+        } else if(iconName == null || iconName.isEmpty()) {
+            errors.add("Missing or empty 'icon' parameter");
         } else if(shapeCode == null || shapeCode.isEmpty()) {
             errors.add("Missing or empty 'shape' parameter");
         } else if(challengeIdAsString == null || challengeIdAsString.isEmpty()) {
@@ -68,6 +71,7 @@ public class JoinServlet extends HttpServlet {
                         errors.add("Challenge has ended on: " + new Date(challenge.getEndTimestamp()));
                     } else {
                         final AmazeColor playerColor = AmazeColor.getByName(colorName);
+                        final AmazeIcon playerIcon = AmazeIcon.getByName(iconName);
                         final Shape playerShape = Shape.getShapeByCode(shapeCode);
 
                         ChallengeInstance ci = ofy().load()
@@ -85,7 +89,7 @@ public class JoinServlet extends HttpServlet {
                                         ofy().load().key(Key.create(ChallengeInstance.class, id)).now();
 
                                 // modify
-                                challengeInstance.addPlayer(email, name, playerColor, playerShape);
+                                challengeInstance.addPlayer(email, name, playerColor, playerIcon, playerShape);
 
                                 // save
                                 ofy().save().entity(challengeInstance).now();
@@ -98,16 +102,18 @@ public class JoinServlet extends HttpServlet {
                         final long gameId = game == null ? 0L : game.id;
 
                         // trigger processing of game state
-                        final Queue queue = QueueFactory.getDefaultQueue();
-                        TaskOptions taskOptions = TaskOptions.Builder
-                                .withUrl("/admin/run-engine")
-                                .param("magic", magic)
-                                .param("challenge-id", Long.toString(challengeId))
-                                .param("challenge-instance-id", Long.toString(challengeInstanceId))
-                                .param("game-id", Long.toString(gameId))
-//                                .countdownMillis(90000) // wait 90 seconds before the poll
-                                .method(TaskOptions.Method.GET);
-                        queue.add(taskOptions);
+                        if(gameId != 0L) {
+                            final Queue queue = QueueFactory.getDefaultQueue();
+                            TaskOptions taskOptions = TaskOptions.Builder
+                                    .withUrl("/admin/run-engine")
+                                    .param("magic", magic)
+                                    .param("challenge-id", Long.toString(challengeId))
+                                    .param("challenge-instance-id", Long.toString(challengeInstanceId))
+                                    .param("game-id", Long.toString(gameId))
+                                    .countdownMillis(1000) // wait 1 second before the call
+                                    .method(TaskOptions.Method.GET);
+                            queue.add(taskOptions);
+                        }
                     }
                 }
             } catch (NumberFormatException nfe) {
@@ -117,9 +123,9 @@ public class JoinServlet extends HttpServlet {
 
         final String reply;
         if(errors.isEmpty()) {
-            reply = ReplyBuilder.createReply();
+            reply = gson.toJson(new Reply());
         } else {
-            reply = ReplyBuilder.createReplyWithErrors(errors);
+            reply = gson.toJson(new ReplyWithErrors(errors));
         }
 
         final PrintWriter printWriter = response.getWriter();

@@ -34,19 +34,19 @@ public class Position implements Serializable {
         return col;
     }
 
-    Position moveNorth() {
+    public Position moveNorth() {
         return new Position(row - 1, col);
     }
 
-    Position moveSouth() {
+    public Position moveSouth() {
         return new Position(row + 1, col);
     }
 
-    Position moveWest() {
+    public Position moveWest() {
         return new Position(row, col - 1);
     }
 
-    Position moveEast() {
+    public Position moveEast() {
         return new Position(row, col + 1);
     }
 
@@ -69,6 +69,6 @@ public class Position implements Serializable {
 
     @Override
     public String toString() {
-        return "Position{id=" + id + ", row=" + row + ", col=" + col + '}';
+        return "{" + row + "," + col + "}";
     }
 }

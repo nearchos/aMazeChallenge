@@ -51,8 +51,18 @@ public enum AmazeColor {
         return COLOR_BLACK;
     }
 
-    public static AmazeColor getDefaultColor() {
+    public static AmazeColor getDefault() {
         return COLOR_BLACK;
+    }
+
+    public static int getIndex(final AmazeColor amazeColor) {
+        final AmazeColor [] amazeColors = values();
+        for(int i = 0; i < amazeColors.length; i++) {
+            if(amazeColors[i] == amazeColor) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override

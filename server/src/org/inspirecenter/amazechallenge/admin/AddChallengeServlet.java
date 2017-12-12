@@ -48,8 +48,7 @@ public class AddChallengeServlet extends HttpServlet {
                 final int tpY = Integer.parseInt(targetPositionY);
                 final Grid grid = new Grid(width, height, gridAsHex, spX, spY, tpX, tpY);
                 // todo customize other fields
-                final Challenge challenge = new Challenge(name, 1, description, true, true, true, 0L, Long.MAX_VALUE, grid);
-System.out.println("--challenge: " + challenge);
+                final Challenge challenge = new Challenge(name, 1, description, true, true, true, 0, 10, 0L, Long.MAX_VALUE, grid);
                 ObjectifyService.ofy().save().entity(challenge).now();
             } catch (NumberFormatException nfe) {
                 log.severe(request.getParameterMap() + " ... -> " + nfe.getMessage());

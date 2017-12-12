@@ -103,11 +103,6 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     }//end onCreateContentView()
 
     private void submitCode() {
-        final Intent intent = getIntent();
-        final Grid selectedGrid = (Grid) intent.getSerializableExtra(GameActivity.SELECTED_GAME_KEY);
-        final Intent intentPlay = new Intent(BlocklyActivity.this, GameActivity.class);
-        intentPlay.putExtra(GameActivity.SELECTED_GAME_KEY, selectedGrid);
-
         //Save the code first, but don't display message:
         try { mBlocklyActivityHelper.saveWorkspaceToAppDir(AUTOSAVE_FILENAME); }
         catch (FileNotFoundException | BlocklySerializerException e) { e.printStackTrace(); }

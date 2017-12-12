@@ -13,6 +13,9 @@ import java.io.Serializable;
 @com.googlecode.objectify.annotation.Entity
 public class Challenge implements Serializable {
 
+    public static final int DEFAULT_MIN_ACTIVE_PLAYERS = 1;
+    public static final int DEFAULT_MAX_ACTIVE_PLAYERS = 10;
+
     @com.googlecode.objectify.annotation.Id
     private Long id;
     @com.googlecode.objectify.annotation.Index
@@ -22,6 +25,8 @@ public class Challenge implements Serializable {
     private boolean canRepeat; // whether a player can play again and again
     private boolean canJoinAfterStart; // whether a player can join after the start of the challenge
     private boolean canStepOnEachOther; // whether players can step on each other
+    private int minActivePlayers = DEFAULT_MIN_ACTIVE_PLAYERS; // minimum number of players needed to start game
+    private int maxActivePlayers = DEFAULT_MAX_ACTIVE_PLAYERS; // maximum number of players allowed to be active at a time (the rest are in a queue)
     private long startTimestamp; // when the challenge starts being available, or zero if available from the beginning of time (timestamp in UTC)
     private long endTimestamp; // when the challenge ends being available, or zero if available forever (timestamp in UTC)
     private Grid grid;
@@ -30,7 +35,7 @@ public class Challenge implements Serializable {
         super();
     }
 
-    public Challenge(String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp, long endTimestamp, Grid grid) {
+    public Challenge(String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers, int maxActivePlayers, long startTimestamp, long endTimestamp, Grid grid) {
         this();
         this.name = name;
         this.apiVersion = apiVersion;
@@ -38,13 +43,15 @@ public class Challenge implements Serializable {
         this.canRepeat = canRepeat;
         this.canJoinAfterStart = canJoinAfterStart;
         this.canStepOnEachOther = canStepOnEachOther;
+        this.minActivePlayers = minActivePlayers;
+        this.maxActivePlayers = maxActivePlayers;
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
         this.grid = grid;
     }
 
     public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp, long endTimestamp, Grid grid) {
-        this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther, startTimestamp, endTimestamp, grid);
+        this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther, DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp, endTimestamp, grid);
         this.id = id;
     }
 
@@ -76,6 +83,14 @@ public class Challenge implements Serializable {
         return canStepOnEachOther;
     }
 
+    public int getMinActivePlayers() {
+        return minActivePlayers;
+    }
+
+    public int getMaxActivePlayers() {
+        return maxActivePlayers;
+    }
+
     public long getStartTimestamp() {
         return startTimestamp;
     }
@@ -97,6 +112,8 @@ public class Challenge implements Serializable {
                 ", canRepeat=" + canRepeat +
                 ", canJoinAfterStart=" + canJoinAfterStart +
                 ", canStepOnEachOther=" + canStepOnEachOther +
+                ", minActivePlayers=" + minActivePlayers +
+                ", maxActivePlayers=" + maxActivePlayers +
                 ", startTimestamp=" + startTimestamp +
                 ", endTimestamp=" + endTimestamp +
                 ", grid=" + grid +

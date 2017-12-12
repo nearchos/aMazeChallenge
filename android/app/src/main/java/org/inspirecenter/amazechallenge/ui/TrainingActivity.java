@@ -10,31 +10,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.R;
-import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.model.AmazeIcon;
 import org.inspirecenter.amazechallenge.model.Challenge;
-import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Shape;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_COLOR;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
+import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_ICON;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
 
 public class TrainingActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener {
@@ -50,10 +44,13 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
-        final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
-        final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
-        final int userIconIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PersonalizeActivity.PREFERENCE_KEY_ICON, 0);
-        final AmazeIcon userAmazeIcon = AmazeIcon.values()[userIconIndex];
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().getName());
+        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
+
+        final String userIconName = sharedPreferences.getString(PersonalizeActivity.PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
+        final AmazeIcon userAmazeIcon = AmazeIcon.getByName(userIconName);
 
         final GIFView gifView = findViewById(R.id.activity_training_icon);
         gifView.setImageResource(getResources().getIdentifier(userAmazeIcon.getResourceName(), "drawable", this.getPackageName()));
@@ -68,7 +65,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         emailTextView.setText(email);
         emailTextView.setTextColor(Color.parseColor(userAmazeColor.getCode()));
 
-        final RecyclerView challengesRecyclerView = findViewById(R.id.activity_training_mazes_list_view);
+        final RecyclerView challengesRecyclerView = findViewById(R.id.activity_training_challenges_list_view);
         challengesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         challengesRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
@@ -94,26 +91,20 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
 
     @Override
     public void onChallengeSelected(final Challenge challenge) {
-        final Grid selectedGrid = challenge.getGrid();
-        Log.d(TAG, "selectedGrid: " + selectedGrid );
-        final Game game = new Game(challenge.getId(), selectedGrid);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-//        final Map<String,Serializable> parametersMap = new HashMap<>();
-        final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
-//        parametersMap.put(InterpretedMazeSolver.PARAMETER_KEY_CODE, code);
 
         final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, "guest@example.com");
         final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, "Guest");
-        final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
-        final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
+        final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().getName());
+        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
+        final String userIconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
+        final AmazeIcon userAmazeIcon = AmazeIcon.getByName(userIconName);
         final Shape shape = Shape.TRIANGLE; // todo enable user selection
-        final Player player = new Player(email, name, userAmazeColor, shape);
-//        game.addPlayer(player, InterpretedMazeSolver.class, parametersMap);
-        game.addPlayer(player, code);
+        final Player player = new Player(email, name, userAmazeColor, userAmazeIcon, shape);
 
         final Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtra(GameActivity.SELECTED_GAME_KEY, game);
+        intent.putExtra(GameActivity.SELECTED_CHALLENGE_KEY, challenge);
+        intent.putExtra(GameActivity.SELECTED_PLAYER_KEY, player);
         startActivity(intent);
     }
 

@@ -6,6 +6,7 @@ import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -110,14 +111,19 @@ public class PersonalizeActivity extends AppCompatActivity {
     }
 
     private void updatePersonalization() {
-        final int userColorIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_COLOR, 0);
-        final AmazeColor userAmazeColor = AmazeColor.values()[userColorIndex];
-        // todo use selected color?
-        int userIconIndex = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREFERENCE_KEY_ICON, 0);
-        final AmazeIcon selectedAmazeIcon = AmazeIcon.values()[userIconIndex];
-        gifView.setImageResource(getDrawableResourceId(selectedAmazeIcon));
-        //gifView.setBackgroundColor(userAmazeColor.getCode());
-    }//end updatePersonalization()
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        {
+            final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.COLOR_BLACK.getName());
+            final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
+            // todo use selected color?
+        }
+        {
+            final String userIconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
+            final AmazeIcon selectedAmazeIcon = AmazeIcon.getByName(userIconName);
+            gifView.setImageResource(getDrawableResourceId(selectedAmazeIcon));
+            //gifView.setBackgroundColor(userAmazeColor.getCode());
+        }
+    }
 
     int getDrawableResourceId(final AmazeIcon amazeIcon) {
         return getResources().getIdentifier(amazeIcon.getResourceName(), "drawable", this.getPackageName());

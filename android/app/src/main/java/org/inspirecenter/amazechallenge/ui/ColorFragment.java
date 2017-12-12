@@ -7,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -40,7 +38,7 @@ public class ColorFragment extends Fragment {
             if (isBrightColor(Color.parseColor(color.getCode()))) colorName.setTextColor(Color.BLACK);
         }//end if nonnull
         else {
-            colorView.setBackgroundColor(Color.parseColor(AmazeColor.getDefaultColor().getCode()));
+            colorView.setBackgroundColor(Color.parseColor(AmazeColor.getDefault().getCode()));
             colorName.setText("error");
         }//end if null
 

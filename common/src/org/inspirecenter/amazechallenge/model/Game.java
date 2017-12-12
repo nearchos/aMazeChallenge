@@ -3,13 +3,12 @@ package org.inspirecenter.amazechallenge.model;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
+import org.inspirecenter.amazechallenge.controller.RuntimeController;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-
-import static java.util.Collections.EMPTY_MAP;
 
 /**
  * @author Nearchos
@@ -31,8 +30,13 @@ public class Game implements Serializable {
     private long lastUpdated = 0;
     private long counter = 0;
     private Grid grid;
+    private List<String> activePlayers = new Vector<>();
+    private List<String> queuedPlayers = new Vector<>();
     private Map<String,Player> playerEmailsToPlayers = new HashMap<>();
+    private Map<String,PlayerPositionAndDirection> playerEmailsToPositionAndDirections = new HashMap<>();
+    @com.googlecode.objectify.annotation.Ignore
     private Map<String,String> playerEmailsToMazeSolverCodes = new HashMap<>();
+    @com.googlecode.objectify.annotation.Ignore
     private Map<String,MazeSolver> playerEmailsToMazeSolvers = new HashMap<>();
 
     private Map<String,PlayerStatistics> playerEmailsToStatistics = new HashMap<>();
@@ -47,12 +51,20 @@ public class Game implements Serializable {
         this.grid = grid;
     }
 
+    public Map<String, Player> getPlayerEmailsToPlayers() {
+        return playerEmailsToPlayers;
+    }
+
     public Long getChallengeId() {
         return challengeId;
     }
 
     public long getCounter() {
         return counter;
+    }
+
+    public Grid getGrid() {
+        return grid;
     }
 
     public long getLastUpdated() {
@@ -80,7 +92,7 @@ public class Game implements Serializable {
     }
 
     public int getCell(final int row, final int col) {
-        return grid.getGridCell(row, col);
+        return RuntimeController.getGridCell(grid, row, col);
     }
 
     public Position getStartingPosition() {
@@ -111,67 +123,80 @@ public class Game implements Serializable {
     public boolean addPlayer(final Player player, final String code) {
         final String playerEmail = player.getEmail();
         final boolean replaced = playerEmailsToPlayers.containsKey(playerEmail);
-        player.init(grid.getStartingPosition(), DEFAULT_STARTING_DIRECTION);
+        playerEmailsToPositionAndDirections.put(playerEmail, new PlayerPositionAndDirection(grid.getStartingPosition(), DEFAULT_STARTING_DIRECTION));
+        activePlayers.remove(playerEmail);
+        queuedPlayers.add(playerEmail);
         playerEmailsToPlayers.put(playerEmail, player);
+        playerEmailsToMazeSolvers.remove(playerEmail); // clear old maze solver if there
         playerEmailsToMazeSolverCodes.put(playerEmail, code);
         playerEmailsToStatistics.put(playerEmail, new PlayerStatistics());
-        final MazeSolver mazeSolver = new InterpretedMazeSolver(this, player.getEmail());
-        mazeSolver.setParameter(InterpretedMazeSolver.PARAMETER_KEY_CODE, playerEmailsToMazeSolverCodes.get(player.getEmail()));
-        playerEmailsToMazeSolvers.put(playerEmail, mazeSolver);
         return replaced;
     }
 
-    private void removePlayer(final String playerEmail) {
+    public void removePlayer(final String playerEmail) {
+        activePlayers.remove(playerEmail);
+        queuedPlayers.remove(playerEmail);
         playerEmailsToPlayers.remove(playerEmail);
+        playerEmailsToMazeSolvers.remove(playerEmail);
         playerEmailsToMazeSolverCodes.remove(playerEmail);
         playerEmailsToStatistics.remove(playerEmail);
-        playerEmailsToMazeSolvers.remove(playerEmail);
+    }
+
+    public void activateNextPlayer() {
+        assert !queuedPlayers.isEmpty();
+        final String nextPlayerEmail = queuedPlayers.remove(0); // get first in line from 'queued'
+        activePlayers.add(nextPlayerEmail);
     }
 
     public Collection<Player> getAllPlayers() {
         return playerEmailsToPlayers.values();
     }
 
-    public void applyNextMove() {
-        for(final Player player : getAllPlayers()) {
-            final MazeSolver mazeSolver = playerEmailsToMazeSolvers.get(player.getEmail());
-            final PlayerMove nextPlayerMove = mazeSolver.getNextMove();
-            this.applyPlayerMove(nextPlayerMove, player);
-            this.playerEmailsToStatistics.get(player.getEmail()).increaseMoves(nextPlayerMove);
-        }
+    public List<String> getActivePlayers() {
+        return new Vector<>(activePlayers);
     }
 
-    public boolean hasActivePlayers() {
-        return !getAllPlayers().isEmpty();
+    public List<String> getQueuedPlayers() {
+        return new Vector<>(queuedPlayers);
     }
 
-    public boolean hasSomeoneReachedTheTargetPosition() {
-        final Position targetPosition = getTargetPosition();
-        boolean someoneHasReachedTheTargetPosition = false;
-        for(final Player player : getAllPlayers()) {
-            if(targetPosition.equals(player.getPosition())) {
-                someoneHasReachedTheTargetPosition = true;
+    public GameLightState getLightState() {
+        return new GameLightState(playerEmailsToPositionAndDirections, queuedPlayers);
+    }
+
+    public Map<String,PlayerPositionAndDirection> getPlayerPositionAndDirections() {
+        return new HashMap<>(playerEmailsToPositionAndDirections);
+    }
+
+    public PlayerPositionAndDirection getPlayerPositionAndDirection(final String playerEmail) {
+        return playerEmailsToPositionAndDirections.get(playerEmail);
+    }
+
+    public void setPlayerPositionAndDirection1(final String playerEmail, final PlayerPositionAndDirection playerPositionAndDirection) {
+        playerEmailsToPositionAndDirections.put(playerEmail, playerPositionAndDirection);
+    }
+
+    public Player getPlayer(final String playerEmail) {
+        return playerEmailsToPlayers.get(playerEmail);
+    }
+
+    public MazeSolver getMazeSolver(final String playerEmail) {
+        // just-in-time-instantiation of the MazeSolver
+        MazeSolver mazeSolver = playerEmailsToMazeSolvers.get(playerEmail);
+        if(mazeSolver == null) {
+            mazeSolver = new InterpretedMazeSolver(this, playerEmail);
+            final String code = playerEmailsToMazeSolverCodes.get(playerEmail);
+            if(code != null) {
+                mazeSolver.setParameter(InterpretedMazeSolver.PARAMETER_KEY_CODE, code);
+                playerEmailsToMazeSolvers.put(playerEmail, mazeSolver);
             }
         }
-        return someoneHasReachedTheTargetPosition;
+
+        return mazeSolver;
     }
 
-    public boolean removePlayersWhoHaveReachedTheTargetPosition() {
-        final Position targetPosition = getTargetPosition();
-        boolean someoneHasReachedTheTargetPosition = false;
-        final List<String> emailsOfPlayersToBeRemoved = new Vector<>();
-        for(final Player player : getAllPlayers()) {
-            if(targetPosition.equals(player.getPosition())) {
-                someoneHasReachedTheTargetPosition = true;
-                emailsOfPlayersToBeRemoved.add(player.getEmail());
-            }
-        }
-
-        for(final String playerEmail : emailsOfPlayersToBeRemoved) {
-            removePlayer(playerEmail);
-        }
-
-        return someoneHasReachedTheTargetPosition;
+    public void increasePlayerMoves(final String playerEmail, final PlayerMove playerMove) {
+        playerEmailsToStatistics.get(playerEmail).increaseMoves(playerMove);
     }
 
     private String getStatisticsDescription(final String playerEmail) {
@@ -196,23 +221,20 @@ public class Game implements Serializable {
         return stringBuilder.toString();
     }
 
-    private void applyPlayerMove(final PlayerMove playerMove, final Player player) {
-        switch (playerMove) {
-            case TURN_CLOCKWISE:
-                player.turnClockwise();
-                break;
-            case TURN_COUNTERCLOCKWISE:
-                player.turnCounterClockwise();
-                break;
-            case MOVE_FORWARD:
-                if(canMoveForward(player)) player.moveForward();
-                break;
-            case NO_MOVE:
-                // Log.d("grid-challenge", "move: " + playerMove);
-                break;
-            default:
-                throw new RuntimeException("Invalid PlayerMove: " + playerMove);
-        }
+    public boolean hasActivePlayers() {
+        return !activePlayers.isEmpty();
+    }
+
+    public int getNumberOfActivePlayers() {
+        return activePlayers.size();
+    }
+
+    public boolean hasQueuedPlayers() {
+        return !queuedPlayers.isEmpty();
+    }
+
+    public boolean hasWall(final Position position, final Direction direction) {
+        return RuntimeController.hasWall(grid, position, direction);
     }
 
     /**
@@ -234,7 +256,7 @@ public class Game implements Serializable {
      * @return the {@link Player}'s {@link Direction}
      */
     private Direction getDirection(final Player player) {
-        return player.getDirection();
+        return playerEmailsToPositionAndDirections.get(player.getEmail()).getDirection();
     }
 
     /**
@@ -244,20 +266,19 @@ public class Game implements Serializable {
      * @return true iff the {@link Player} can move 'forward', i.e. along its {@link Direction}
      */
     public boolean canMoveForward(final String playerEmail) {
-        return canMoveForward(playerEmailsToPlayers.get(playerEmail));
+        final PlayerPositionAndDirection playerPositionAndDirection = playerEmailsToPositionAndDirections.get(playerEmail);
+        return !RuntimeController.hasWall(grid, playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection());
     }
 
-    /**
-     * Checks if the {@link Player} can move 'forward', i.e. along its {@link Direction}.
-     *
-     * @param player the {@link Player} to be checked
-     * @return true iff the {@link Player} can move 'forward', i.e. along its {@link Direction}
-     */
-    private boolean canMoveForward(final Player player) {
-        final Position playerPosition = player.getPosition();
-        final Direction playerDirection = player.getDirection();
-        return !grid.hasWall(playerPosition, playerDirection);
-    }
+//    /**
+//     * Checks if the {@link Player} can move 'forward', i.e. along its {@link Direction}.
+//     *
+//     * @param player the {@link Player} to be checked
+//     * @return true iff the {@link Player} can move 'forward', i.e. along its {@link Direction}
+//     */
+//    private boolean canMoveForward(final Player player) {
+//        return canMoveForward(playerEmailsToPlayers.get(player.getEmail()));
+//    }
 
     /**
      * Checks if the {@link Player} can move 'forward', i.e. along its {@link Direction}.
@@ -266,20 +287,19 @@ public class Game implements Serializable {
      * @return true iff the {@link Player} can move 'forward', i.e. along its {@link Direction}
      */
     public boolean canMoveBackward(final String playerEmail) {
-        return canMoveBackward(playerEmailsToPlayers.get(playerEmail));
+        final PlayerPositionAndDirection playerPositionAndDirection = playerEmailsToPositionAndDirections.get(playerEmail);
+        return !RuntimeController.hasWall(grid, playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection());
     }
 
-    /**
-     * Checks if the {@link Player} can move 'backwards', i.e. opposite to its {@link Direction}.
-     *
-     * @param player the {@link Player} to be checked
-     * @return true iff the {@link Player} can move 'backwards', i.e. opposite to its {@link Direction}
-     */
-    private boolean canMoveBackward(final Player player) {
-        final Position playerPosition = player.getPosition();
-        final Direction oppositeDirection = player.getDirection().opposite();
-        return !grid.hasWall(playerPosition, oppositeDirection);
-    }
+//    /**
+//     * Checks if the {@link Player} can move 'backwards', i.e. opposite to its {@link Direction}.
+//     *
+//     * @param player the {@link Player} to be checked
+//     * @return true iff the {@link Player} can move 'backwards', i.e. opposite to its {@link Direction}
+//     */
+//    private boolean canMoveBackward(final Player player) {
+//        return canMoveBackward(player.getEmail());
+//    }
 
     /**
      * Checks if the {@link Player} can move 'left', relative to its {@link Direction}.
@@ -288,20 +308,20 @@ public class Game implements Serializable {
      * @return true iff the {@link Player} can move 'left', relative to its {@link Direction}
      */
     public boolean canMoveLeft(final String playerEmail) {
-        return canMoveLeft(playerEmailsToPlayers.get(playerEmail));
+        final PlayerPositionAndDirection playerPositionAndDirection = playerEmailsToPositionAndDirections.get(playerEmail);
+        final Direction leftDirection = playerPositionAndDirection.getDirection().turnCounterClockwise();
+        return !RuntimeController.hasWall(grid, playerPositionAndDirection.getPosition(), leftDirection);
     }
 
-    /**
-     * Checks if the {@link Player} can move 'left', relative to its {@link Direction}.
-     *
-     * @param player the {@link Player} to be checked
-     * @return true iff the {@link Player} can move 'left', relative to its {@link Direction}
-     */
-    private boolean canMoveLeft(final Player player) {
-        final Position playerPosition = player.getPosition();
-        final Direction leftDirection = player.getDirection().turnCounterClockwise();
-        return !grid.hasWall(playerPosition, leftDirection);
-    }
+//    /**
+//     * Checks if the {@link Player} can move 'left', relative to its {@link Direction}.
+//     *
+//     * @param player the {@link Player} to be checked
+//     * @return true iff the {@link Player} can move 'left', relative to its {@link Direction}
+//     */
+//    private boolean canMoveLeft(final Player player) {
+//        return canMoveLeft(player.getEmail());
+//    }
 
     /**
      * Checks if the {@link Player} can move 'right', relative to its {@link Direction}.
@@ -310,20 +330,20 @@ public class Game implements Serializable {
      * @return true iff the {@link Player} can move 'right', relative to its {@link Direction}
      */
     public boolean canMoveRight(final String playerEmail) {
-        return canMoveRight(playerEmailsToPlayers.get(playerEmail));
+        final PlayerPositionAndDirection playerPositionAndDirection = playerEmailsToPositionAndDirections.get(playerEmail);
+        final Direction rightDirection = playerPositionAndDirection.getDirection().turnClockwise();
+        return !RuntimeController.hasWall(grid, playerPositionAndDirection.getPosition(), rightDirection);
     }
 
-    /**
-     * Checks if the {@link Player} can move 'right', relative to its {@link Direction}.
-     *
-     * @param player the {@link Player} to be checked
-     * @return true iff the {@link Player} can move 'right', relative to its {@link Direction}
-     */
-    private boolean canMoveRight(final Player player) {
-        final Position playerPosition = player.getPosition();
-        final Direction rightDirection = player.getDirection().turnClockwise();
-        return !grid.hasWall(playerPosition, rightDirection);
-    }
+//    /**
+//     * Checks if the {@link Player} can move 'right', relative to its {@link Direction}.
+//     *
+//     * @param player the {@link Player} to be checked
+//     * @return true iff the {@link Player} can move 'right', relative to its {@link Direction}
+//     */
+//    private boolean canMoveRight(final Player player) {
+//        return canMoveRight(player.getEmail());
+//    }
 
     /**
      * Get {@link MazeSolver} implementation by instantiating {@link Class<MazeSolver>} implementing

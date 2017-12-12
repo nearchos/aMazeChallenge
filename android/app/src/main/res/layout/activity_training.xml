@@ -72,8 +72,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <View
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/activity_training_mazes_list_view"
+        android:id="@+id/activity_training_challenges_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
