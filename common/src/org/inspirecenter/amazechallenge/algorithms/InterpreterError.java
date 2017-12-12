@@ -2,6 +2,7 @@ package org.inspirecenter.amazechallenge.algorithms;
 
 import org.inspirecenter.amazechallenge.algorithms.errorfinder.EmptyCompoundStatementFinder;
 import org.inspirecenter.amazechallenge.algorithms.errorfinder.EmptyConditionalFinder;
+import org.inspirecenter.amazechallenge.algorithms.errorfinder.EmptyInitFunctionFinder;
 import org.inspirecenter.amazechallenge.algorithms.errorfinder.EmptyRunFunctionFinder;
 import org.inspirecenter.amazechallenge.algorithms.errorfinder.ErrorFinder;
 import org.inspirecenter.amazechallenge.algorithms.errorfinder.FunctionInFunctionFinder;
@@ -25,7 +26,9 @@ public enum InterpreterError {
     INFINITE_LOOP("Infinite loop found.", ERROR, InfiniteLoopFinder.class),
     EMPTY_CONDITIONAL("Empty conditional found.", ERROR, EmptyConditionalFinder.class),
     EMPTY_STATEMENT_BODY("Empty compound statement body found.", WARNING, EmptyCompoundStatementFinder.class),
-    REDEFINITION_RUN_FUNC("Function \"Run\" is already defined.", ERROR, RunRedefinitionFinder.class);
+    REDEFINITION_RUN_FUNC("Function \"Run\" is already defined.", ERROR, RunRedefinitionFinder.class),
+    EMPTY_INIT_FUNC("Empty \"Initialize\" function found.",WARNING, EmptyInitFunctionFinder.class)
+    ;
 
     public final String name;
     public final InterpreterErrorType type;
@@ -42,14 +45,7 @@ public enum InterpreterError {
         return name;
     }
 
-    public enum InterpreterErrorType {
-        WARNING,
-        ERROR
-    }//end enum InterpreterErrorType
-
     public ArrayList<InterpreterError> executeErrorFinder(final String code) {
-        //TODO: Implement running check for this InterpreterError based on the execute() function of its errorFinder class.
-        /*
         Method requiredMethod = null;
         Method[] methods = errorFinder.getMethods();
         try {
@@ -64,8 +60,12 @@ public enum InterpreterError {
             return (ArrayList<InterpreterError>) requiredMethod.invoke(o, new Object[]{code});
         }//end try
         catch (Exception e) { e.printStackTrace(); }
-        */
         return null;
     }//end executeErrorFinder()
+
+    public enum InterpreterErrorType {
+        WARNING,
+        ERROR
+    }//end enum InterpreterErrorType
 
 }//end class InterpreterError
