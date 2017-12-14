@@ -68,7 +68,7 @@ public class RunEngineServlet extends HttpServlet {
 
                 final Challenge challenge = ofy().load().key(Key.create(Challenge.class, challengeId)).now();
 
-                gameFullState = ofy().transact(() -> {
+                final Game game = ofy().transact(() -> {
 
                     final Game initialGame = ofy().load().key(Key.create(Game.class, gameId)).now();
 
@@ -78,10 +78,12 @@ public class RunEngineServlet extends HttpServlet {
                     // store new game in data store
                     ofy().save().entity(updatedGame).now();
 
-                    return updatedGame.getFullState(challenge.getGrid());
+                    return updatedGame;
                 });
 
 //log.info("Storing game in memcache: " + KEY_CACHED_GAME.replaceAll("%", Long.toString(challengeId)) + " -> " + gameFullState);
+
+                gameFullState = game.getFullState(challenge.getGrid());
 
                 // 1. update game state
                 memcacheService.put(getKey(challengeId), gameFullState);
@@ -93,7 +95,8 @@ public class RunEngineServlet extends HttpServlet {
                 log.info("Scheduling next run...");
 
                 // check if active or queued players players, then repeat
-                if(challenge.hasEnded()) {
+                if(challenge.isActive() && game.hasActiveOrQueuedPlayers()) {
+
                     // schedule next run
                     final Queue queue = QueueFactory.getDefaultQueue();
                     TaskOptions taskOptions = TaskOptions.Builder
@@ -128,6 +131,7 @@ public class RunEngineServlet extends HttpServlet {
     }
 
     private Game implementGameLogic(final Challenge challenge, final Game game) {
+        final long startTime = System.currentTimeMillis();
 
         final Grid grid = challenge.getGrid();
 
@@ -143,7 +147,7 @@ public class RunEngineServlet extends HttpServlet {
         // now check if we can upgrade any players from 'queued' to 'active'
         while(game.getNumberOfActivePlayers() < challenge.getMaxActivePlayers() && game.hasQueuedPlayers()) {
             // activate players as needed
-            game.activateNextPlayer();
+            game.activateNextPlayer(grid);
         }
 
 // System.out.println("ActivePlayers: " + game.getActivePlayers()); // todo delete
@@ -163,7 +167,7 @@ public class RunEngineServlet extends HttpServlet {
         // todo
 
         // update game with number of rounds executed
-        game.touch();
+        game.touch(System.currentTimeMillis() - startTime);
 
         return game;
     }
@@ -172,3 +176,4 @@ public class RunEngineServlet extends HttpServlet {
         return KEY_CACHED_GAME.replaceAll("%", Long.toString(challengeId));
     }
 }
+

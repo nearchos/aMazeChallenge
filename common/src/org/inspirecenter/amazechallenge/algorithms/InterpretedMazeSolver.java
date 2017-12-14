@@ -37,12 +37,12 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 
     @Override
     Direction getDirection() {
-        return game.getPlayerPositionAndDirection(playerEmail).getDirection();
+        return game.getDirection(playerEmail);
     }
 
     @Override
     Position getPosition() {
-        return game.getPlayerPositionAndDirection(playerEmail).getPosition();
+        return game.getPosition(playerEmail);
     }
 
     // todo consider upgrading to latest rhino: https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Download_Rhino

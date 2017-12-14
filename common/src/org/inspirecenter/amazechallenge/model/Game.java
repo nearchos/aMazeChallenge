@@ -13,7 +13,7 @@ public class Game implements Serializable {
     public static final long ONE_SECOND = 1000L;
 
     @com.googlecode.objectify.annotation.Id
-    public Long id = 0L; // todo check if can convert to private -- i.e. if objectify allows it
+    public Long id; // todo check if can convert to private -- i.e. if objectify allows it
 
     @com.googlecode.objectify.annotation.Index
     public Long challengeId; // todo check if can convert to private
@@ -23,6 +23,7 @@ public class Game implements Serializable {
     private List<String> waitingPlayers = new Vector<>();
     private Map<String,Player> allPlayerEmailsToPlayers = new HashMap<>();
     private Map<String,PlayerPositionAndDirection> activePlayerEmailsToPositionAndDirections = new HashMap<>();
+    private long lastExecutionTime = 0;
     private long lastUpdated = 0;
     private long counter = 0;
 
@@ -66,9 +67,15 @@ public class Game implements Serializable {
     /**
      * Called to indicate the completion of a round
      */
-    public void touch() {
+    public void touch(final long lastExecutionTime) {
+        this.lastExecutionTime = lastExecutionTime;
         lastUpdated = System.currentTimeMillis();
         counter++;
+System.out.println("round: " + counter + ", duration: " + lastExecutionTime); // todo delete
+    }
+
+    public long getLastExecutionTime() {
+        return lastExecutionTime;
     }
 
     /**
@@ -79,11 +86,15 @@ public class Game implements Serializable {
      */
     public boolean addPlayer(final Player player) {
         final String playerEmail = player.getEmail();
+        allPlayerEmailsToPlayers.put(playerEmail, player);
+        return resetPlayer(playerEmail);
+    }
+
+    public boolean resetPlayer(final String playerEmail) {
         boolean existed = false;
         if(activePlayers.remove(playerEmail)) existed = true;
         if(queuedPlayers.remove(playerEmail)) existed = true;
         waitingPlayers.add(playerEmail);
-        allPlayerEmailsToPlayers.put(playerEmail, player);
         return existed;
     }
 
@@ -142,6 +153,10 @@ public class Game implements Serializable {
 
     public List<String> getWaitingPlayers() { return new Vector<>(waitingPlayers); }
 
+    public boolean hasActiveOrQueuedPlayers() {
+        return (!activePlayers.isEmpty()) || (!queuedPlayers.isEmpty());
+    }
+
     public GameLightState getLightState() {
         return new GameLightState(activePlayerEmailsToPositionAndDirections, queuedPlayers, lastUpdated, counter);
     }
@@ -160,6 +175,17 @@ public class Game implements Serializable {
 
     public void setPlayerPositionAndDirection(final String playerEmail, final PlayerPositionAndDirection playerPositionAndDirection) {
         activePlayerEmailsToPositionAndDirections.put(playerEmail, playerPositionAndDirection);
+    }
+
+    /**
+     * Returns the {@link Player}'s {@link Position} in the {@link Game}'s {@link Grid}.
+     *
+     * @param playerEmail the email of the {@link Player} to be checked
+     * @return the {@link Player}'s {@link Position}
+     */
+    public Position getPosition(final String playerEmail) {
+System.out.println("activePlayerEmailsToPositionAndDirections: " + activePlayerEmailsToPositionAndDirections); // todo delete
+        return activePlayerEmailsToPositionAndDirections.get(playerEmail).getPosition();
     }
 
     /**

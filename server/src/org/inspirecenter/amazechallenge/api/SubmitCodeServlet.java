@@ -8,6 +8,7 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
+import org.inspirecenter.amazechallenge.algorithms.LeftWallFollower;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
@@ -74,7 +75,8 @@ public class SubmitCodeServlet extends HttpServlet {
                         if(!game.containsPlayer(playerEmail)) {
                             errors.add("Player not found in specified challenge for 'email': " + playerEmail);
                         } else {
-                            final MazeSolver mazeSolver = new InterpretedMazeSolver(challenge, game, playerEmail, code);
+                            game.resetPlayer(playerEmail);
+                            final MazeSolver mazeSolver = new LeftWallFollower(challenge, game, playerEmail); // todo new InterpretedMazeSolver(challenge, game, playerEmail, code);
                             MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
                             memcacheService.put(getKey(challengeId, playerEmail), mazeSolver);
 
