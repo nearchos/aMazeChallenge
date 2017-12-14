@@ -16,12 +16,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
+import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.Player;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -30,7 +34,6 @@ public class GameActivity extends AppCompatActivity {
 
     public static final String TAG = "aMaze";
 
-//    public static final String SELECTED_GAME_KEY = "selected_game";
     public static final String SELECTED_CHALLENGE_KEY = "selected_challenge";
     public static final String SELECTED_PLAYER_KEY = "selected_player";
 
@@ -96,10 +99,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private Handler handler;
-    private MazeRunner mazeRunner;
     private Timer timer = new Timer();
     private int periodIndex = DEFAULT_PERIOD_INDEX;
     private long period = PERIOD_OPTIONS[periodIndex];
+
+    private Map<String,MazeSolver> playerEmailToMazeSolvers = new HashMap<>();
 
     @Override
     protected void onResume() {
@@ -107,19 +111,22 @@ public class GameActivity extends AppCompatActivity {
 
         final Intent intent = getIntent();
         this.challenge = (Challenge) intent.getSerializableExtra(SELECTED_CHALLENGE_KEY);
-        this.game = new Game(challenge.getId(), challenge.getGrid());
+        this.gameView.setGrid(challenge.getGrid());
+        this.game = new Game();
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
-        game.addPlayer(player, code);
-        game.activateNextPlayer();
+        final String playerEmail = player.getEmail();
+        playerEmailToMazeSolvers.put(player.getEmail(), new InterpretedMazeSolver(challenge, game, playerEmail, code));
+        game.addPlayer(player);
+        game.queuePlayer(playerEmail);
+        game.activateNextPlayer(challenge.getGrid());
 
         handler = new Handler();
-        mazeRunner = new MazeRunner();
 
         gameView.update(game);
 
-        timer.schedule(mazeRunner, 0L, PERIOD_OPTIONS[0]);
+        timer.schedule(new MazeRunner(), 0L, PERIOD_OPTIONS[0]);
     }
 
     @Override
@@ -129,18 +136,18 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void makeNextMove() {
-        RuntimeController.makeMove(game);
+        RuntimeController.makeMove(challenge.getGrid(), game, playerEmailToMazeSolvers);
         gameView.update(game);
         gameView.invalidate();
         // update movesDataTextView
-        movesDataTextView.setText(game.getStatisticsDescription());
-        if(RuntimeController.hasSomeoneReachedTheTargetPosition(game)) {
+//        movesDataTextView.setText(game.getStatisticsDescription()); // todo
+        if(RuntimeController.hasSomeoneReachedTheTargetPosition(game, challenge.getGrid())) {
             finish();
         }
     }
 
     private class MazeRunner extends TimerTask {
-        private int elapsed = 0;
+        private long elapsed = 0;
 
         @Override
         public void run() {
@@ -148,12 +155,7 @@ public class GameActivity extends AppCompatActivity {
             if(elapsed >= period) {
                 elapsed = 0;
                 if(autoPlayButton.isChecked()) {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            makeNextMove();
-                        }
-                    });
+                    handler.post(() -> makeNextMove());
                 }
             }
         }

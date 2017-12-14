@@ -7,15 +7,13 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
+import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.api.Common;
 import org.inspirecenter.amazechallenge.api.ReplyWithErrors;
 import org.inspirecenter.amazechallenge.api.ReplyWithGameFullState;
+import org.inspirecenter.amazechallenge.api.SubmitCodeServlet;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
-import org.inspirecenter.amazechallenge.data.ChallengeInstance;
-import org.inspirecenter.amazechallenge.model.Challenge;
-import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.GameFullState;
-import org.inspirecenter.amazechallenge.model.Player;
+import org.inspirecenter.amazechallenge.model.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -37,6 +38,9 @@ public class RunEngineServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
 
+    // update values in memcache
+    private final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         log.info("Running 'RunEngineServlet'");
@@ -45,8 +49,7 @@ public class RunEngineServlet extends HttpServlet {
 
         final String magic = request.getParameter("magic");
         final String challengeIdAsString = request.getParameter("challenge-id");
-        final String challengeInstanceIdAsString = request.getParameter("challenge-instance-id");
-        final String gameIdAsString = request.getParameter("game-id");
+        final String gameIdAsString = request.getParameter("game-id"); // todo is this necessary? or could we simply query ofy by challengeId?
 
         GameFullState gameFullState = null;
 
@@ -56,60 +59,49 @@ public class RunEngineServlet extends HttpServlet {
             errors.add("Invalid 'magic' parameter");
         } else if(challengeIdAsString == null || challengeIdAsString.isEmpty()) {
             errors.add("Missing or empty challenge 'id'");
-        } else if(challengeInstanceIdAsString == null || challengeInstanceIdAsString.isEmpty()) {
-            errors.add("Missing or empty challenge instance 'id'");
         } else if(gameIdAsString == null || gameIdAsString.isEmpty()) {
             errors.add("Missing or empty game 'id'");
         } else {
             try {
                 final long challengeId = Long.parseLong(challengeIdAsString);
-                final long challengeInstanceId = Long.parseLong(challengeInstanceIdAsString);
                 final long gameId = Long.parseLong(gameIdAsString);
 
+                final Challenge challenge = ofy().load().key(Key.create(Challenge.class, challengeId)).now();
 
                 gameFullState = ofy().transact(() -> {
-                    final Challenge challenge = ofy().load().key(Key.create(Challenge.class, challengeId)).now();
 
-                    final ChallengeInstance challengeInstance = ofy().load().key(Key.create(ChallengeInstance.class, challengeInstanceId)).now();
-
-                    Game game = gameId == 0 ? new Game(challengeId, challenge.getGrid()) : ofy().load().key(Key.create(Game.class, gameId)).now();
+                    final Game initialGame = ofy().load().key(Key.create(Game.class, gameId)).now();
 
                     // update game state
-                    game = implementGameLogic(challenge, challengeInstance, game);
+                    final Game updatedGame = implementGameLogic(challenge, initialGame);
 
                     // store new game in data store
-                    ofy().save().entity(game).now();
-                    ofy().save().entity(challengeInstance).now();
+                    ofy().save().entity(updatedGame).now();
 
-                    return new GameFullState(game.getPlayerPositionAndDirections(), game.getQueuedPlayers(), game.getPlayerEmailsToPlayers(), game.getGrid(), game.getLastUpdated(), game.getCounter());
+                    return updatedGame.getFullState(challenge.getGrid());
                 });
-
-                // update values in memcache
-                final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
 
 //log.info("Storing game in memcache: " + KEY_CACHED_GAME.replaceAll("%", Long.toString(challengeId)) + " -> " + gameFullState);
 
                 // 1. update game state
-                memcacheService.put(KEY_CACHED_GAME.replaceAll("%", Long.toString(challengeId)), gameFullState);
+                memcacheService.put(getKey(challengeId), gameFullState);
 
                 // 2. update leader board
 //        final Object leaderBoard = memcacheService.get(KEY_CACHED_LEADER_BOARD.replaceAll("%", Long.toString(challenge.getId())));
-                // todo ... update leader board
-//        memcacheService.put(KEY_CACHED_LEADER_BOARD.replaceAll("%", Long.toString(challenge.getId())), leaderBoard);
+                // todo ... update leader board and save in memcache
 
                 log.info("Scheduling next run...");
 
                 // check if active or queued players players, then repeat
-                if(!gameFullState.getAllPlayerEmails().isEmpty()) {
+                if(challenge.hasEnded()) {
                     // schedule next run
                     final Queue queue = QueueFactory.getDefaultQueue();
                     TaskOptions taskOptions = TaskOptions.Builder
                             .withUrl("/admin/run-engine")
                             .param("magic", magic)
                             .param("challenge-id", Long.toString(challengeId))
-                            .param("challenge-instance-id", Long.toString(challengeInstanceId))
                             .param("game-id", Long.toString(gameId))
-                            .countdownMillis(2500) // wait 1/10th of a second before running again
+                            .countdownMillis(2000) // wait 1/10th of a second before running again // todo adjust as needed
                             .method(TaskOptions.Method.GET);
                     queue.add(taskOptions);
                 }
@@ -135,20 +127,16 @@ public class RunEngineServlet extends HttpServlet {
         printWriter.println(reply);
     }
 
-    private Game implementGameLogic(final Challenge challenge, final ChallengeInstance challengeInstance, final Game game) {
+    private Game implementGameLogic(final Challenge challenge, final Game game) {
 
-        // first check if we need to remove any players
-        RuntimeController.removePlayersWhoHaveReachedTheTargetPosition(game);
+        final Grid grid = challenge.getGrid();
 
-        // next check if we can add more players
-        while(challengeInstance.hasPendingPlayers()) {
-            final String email = challengeInstance.peekPendingPlayerEmail();
-            final String latestSubmittedCode = challengeInstance.getLatestSubmittedCode(email);
-
-            if(latestSubmittedCode != null) {
-                final ChallengeInstance.SubmissionDetails submissionDetails = challengeInstance.pollPendingPlayer();
-                final Player player = challengeInstance.getPlayer(email);
-                game.addPlayer(player, latestSubmittedCode);
+        // check if we can add upgrade any players from 'waiting' to 'queued'
+        final List<String> waitingPlayers = game.getWaitingPlayers();
+        for(final String playerEmail : waitingPlayers) {
+            final MazeSolver mazeSolver = (MazeSolver) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), playerEmail));
+            if(mazeSolver != null) {
+                game.queuePlayer(playerEmail);
             }
         }
 
@@ -158,14 +146,29 @@ public class RunEngineServlet extends HttpServlet {
             game.activateNextPlayer();
         }
 
-System.out.println("ActivePlayers: " + game.getActivePlayers()); // todo delete
+// System.out.println("ActivePlayers: " + game.getActivePlayers()); // todo delete
+
+        // prepare active players
+        final Map<String,MazeSolver> playerEmailToMazeSolvers = new HashMap<>();
+        final List<String> activePlayers = game.getActivePlayers();
+        for(final String activePlayerEmail : activePlayers) {
+            final MazeSolver mazeSolver = (MazeSolver) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), activePlayerEmail));
+            playerEmailToMazeSolvers.put(activePlayerEmail, mazeSolver);
+        }
 
         // todo ... revise to make multi-threaded and with deadlines?
-        RuntimeController.makeMove(game);
+        RuntimeController.makeMove(grid, game, playerEmailToMazeSolvers);
+
+        // remove completed players (move from 'active' back to 'waiting')
+        // todo
 
         // update game with number of rounds executed
         game.touch();
 
         return game;
+    }
+
+    private static String getKey(final long challengeId) {
+        return KEY_CACHED_GAME.replaceAll("%", Long.toString(challengeId));
     }
 }

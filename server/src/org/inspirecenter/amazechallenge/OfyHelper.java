@@ -14,7 +14,6 @@ public class OfyHelper implements ServletContextListener {
 
         // server-specific data types
         ObjectifyService.register(Parameter.class);
-        ObjectifyService.register(ChallengeInstance.class);
 
         // common data types
         ObjectifyService.register(Challenge.class);

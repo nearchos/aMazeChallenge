@@ -95,8 +95,16 @@ public class Challenge implements Serializable {
         return startTimestamp;
     }
 
+    public boolean hasStarted() {
+        return System.currentTimeMillis() > startTimestamp;
+    }
+
     public long getEndTimestamp() {
         return endTimestamp;
+    }
+
+    public boolean hasEnded() {
+        return System.currentTimeMillis() < endTimestamp;
     }
 
     public Grid getGrid() {

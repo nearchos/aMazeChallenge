@@ -6,8 +6,6 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.VoidWork;
-import org.inspirecenter.amazechallenge.data.*;
 import org.inspirecenter.amazechallenge.model.*;
 
 import javax.servlet.ServletException;
@@ -74,46 +72,44 @@ public class JoinServlet extends HttpServlet {
                         final AmazeIcon playerIcon = AmazeIcon.getByName(iconName);
                         final Shape playerShape = Shape.getShapeByCode(shapeCode);
 
-                        ChallengeInstance ci = ofy().load()
-                                .type(ChallengeInstance.class)
-                                .filter("challengeId = ", challengeId)
-                                .first().now();
-                        long id = ci == null ? 0L : ci.id;
+                        final long gameId;
+
+                        {
+                            Game game = ofy()
+                                    .load()
+                                    .type(Game.class)
+                                    .filter("challengeId=", challengeId)
+                                    .first()
+                                    .now();
+                            gameId = game == null ? 0L : game.getId();
+                        }
+
 
                         // handle the addition of a new player in a transaction to ensure atomicity
-                        ofy().transact(new VoidWork() {
-                            public void vrun() {
-                                // add binding of user to challenge instance
-                                ChallengeInstance challengeInstance = id == 0 ?
-                                        new ChallengeInstance(challengeId) :
-                                        ofy().load().key(Key.create(ChallengeInstance.class, id)).now();
+                        final Game game = ofy().transact(() -> {
+                            // add binding of user to game
+                            final Game tGame = gameId == 0 ?
+                                    new Game(challengeId) :
+                                    ofy().load().key(Key.create(Game.class, gameId)).now();
 
-                                // modify
-                                challengeInstance.addPlayer(email, name, playerColor, playerIcon, playerShape);
+                            // modify
+                            tGame.addPlayer(new Player(email, name, playerColor, playerIcon, playerShape));
 
-                                // save
-                                ofy().save().entity(challengeInstance).now();
-                            }
+                            // save
+                            ofy().save().entity(tGame).now();
+                            return tGame;
                         });
 
-                        final ChallengeInstance challengeInstance = ofy().load().type(ChallengeInstance.class).filter("challengeId =", challengeId).first().now();
-                        final long challengeInstanceId = challengeInstance == null ? 0L : challengeInstance.id;
-                        final Game game = ofy().load().type(Game.class).filter("challengeId =", challengeId).first().now();
-                        final long gameId = game == null ? 0L : game.id;
-
                         // trigger processing of game state
-                        if(gameId != 0L) {
-                            final Queue queue = QueueFactory.getDefaultQueue();
-                            TaskOptions taskOptions = TaskOptions.Builder
-                                    .withUrl("/admin/run-engine")
-                                    .param("magic", magic)
-                                    .param("challenge-id", Long.toString(challengeId))
-                                    .param("challenge-instance-id", Long.toString(challengeInstanceId))
-                                    .param("game-id", Long.toString(gameId))
-                                    .countdownMillis(1000) // wait 1 second before the call
-                                    .method(TaskOptions.Method.GET);
-                            queue.add(taskOptions);
-                        }
+                        final Queue queue = QueueFactory.getDefaultQueue();
+                        TaskOptions taskOptions = TaskOptions.Builder
+                                .withUrl("/admin/run-engine")
+                                .param("magic", magic)
+                                .param("challenge-id", Long.toString(challengeId))
+                                .param("game-id", Long.toString(game.getId()))
+                                .countdownMillis(1000) // wait 1 second before the call
+                                .method(TaskOptions.Method.GET);
+                        queue.add(taskOptions);
                     }
                 }
             } catch (NumberFormatException nfe) {

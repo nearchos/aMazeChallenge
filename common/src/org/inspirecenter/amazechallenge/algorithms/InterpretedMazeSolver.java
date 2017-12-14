@@ -1,6 +1,6 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
-import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.*;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -11,39 +11,59 @@ import java.util.Map;
 public class InterpretedMazeSolver extends AbstractMazeSolver {
 
     private static final String TAG = "aMazeChallenge";
-    public static final String PARAMETER_KEY_CODE = "code";
     private static final String RUN_FUNCTION = "run";
     private static final String INIT_FUNCTION = "init";
     private String code;
     private static final int TIME_LIMIT_SECONDS = 1;
-    private static int noMoveCounter = 0;
 
-    public InterpretedMazeSolver(final Game game, final String playerEmail) {
-        super(game, playerEmail);
+    private final Challenge challenge;
+    private final Game game;
+
+    public InterpretedMazeSolver(
+            final Challenge challenge,
+            final Game game,
+            final String playerEmail,
+            final String code) {
+        super(playerEmail);
+        this.game = game;
+        this.challenge = challenge;
+        init(code);
+    }
+
+    @Override
+    Grid getGrid() {
+        return challenge.getGrid();
+    }
+
+    @Override
+    Direction getDirection() {
+        return game.getPlayerPositionAndDirection(playerEmail).getDirection();
+    }
+
+    @Override
+    Position getPosition() {
+        return game.getPlayerPositionAndDirection(playerEmail).getPosition();
     }
 
     // todo consider upgrading to latest rhino: https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino/Download_Rhino
-    public void setParameter(final String name, final Serializable value) {
-        if(PARAMETER_KEY_CODE.equals(name)) {
-            code = (String) value;
+    private void init(final String unprocessedCode) {
 
-            //Wrap the code:
-            code = processCode(code);
+        //Wrap the code:
+        code = processCode(unprocessedCode);
 //            Log.d(TAG, "Code:\n" + code);
 
-            //Call the Initialization function
-            try {
-                Context RHINO = Context.enter();
-                RHINO.setOptimizationLevel(-1);
-                ScriptableObject scope = RHINO.initStandardObjects();
-                RHINO.evaluateString(scope, code, INIT_FUNCTION, 1, null);
-                Function function = (Function) scope.get(INIT_FUNCTION, scope);
-                function.call(RHINO, scope, scope, new Object[] { this });
-            }
-            catch (Exception e) { e.printStackTrace(); }
-            finally { Context.exit(); }
+        //Call the Initialization function
+        try {
+            Context RHINO = Context.enter();
+            RHINO.setOptimizationLevel(-1);
+            ScriptableObject scope = RHINO.initStandardObjects();
+            RHINO.evaluateString(scope, code, INIT_FUNCTION, 1, null);
+            Function function = (Function) scope.get(INIT_FUNCTION, scope);
+            function.call(RHINO, scope, scope, new Object[] { this });
         }
-    }//end setParameter()
+        catch (Exception e) { e.printStackTrace(); }
+        finally { Context.exit(); }
+    }
 
     @Override
     public PlayerMove getNextMove() {
@@ -63,8 +83,6 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 
             InterpretedMazeSolverExecutor executor = new InterpretedMazeSolverExecutor(function, this, TIME_LIMIT_SECONDS);
             nextMove = executor.execute();
-            if (nextMove == PlayerMove.NO_MOVE) noMoveCounter++;
-            //TODO: Kick the player out of the game after a certain amount of NO_MOVE moves?
         }
         catch (Exception e) { e.printStackTrace(); }
         finally { Context.exit(); }
@@ -176,6 +194,5 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
             }//end if function
         }//end foreach line
         return builder.toString();
-    }//end filterCode()
-
-}//end class InterpretedMazeSolver
+    }
+}

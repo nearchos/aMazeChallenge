@@ -17,26 +17,17 @@ public class Player implements Serializable {
     private AmazeIcon icon;
     private Shape shape;
 
-//    private Position position;
-//    private Direction direction;
-
     public Player() {
         super();
     }
 
-    public Player(final String email, final String name, final AmazeColor color, final AmazeIcon icon, final Shape shape, final Position startingPosition) {
+    public Player(final String email, final String name, final AmazeColor color, final AmazeIcon icon, final Shape shape) {
         this();
         this.email = email;
         this.name = name;
         this.color = color;
         this.icon = icon;
         this.shape = shape;
-//        this.position = startingPosition;
-//        this.direction = NORTH;
-    }
-
-    public Player(final String email, final String name, final AmazeColor color, final AmazeIcon icon, final Shape shape) {
-        this(email, name, color, icon, shape, new Position(0, 0));
     }
 
     public String getEmail() {
@@ -46,45 +37,6 @@ public class Player implements Serializable {
     public String getName() {
         return name;
     }
-
-//    void init(final Position position, final Direction direction) {
-//        this.position = position;
-//        this.direction = direction;
-//    }
-
-//    public Position getPosition() {
-//        return position;
-//    }
-//
-//    public Direction getDirection() {
-//        return direction;
-//    }
-
-//    public void turnClockwise() {
-//        this.direction = direction.turnClockwise();
-//    }
-
-//    public void turnCounterClockwise() {
-//        this.direction = direction.turnCounterClockwise();
-//    }
-
-//    public void moveForward() {
-//        switch (direction) {
-//            case NORTH:
-//                position = position.moveNorth();
-//                break;
-//            case SOUTH:
-//                position = position.moveSouth();
-//                break;
-//            case WEST:
-//                position = position.moveWest();
-//                break;
-//            case EAST:
-//                position = position.moveEast();
-//                break;
-//            default: throw new RuntimeException("Invalid direction: " + direction);
-//        }
-//    }
 
     public AmazeColor getColor() {
         return color;

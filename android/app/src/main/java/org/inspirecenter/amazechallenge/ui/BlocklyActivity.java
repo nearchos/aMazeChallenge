@@ -28,9 +28,6 @@ import com.google.blockly.model.BlocklySerializerException;
 import com.google.blockly.model.DefaultBlocks;
 
 import org.inspirecenter.amazechallenge.R;
-import org.inspirecenter.amazechallenge.algorithms.errorfinder.EmptyRunFunctionFinder;
-import org.inspirecenter.amazechallenge.algorithms.errorfinder.MissingRunFunctionFinder;
-import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
 
 import java.io.BufferedReader;

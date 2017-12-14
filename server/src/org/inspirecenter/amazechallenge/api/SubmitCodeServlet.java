@@ -1,13 +1,14 @@
 package org.inspirecenter.amazechallenge.api;
 
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.Gson;
-import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.VoidWork;
-import org.inspirecenter.amazechallenge.data.ChallengeInstance;
+import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
+import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
 
@@ -24,11 +25,13 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class SubmitCodeServlet extends HttpServlet {
 
+    private static final String KEY_MAZE_SOLVER = "instance-%1-player-%2";
+
     private final Gson gson = new Gson();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final String magic = request.getParameter("magic");
-        final String email = request.getParameter("email");
+        final String playerEmail = request.getParameter("email");
         final String challengeIdAsString = request.getParameter("id");
 
         final BufferedReader bufferedReader = request.getReader();
@@ -45,7 +48,7 @@ public class SubmitCodeServlet extends HttpServlet {
             errors.add("Missing or empty 'magic' parameter");
         } else if(!Common.checkMagic(magic)) {
             errors.add("Invalid 'magic' parameter");
-        } else if(email == null || email.isEmpty()) {
+        } else if(playerEmail == null || playerEmail.isEmpty()) {
             errors.add("Missing or empty 'email' parameter");
         } else if(challengeIdAsString == null || challengeIdAsString.isEmpty()) {
             errors.add("Missing or empty challenge 'id'");
@@ -59,51 +62,33 @@ public class SubmitCodeServlet extends HttpServlet {
                     errors.add("Invalid or unknown challenge for id: " + challengeId);
                 } else {
 
-                    final ChallengeInstance challengeInstance = ofy().load()
-                            .type(ChallengeInstance.class)
+                    final Game game = ofy()
+                            .load()
+                            .type(Game.class)
                             .filter("challengeId = ", challengeId)
                             .first().now();
-                    final long challengeInstanceId = challengeInstance == null ? 0L : challengeInstance.id;
 
-                    // handle the addition of a new player in a transaction to ensure atomicity
-                    ofy().transact(new VoidWork() {
-                        public void vrun() {
-                            // add binding of user to challenge instance
-                            ChallengeInstance challengeInstance = ofy().load()
-                                    .key(Key.create(ChallengeInstance.class, challengeInstanceId))
-                                    .now();
+                    if(game == null) {
+                        errors.add("Invalid game for selected challengeId: " + challengeId);
+                    } else {
+                        if(!game.containsPlayer(playerEmail)) {
+                            errors.add("Player not found in specified challenge for 'email': " + playerEmail);
+                        } else {
+                            final MazeSolver mazeSolver = new InterpretedMazeSolver(challenge, game, playerEmail, code);
+                            MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
+                            memcacheService.put(getKey(challengeId, playerEmail), mazeSolver);
 
-                            // modify
-                            if(challengeInstance == null) {
-                                errors.add("Invalid or missing challenge instance for id: " + challengeId);
-                            } else {
-                                if(!challengeInstance.containsPlayer(email)) {
-                                    errors.add("Player not found in challenge instance for email: " + email);
-                                } else {
-                                    challengeInstance.submitCode(email, code);
-                                }
-                            }
-
-                            // save
-                            ObjectifyService.ofy().save().entity(challengeInstance).now();
+                            // trigger processing of game state
+                            final Queue queue = QueueFactory.getDefaultQueue();
+                            TaskOptions taskOptions = TaskOptions.Builder
+                                    .withUrl("/admin/run-engine")
+                                    .param("magic", magic)
+                                    .param("challenge-id", Long.toString(challengeId))
+                                    .param("game-id", Long.toString(game.getId()))
+                                    .countdownMillis(1000) // wait 1 second before the call
+                                    .method(TaskOptions.Method.GET);
+                            queue.add(taskOptions);
                         }
-                    });
-
-                    final Game game = ofy().load().type(Game.class).filter("challengeId =", challengeId).first().now();
-                    final long gameId = game == null ? 0L : game.id;
-
-                    // trigger processing of game state
-                    if(gameId != 0L) {
-                        final Queue queue = QueueFactory.getDefaultQueue();
-                        TaskOptions taskOptions = TaskOptions.Builder
-                                .withUrl("/admin/run-engine")
-                                .param("magic", magic)
-                                .param("challenge-id", Long.toString(challengeId))
-                                .param("challenge-instance-id", Long.toString(challengeInstanceId))
-                                .param("game-id", Long.toString(gameId))
-                                .countdownMillis(1000) // wait 1 second before the call
-                                .method(TaskOptions.Method.GET);
-                        queue.add(taskOptions);
                     }
                 }
             } catch (NumberFormatException nfe) {
@@ -120,5 +105,9 @@ public class SubmitCodeServlet extends HttpServlet {
 
         final PrintWriter printWriter = response.getWriter();
         printWriter.println(reply);
+    }
+
+    public static String getKey(final long challengeId, final String playerEmail) {
+        return KEY_MAZE_SOLVER.replace("%1", Long.toString(challengeId)).replace("%2", playerEmail);
     }
 }

@@ -8,6 +8,8 @@ import java.io.Serializable;
  */
 public class Grid implements Serializable {
 
+    private static final Direction DEFAULT_STARTING_DIRECTION = Direction.NORTH;
+
     public static final int SHAPE_ONLY_UPPER_SIDE = 0x1; // -
     public static final int SHAPE_ONLY_LOWER_SIDE = 0x2; // _
     public static final int SHAPE_ONLY_LEFT_SIDE  = 0x4; // |
@@ -20,6 +22,7 @@ public class Grid implements Serializable {
     private String data; // all the cells, from top-left, rightwards and then next line, etc. until bottom-right
     private Position startingPosition;
     private Position targetPosition;
+    private Direction startingDirection = DEFAULT_STARTING_DIRECTION;
 
     public Grid() {
         super();
@@ -56,6 +59,10 @@ public class Grid implements Serializable {
 
     public Position getStartingPosition() {
         return startingPosition;
+    }
+
+    public Direction getStartingDirection() {
+        return startingDirection;
     }
 
     public Position getTargetPosition() {

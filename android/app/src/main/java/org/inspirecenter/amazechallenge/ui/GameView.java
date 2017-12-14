@@ -38,6 +38,8 @@ import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_UPPER_SIDE;
 
 public class GameView extends View {
 
+    public static final String TAG = "aMaze";
+
     public static final int COLOR_BLACK         = Color.rgb(0, 0, 0);
     public static final int COLOR_LIGHT_RED     = Color.rgb(255, 192, 192);
     public static final int COLOR_LIGHT_GREEN   = Color.rgb(192, 255, 192);
@@ -50,15 +52,17 @@ public class GameView extends View {
         super(context, attrs);
     }
 
-//    private Game game = null;
     private Grid grid = null;
     public Map<String,Player> allPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
     public List<String> queuedPlayerEmails;
 
+    void setGrid(final Grid grid) {
+        this.grid = grid;
+    }
+
     void update(final Game game) {
-        this.grid = game.getGrid();
-        this.allPlayers = game.getPlayerEmailsToPlayers();
+        this.allPlayers = game.getAllPlayerEmailsToPlayers();
         for(final String activePlayerEmail : game.getActivePlayers()) {
             activePlayerPositionAndDirectionMap.put(activePlayerEmail, game.getPlayerPositionAndDirection(activePlayerEmail));
         }

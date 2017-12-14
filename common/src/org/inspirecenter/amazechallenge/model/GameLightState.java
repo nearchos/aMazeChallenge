@@ -14,13 +14,22 @@ public class GameLightState implements Serializable {
 
     private Map<String,PlayerPositionAndDirection> activePlayerPositionsAndDirections = new HashMap<>();
     private List<String> queuedPlayerEmails = new Vector<>();
+    private List<String> waitingPlayerEmails = new Vector<>();
+    private long lastUpdated = 0;
+    private long counter = 0;
 
-    GameLightState(final Map<String,PlayerPositionAndDirection> playerEmailsToPositionsAndDirections, final List<String> queuedPlayerEmails) {
+    GameLightState(final Map<String,PlayerPositionAndDirection> playerEmailsToPositionsAndDirections,
+                   final List<String> queuedPlayerEmails,
+                   final long lastUpdated,
+                   final long counter) {
         super();
 
         activePlayerPositionsAndDirections.putAll(playerEmailsToPositionsAndDirections);
 
         this.queuedPlayerEmails.addAll(queuedPlayerEmails);
+
+        this.lastUpdated = lastUpdated;
+        this.counter = counter;
     }
 
     public Map<String, PlayerPositionAndDirection> getActivePlayerPositionsAndDirections() {
@@ -33,5 +42,17 @@ public class GameLightState implements Serializable {
 
     public List<String> getQueuedPlayerEmails() {
         return queuedPlayerEmails;
+    }
+
+    public List<String> getWaitingPlayerEmails() {
+        return waitingPlayerEmails;
+    }
+
+    public long getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public long getCounter() {
+        return counter;
     }
 }

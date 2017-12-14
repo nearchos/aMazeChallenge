@@ -1,12 +1,37 @@
 The game engine is responsible to update the game state.
 
-The "/admin/prepare-engine" service runs every 10 minutes via CRON.
-Its only purpose is to look if any challenges start in the next 10 minutes, and if yes add a new task to the queue.
+The "Game" instance has the following information:
+- list of 'waiting' players -- these are players that have asked to 'join' the game but have not submitted any code yet
+- list of 'queued' players -- players who have submitted code and are queued to be entered into the game as soon as there is a slot available (the queue ensures first-come-first-serve principle)
+- list of 'active' players -- players who are actively participating to the game right now (so they have a 'position' and 'direction')
+- map of 'active' players to their respective 'position' and 'direction' in the grid
 
-The "/admin/run-engine" runs every one second, while the challenge is active. It generates the following two outputs:
-1. the roster (active players, names, avatars, colors)
-2. the leaderboard (including player statistics etc.)
-3. the game state (player positions, and directions)
+When a new player asks to be added to the "Game" they are initially added to the 'waiting' zone.
+When a new player submits code for the first time, they are upgraded from the 'waiting' to the 'queued' list
+In each round, for any slots available in the 'active' list, players from the front of the 'queued' are upgraded to the 'active' list
+
+The "/api/json/join" call allows a player to be added to the Game
+- if the player is already in the game (identified by its 'email') it rejects the request
+
+The "/api/json/submit-code" call allows a player to upload code
+- when an unknown player submits code, it is *ignored*
+- when a known player submits code for the first time, he is upgraded from the 'waiting' to the 'queued' list
+- when a known player submits code in subsequent times, if he is in the 'queued' list, he is removed from it and returns to the *end* of the 'queued' list
+- when a known player submits code in subsequent times, if he is in the 'active' list, he is removed from it, without completing the round, and returns to the *end* of the 'queued' list
+- either way, when a player submits code, a new InterpretedMazeSolver instance is created and added to the memcache for quick access
+
+The "/admin/run-engine" runs every one second (or more frequently tbd), while the challenge is active. It generates the following two outputs:
+a. the roster (all player, emails, names, icons, colors, etc.)
+b. the game state ('active' player positions and directions)
+c. the leaderboard (including player statistics etc.) which includes all players who have been in the 'active' list for at least one round (for players with multiple tries, only the best one is kept)
+The process is as follows:
+1. check if any players have completed their tour and return them from 'active' to 'waiting' -- also clear their MazeSolver from the memcache
+2. check if any players in the 'waiting' list have allocated a MazeSolver in the memcache, and if yes upgrade them to 'queued'
+3. check if any players in the front of the 'queued' list can be upgraded to 'active' (i.e. whether there are slots for them)
+4. compute the new 'position' and 'direction' for each player and update the Game accordingly
+5. generate the new GameState and put it on memcache
+6. generate updated statistics and put them on memcache
+7. persist Game in datastore
 
 Perhaps we can limit the amount of time allocated to each task using something like in this answer:
 https://stackoverflow.com/questions/18818482/how-to-run-a-thread-for-a-user-specified-amount-of-time#3
