@@ -1,7 +1,10 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -11,12 +14,23 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String KEY_PREF_PERSONALIZED = "pref-personalized";
+    public static final String KEY_PREF_EDITED_CODE = "pref-code-edited";
+    public static final String KEY_PREF_LOCALLY_TESTED = "pref-local-tested";
+    public static final String KEY_PREF_PLAYED_ONLINE = "pref-played-online";
+
+    private Button buttonPersonalize;
+    private Button buttonEditYourCode;
+    private Button buttonTestLocally;
+    private Button buttonPlayOnline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +48,32 @@ public class MainActivity extends AppCompatActivity
 
         final NavigationView navigationView = findViewById(org.inspirecenter.amazechallenge.R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        buttonPersonalize = findViewById(R.id.button_personalize);
+        buttonEditYourCode = findViewById(R.id.edit_your_code);
+        buttonTestLocally = findViewById(R.id.test_locally);
+        buttonPlayOnline = findViewById(R.id.play_online);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final boolean hasPersonalized = sharedPreferences.getBoolean(KEY_PREF_PERSONALIZED, false);
+        final boolean hasEditedCode = sharedPreferences.getBoolean(KEY_PREF_EDITED_CODE, false);
+        final boolean hasLocallyTested = sharedPreferences.getBoolean(KEY_PREF_LOCALLY_TESTED, false);
+        final boolean hasPlayedOnline = sharedPreferences.getBoolean(KEY_PREF_PLAYED_ONLINE, false);
+
+        // edit buttons
+        buttonPersonalize.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_pin_black_24dp, 0, hasPersonalized ? R.drawable.ic_check_black_24dp : R.drawable.ic_check_box_outline_blank_black_24dp, 0);
+        buttonEditYourCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_code_black_24dp, 0, hasEditedCode ? R.drawable.ic_check_black_24dp : R.drawable.ic_check_box_outline_blank_black_24dp, 0);
+        buttonEditYourCode.setBackgroundResource(hasPersonalized ? R.color.ditheredGreen : R.color.ditheredGray);
+        buttonTestLocally.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_circle_filled_black_24dp, 0, hasLocallyTested ? R.drawable.ic_check_black_24dp : R.drawable.ic_check_box_outline_blank_black_24dp, 0);
+        buttonTestLocally.setBackgroundResource(hasEditedCode ? R.color.ditheredGreen : R.color.ditheredGray);
+        buttonPlayOnline.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_cloud_upload_black_24dp, 0, hasPlayedOnline ? R.drawable.ic_check_black_24dp : R.drawable.ic_check_box_outline_blank_black_24dp, 0);
+        buttonPlayOnline.setBackgroundResource(hasLocallyTested ? R.color.ditheredGreen : R.color.ditheredGray);
     }
 
     @Override

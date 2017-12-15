@@ -85,6 +85,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     Toast.makeText(getApplicationContext(), R.string.Your_code_has_been_saved, Toast.LENGTH_LONG).show();
                     final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BlocklyActivity.this);
                     sharedPreferences.edit().putString (KEY_ALGORITHM_ACTIVITY_CODE, generatedCode).apply();
+                    if(generatedCode != null && !generatedCode.isEmpty()) sharedPreferences.edit().putBoolean(MainActivity.KEY_PREF_EDITED_CODE, true).apply();
                     finish();
                 }
             };//end mCodeGeneratorCallback
@@ -238,10 +239,6 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 warningBuilder.create().show();
             }//end if 1 warning occurred
         }//end if errors
-
-
-
-
     }//end submitCode()
 
     @NonNull

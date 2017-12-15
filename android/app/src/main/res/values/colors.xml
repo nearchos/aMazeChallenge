@@ -13,4 +13,6 @@
     <color name="lightRed">#ff9e9e</color>
     <color name="lightYellow">#fffd9e</color>
 
+    <color name="ditheredGray">#4ccc</color>
+    <color name="ditheredGreen">#40f0</color>
 </resources>

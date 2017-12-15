@@ -14,10 +14,14 @@
         android:layout_height="match_parent">
 
         <Button
+            android:id="@+id/button_personalize"
             android:text="@string/Personalize"
             android:onClick="personalize"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_margin="16dp"
+            android:background="@color/ditheredGreen"
+            android:drawableStart="@drawable/ic_person_pin_black_24dp"
+            android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
+            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="0dp" />
@@ -28,10 +32,14 @@
             android:layout_height="1dp"/>
 
         <Button
+            android:id="@+id/edit_your_code"
             android:text="@string/Edit_your_code"
             android:onClick="codeEditor"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_margin="16dp"
+            android:drawableStart="@drawable/ic_code_black_24dp"
+            android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
+            android:background="@color/ditheredGray"
+            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="0dp" />
@@ -42,10 +50,14 @@
             android:layout_height="1dp"/>
 
         <Button
+            android:id="@+id/test_locally"
             android:text="@string/Test_locally"
             android:onClick="training"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_margin="16dp"
+            android:drawableStart="@drawable/ic_play_circle_filled_black_24dp"
+            android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
+            android:background="@color/ditheredGray"
+            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="0dp" />
@@ -56,10 +68,14 @@
             android:layout_height="1dp"/>
 
         <Button
+            android:id="@+id/play_online"
             android:text="@string/Play_online"
             android:onClick="onlineChallenge"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_margin="16dp"
+            android:drawableStart="@drawable/ic_cloud_upload_black_24dp"
+            android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
+            android:background="@color/ditheredGray"
+            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="0dp" />

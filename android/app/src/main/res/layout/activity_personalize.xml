@@ -1,102 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:padding="@dimen/personalization_card_padding"
     tools:context="org.inspirecenter.amazechallenge.ui.PersonalizeActivity">
 
-    <RelativeLayout
-        android:padding="@dimen/personalization_card_padding"
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/activity_personalize_card_view"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6">
-
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/activity_personalize_card_view"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            card_view:cardCornerRadius="4dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <org.inspirecenter.amazechallenge.ui.GIFView
-                    android:id="@+id/activity_personalize_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:contentDescription="@string/User_image">
-                </org.inspirecenter.amazechallenge.ui.GIFView>
-
-                <Button
-                    android:id="@+id/activity_personalize_button_select_color"
-                    android:text="@string/Select_Personalization_Options"
-                    android:onClick="selectColor"
-                    style="@style/Base.Widget.AppCompat.Button.Borderless"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/activity_personalize_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:selectAllOnFocus="true"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:hint="@string/Name"/>
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/activity_personalize_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:selectAllOnFocus="true"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:hint="@string/Email"/>
-
-                </android.support.design.widget.TextInputLayout>
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        card_view:cardCornerRadius="4dp">
 
         <LinearLayout
-            android:padding="16dp"
-            android:gravity="end|bottom"
-            android:layout_below="@id/activity_personalize_card_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <org.inspirecenter.amazechallenge.ui.GIFView
+                android:id="@+id/activity_personalize_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:contentDescription="@string/User_image">
+            </org.inspirecenter.amazechallenge.ui.GIFView>
 
             <Button
-                android:id="@+id/activity_personalize_button_done"
-                android:text="@string/Done"
-                android:onClick="done"
-                android:drawableEnd="@drawable/ic_navigate_next_black_24dp"
+                android:id="@+id/activity_personalize_button_select_color"
+                android:text="@string/Select_Personalization_Options"
                 style="@style/Base.Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/activity_personalize_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:selectAllOnFocus="true"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:hint="@string/Name"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/activity_personalize_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:selectAllOnFocus="true"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:hint="@string/Email"/>
+
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
-</LinearLayout>
+    <LinearLayout
+        android:padding="16dp"
+        android:gravity="end|bottom"
+        android:layout_below="@id/activity_personalize_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/activity_personalize_button_done"
+            android:text="@string/Done"
+            android:onClick="done"
+            android:drawableEnd="@drawable/ic_navigate_next_black_24dp"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</RelativeLayout>

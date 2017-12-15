@@ -8,16 +8,20 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
 import org.inspirecenter.amazechallenge.model.AmazeIcon;
+
+import static org.inspirecenter.amazechallenge.ui.ColorFragment.isBrightColor;
 
 public class PersonalizeActivity extends AppCompatActivity {
 
@@ -30,6 +34,7 @@ public class PersonalizeActivity extends AppCompatActivity {
     private EditText nameEditText;
     private EditText emailEditText;
     private GIFView gifView;
+    private Button selectColorButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,8 @@ public class PersonalizeActivity extends AppCompatActivity {
         nameEditText = findViewById(R.id.activity_personalize_name);
         emailEditText = findViewById(R.id.activity_personalize_email);
         gifView = findViewById(R.id.activity_personalize_icon);
+        selectColorButton = findViewById(R.id.activity_personalize_button_select_color);
+        selectColorButton.setOnClickListener(view -> startActivity(new Intent(this, PersonalizationSliderActivity.class)));
         updatePersonalization();
         gifView.play();
     }
@@ -101,12 +108,9 @@ public class PersonalizeActivity extends AppCompatActivity {
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_EMAIL, email).apply();
     }
 
-    public void selectColor(final View view) {
-        startActivity(new Intent(this, PersonalizationSliderActivity.class));
-    }//end selectColor()
-
     public void done(final View view) {
         // todo verify name is non-empty and email is valid
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(MainActivity.KEY_PREF_PERSONALIZED, true).apply();
         finish();
     }
 
@@ -115,13 +119,14 @@ public class PersonalizeActivity extends AppCompatActivity {
         {
             final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.COLOR_BLACK.getName());
             final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
-            // todo use selected color?
+            final int userColor = Color.parseColor(userAmazeColor.getCode());
+            selectColorButton.setBackgroundColor(userColor);
+            selectColorButton.setTextColor(isBrightColor(Color.parseColor(userAmazeColor.getCode())) ? Color.BLACK : Color.WHITE);
         }
         {
             final String userIconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
             final AmazeIcon selectedAmazeIcon = AmazeIcon.getByName(userIconName);
             gifView.setImageResource(getDrawableResourceId(selectedAmazeIcon));
-            //gifView.setBackgroundColor(userAmazeColor.getCode());
         }
     }
 

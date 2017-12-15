@@ -142,6 +142,7 @@ public class GameActivity extends AppCompatActivity {
         // update movesDataTextView
 //        movesDataTextView.setText(game.getStatisticsDescription()); // todo
         if(RuntimeController.hasSomeoneReachedTheTargetPosition(game, challenge.getGrid())) {
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(MainActivity.KEY_PREF_LOCALLY_TESTED, true).apply();
             finish();
         }
     }

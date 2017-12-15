@@ -42,8 +42,6 @@ public class GIFView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(movieWidth, movieHeight);
     }//end onMeasure()
 

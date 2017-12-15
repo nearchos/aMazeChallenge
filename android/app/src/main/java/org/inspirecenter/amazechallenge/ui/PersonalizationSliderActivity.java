@@ -48,7 +48,7 @@ public class PersonalizationSliderActivity extends FragmentActivity {
         iconPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
         //Color
-        colorPager = (ViewPager) findViewById(R.id.colorPager);
+        colorPager = findViewById(R.id.colorPager);
         colorPagerAdapter = new ColorPagerAdapter(getSupportFragmentManager());
         colorPager.setAdapter(colorPagerAdapter);
         colorPager.setPageTransformer(true, new ZoomOutPageTransformer());
