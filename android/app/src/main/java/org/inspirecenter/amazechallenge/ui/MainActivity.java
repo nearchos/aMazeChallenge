@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity
             personalize(null);
         } else if (id == R.id.nav_code_editor) {
             codeEditor(null);
-        } else if (id == R.id.nav_training) {
+        } else if (id == R.id.nav_testing) {
             training(null);
         } else if (id == R.id.nav_online_challenge) {
             onlineChallenge(null);

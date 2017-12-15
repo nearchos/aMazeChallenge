@@ -11,17 +11,17 @@
         <item
             android:id="@+id/nav_code_editor"
             android:icon="@drawable/ic_code_black_24dp"
-            android:title="@string/Code_editor" />
+            android:title="@string/Edit_your_code" />
 
         <item
-            android:id="@+id/nav_training"
+            android:id="@+id/nav_testing"
             android:icon="@drawable/ic_play_circle_filled_black_24dp"
-            android:title="@string/Training" />
+            android:title="@string/Test_locally" />
 
         <item
             android:id="@+id/nav_online_challenge"
             android:icon="@drawable/ic_cloud_upload_black_24dp"
-            android:title="@string/Online_challenge" />
+            android:title="@string/Play_online" />
 
     </group>
 

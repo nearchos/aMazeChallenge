@@ -68,11 +68,12 @@
     <string name="Help">Help</string>
     <string name="Check_code">Check code</string>
     <string name="Apply">Apply</string>
-    <string name="Code_editor">Code editor</string>
+    <string name="Edit_your_code">Edit your code</string>
     <string name="Submit_code">Submit code</string>
     <string name="Edit_code">Editcode</string>
     <string name="Training">Training</string>
-    <string name="Online_challenge">Online challenge</string>
+    <string name="Test_locally">Test locally</string>
+    <string name="Play_online">Play online</string>
     <string name="Code_is_auto_saved">Your code is automatically saved!</string>
     <string name="Your_code_has_been_saved">Your code has been saved!</string>
     <string name="Moves">Moves</string>

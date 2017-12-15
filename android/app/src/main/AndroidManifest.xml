@@ -37,7 +37,7 @@
         </activity>
         <activity
             android:name=".ui.BlocklyActivity"
-            android:label="@string/Code_editor"
+            android:label="@string/Edit_your_code"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/BlocklyAppTheme">
             <meta-data
@@ -63,7 +63,7 @@
         </activity>
         <activity
             android:name=".ui.OnlineChallengeActivity"
-            android:label="@string/Online_challenge"
+            android:label="@string/Play_online"
             android:noHistory="true"
             android:parentActivityName=".ui.MainActivity">
             <meta-data
@@ -72,7 +72,7 @@
         </activity>
         <activity
             android:name=".ui.OnlineGameActivity"
-            android:label="@string/Online_challenge"
+            android:label="@string/Play_online"
             android:parentActivityName=".ui.OnlineChallengeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
