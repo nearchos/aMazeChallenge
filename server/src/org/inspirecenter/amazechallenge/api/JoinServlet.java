@@ -100,16 +100,19 @@ public class JoinServlet extends HttpServlet {
                             return tGame;
                         });
 
-                        // trigger processing of game state
-                        final Queue queue = QueueFactory.getDefaultQueue();
-                        TaskOptions taskOptions = TaskOptions.Builder
-                                .withUrl("/admin/run-engine")
-                                .param("magic", magic)
-                                .param("challenge-id", Long.toString(challengeId))
-                                .param("game-id", Long.toString(game.getId()))
-                                .countdownMillis(1000) // wait 1 second before the call
-                                .method(TaskOptions.Method.GET);
-                        queue.add(taskOptions);
+                        if(game.getLastExecutionTime() == 0L) { // kick start the run-engine servlet // todo might need a different condition, like numOfPlayers==1 (i.e. this was the first player added)
+                            final long waitMillis = Math.max(0L, 1000L - game.getLastExecutionTime());
+                            // trigger processing of game state
+                            final Queue queue = QueueFactory.getDefaultQueue();
+                            TaskOptions taskOptions = TaskOptions.Builder
+                                    .withUrl("/admin/run-engine")
+                                    .param("magic", magic)
+                                    .param("challenge-id", Long.toString(challengeId))
+                                    .param("game-id", Long.toString(game.getId()))
+                                    .countdownMillis(waitMillis) // wait 1 second before the call (or less if the execution takes >0 ms)
+                                    .method(TaskOptions.Method.GET);
+                            queue.add(taskOptions);
+                        }
                     }
                 }
             } catch (NumberFormatException nfe) {

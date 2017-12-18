@@ -30,6 +30,7 @@
         <activity
             android:name=".ui.PersonalizeActivity"
             android:label="@string/Personalize"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -56,6 +57,7 @@
         <activity
             android:name=".ui.GameActivity"
             android:label="@string/Game"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".ui.TrainingActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -73,6 +75,7 @@
         <activity
             android:name=".ui.OnlineGameActivity"
             android:label="@string/Play_online"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".ui.OnlineChallengeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

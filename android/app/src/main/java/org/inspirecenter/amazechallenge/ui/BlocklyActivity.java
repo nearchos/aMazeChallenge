@@ -102,6 +102,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         return getLayoutInflater().inflate(R.layout.activity_blockly, null);
     }//end onCreateContentView()
 
+    public void done(final View view) {
+        submitCode();
+    }
+
     private void submitCode() {
         //Save the code first, but don't display message:
         try { mBlocklyActivityHelper.saveWorkspaceToAppDir(AUTOSAVE_FILENAME); }

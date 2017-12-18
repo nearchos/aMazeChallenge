@@ -1,5 +1,8 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
+import org.inspirecenter.amazechallenge.model.Challenge;
+import org.inspirecenter.amazechallenge.model.Game;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -10,9 +13,11 @@ import java.util.Map;
 
 public interface MazeSolver extends Serializable {
 
-    Map<String,Serializable> getState();
+    public void init(final Challenge challenge, final Game game);
 
-    void setState(Map<String,Serializable> stateMap);
+    public byte [] getState();
 
-    PlayerMove getNextMove();
+    public void setState(final byte [] bytes);
+
+    PlayerMove getNextMove(final Game game);
 }

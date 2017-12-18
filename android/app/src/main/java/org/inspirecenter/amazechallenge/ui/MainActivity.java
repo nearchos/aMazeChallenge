@@ -69,11 +69,8 @@ public class MainActivity extends AppCompatActivity
         // edit buttons
         buttonPersonalize.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_person_pin_black_24dp, 0, hasPersonalized ? R.drawable.ic_check_black_24dp : R.drawable.ic_check_box_outline_blank_black_24dp, 0);
         buttonEditYourCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_code_black_24dp, 0, hasEditedCode ? R.drawable.ic_check_black_24dp : R.drawable.ic_check_box_outline_blank_black_24dp, 0);
-        buttonEditYourCode.setBackgroundResource(hasPersonalized ? R.color.ditheredGreen : R.color.ditheredGray);
         buttonTestLocally.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_circle_filled_black_24dp, 0, hasLocallyTested ? R.drawable.ic_check_black_24dp : R.drawable.ic_check_box_outline_blank_black_24dp, 0);
-        buttonTestLocally.setBackgroundResource(hasEditedCode ? R.color.ditheredGreen : R.color.ditheredGray);
         buttonPlayOnline.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_cloud_upload_black_24dp, 0, hasPlayedOnline ? R.drawable.ic_check_black_24dp : R.drawable.ic_check_box_outline_blank_black_24dp, 0);
-        buttonPlayOnline.setBackgroundResource(hasLocallyTested ? R.color.ditheredGreen : R.color.ditheredGray);
     }
 
     @Override

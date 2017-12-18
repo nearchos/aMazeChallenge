@@ -111,7 +111,7 @@ public class PersonalizeActivity extends AppCompatActivity {
     public void done(final View view) {
         // todo verify name is non-empty and email is valid
         PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(MainActivity.KEY_PREF_PERSONALIZED, true).apply();
-        finish();
+        startActivity(new Intent(this, BlocklyActivity.class));
     }
 
     private void updatePersonalization() {

@@ -7,6 +7,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
+import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.api.Common;
 import org.inspirecenter.amazechallenge.api.ReplyWithErrors;
@@ -25,16 +26,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class RunEngineServlet extends HttpServlet {
 
     public static final String KEY_CACHED_GAME = "cached-game-state-%";
+    public static final String KEY_CACHED_MAZE_SOLVER_STATE = "cached-maze-solver-state-%1-player-%2";
     public static final String KEY_CACHED_LEADER_BOARD = "cached-leader-board-%";
 
-    private Logger log = Logger.getAnonymousLogger();
+    private java.util.logging.Logger log = java.util.logging.Logger.getAnonymousLogger();
 
     private final Gson gson = new Gson();
 
@@ -43,7 +44,7 @@ public class RunEngineServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        log.info("Running 'RunEngineServlet'");
+        // log.info("Running 'RunEngineServlet'");
 
         final Vector<String> errors = new Vector<>();
 
@@ -81,21 +82,19 @@ public class RunEngineServlet extends HttpServlet {
                     return updatedGame;
                 });
 
-//log.info("Storing game in memcache: " + KEY_CACHED_GAME.replaceAll("%", Long.toString(challengeId)) + " -> " + gameFullState);
-
                 gameFullState = game.getFullState(challenge.getGrid());
 
                 // 1. update game state
-                memcacheService.put(getKey(challengeId), gameFullState);
+                memcacheService.put(getGameKey(challengeId), gameFullState);
 
                 // 2. update leader board
-//        final Object leaderBoard = memcacheService.get(KEY_CACHED_LEADER_BOARD.replaceAll("%", Long.toString(challenge.getId())));
                 // todo ... update leader board and save in memcache
 
-                log.info("Scheduling next run...");
+                // Scheduling next run...
+                // log.info("Scheduling next run...");
 
                 // check if active or queued players players, then repeat
-                if(challenge.isActive() && game.hasActiveOrQueuedPlayers()) {
+                if(challenge.isActive() && game.hasAnyPlayers()) {
 
                     // schedule next run
                     final Queue queue = QueueFactory.getDefaultQueue();
@@ -104,7 +103,7 @@ public class RunEngineServlet extends HttpServlet {
                             .param("magic", magic)
                             .param("challenge-id", Long.toString(challengeId))
                             .param("game-id", Long.toString(gameId))
-                            .countdownMillis(2000) // wait 1/10th of a second before running again // todo adjust as needed
+                            .countdownMillis(1000) // wait 1/10th of a second before running again // todo adjust as needed
                             .method(TaskOptions.Method.GET);
                     queue.add(taskOptions);
                 }
@@ -138,11 +137,12 @@ public class RunEngineServlet extends HttpServlet {
         // check if we can add upgrade any players from 'waiting' to 'queued'
         final List<String> waitingPlayers = game.getWaitingPlayers();
         for(final String playerEmail : waitingPlayers) {
-            final MazeSolver mazeSolver = (MazeSolver) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), playerEmail));
-            if(mazeSolver != null) {
+            final String code = (String) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), playerEmail));
+            if(code != null) {
                 game.queuePlayer(playerEmail);
             }
         }
+//System.out.println("**** after queueing: " + game); // todo
 
         // now check if we can upgrade any players from 'queued' to 'active'
         while(game.getNumberOfActivePlayers() < challenge.getMaxActivePlayers() && game.hasQueuedPlayers()) {
@@ -150,21 +150,42 @@ public class RunEngineServlet extends HttpServlet {
             game.activateNextPlayer(grid);
         }
 
+// System.out.println("**** after activating: " + game);
 // System.out.println("ActivePlayers: " + game.getActivePlayers()); // todo delete
 
         // prepare active players
         final Map<String,MazeSolver> playerEmailToMazeSolvers = new HashMap<>();
         final List<String> activePlayers = game.getActivePlayers();
         for(final String activePlayerEmail : activePlayers) {
-            final MazeSolver mazeSolver = (MazeSolver) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), activePlayerEmail));
+            final String code = (String) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), activePlayerEmail));
+            final MazeSolver mazeSolver = new InterpretedMazeSolver(challenge, game, activePlayerEmail, code); // todo
+            mazeSolver.init(challenge, game);
+            final byte [] state = (byte[]) memcacheService.get(getMazeSolverStateKey(game.getId(), activePlayerEmail));
+            mazeSolver.setState(state);
             playerEmailToMazeSolvers.put(activePlayerEmail, mazeSolver);
         }
 
         // todo ... revise to make multi-threaded and with deadlines?
+        // todo check out: com.google.appengine.api.ThreadManager
         RuntimeController.makeMove(grid, game, playerEmailToMazeSolvers);
+
+        // store maze solvers' state to memcache
+        for(final String activePlayerEmail : activePlayers) {
+            final MazeSolver mazeSolver = playerEmailToMazeSolvers.get(activePlayerEmail);
+            memcacheService.put(getMazeSolverStateKey(game.getId(), activePlayerEmail), mazeSolver.getState());
+        }
 
         // remove completed players (move from 'active' back to 'waiting')
         // todo
+        final Position targetPosition = challenge.getGrid().getTargetPosition();
+        for(final String activePlayerEmail : activePlayers) {
+            final Position playerPosition = game.getPosition(activePlayerEmail);
+            if(playerPosition.equals(targetPosition)) {
+                memcacheService.delete(getMazeSolverStateKey(game.getId(), activePlayerEmail));
+                game.resetPlayer(activePlayerEmail);
+            }
+        }
+
 
         // update game with number of rounds executed
         game.touch(System.currentTimeMillis() - startTime);
@@ -172,8 +193,11 @@ public class RunEngineServlet extends HttpServlet {
         return game;
     }
 
-    private static String getKey(final long challengeId) {
-        return KEY_CACHED_GAME.replaceAll("%", Long.toString(challengeId));
+    private static String getGameKey(final long challengeId) {
+        return KEY_CACHED_GAME.replace("%", Long.toString(challengeId));
+    }
+
+    private static String getMazeSolverStateKey(final long gameId, final String playerEmail) {
+        return KEY_CACHED_MAZE_SOLVER_STATE.replace("%1", Long.toString(gameId)).replace("%2", playerEmail);
     }
 }
-

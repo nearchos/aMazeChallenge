@@ -2,12 +2,7 @@ package org.inspirecenter.amazechallenge.controller;
 
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
-import org.inspirecenter.amazechallenge.model.Direction;
-import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.Grid;
-import org.inspirecenter.amazechallenge.model.Player;
-import org.inspirecenter.amazechallenge.model.PlayerPositionAndDirection;
-import org.inspirecenter.amazechallenge.model.Position;
+import org.inspirecenter.amazechallenge.model.*;
 
 import java.util.Map;
 
@@ -28,7 +23,7 @@ public class RuntimeController {
         for (final String playerEmail : game.getActivePlayers()) {
             final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirection(playerEmail);
             final MazeSolver mazeSolver = playerEmailToMazeSolvers.get(playerEmail);
-            final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove();
+            final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
             applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove);
         }
     }

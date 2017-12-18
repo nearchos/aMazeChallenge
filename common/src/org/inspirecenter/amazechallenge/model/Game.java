@@ -23,9 +23,9 @@ public class Game implements Serializable {
     private List<String> waitingPlayers = new Vector<>();
     private Map<String,Player> allPlayerEmailsToPlayers = new HashMap<>();
     private Map<String,PlayerPositionAndDirection> activePlayerEmailsToPositionAndDirections = new HashMap<>();
-    private long lastExecutionTime = 0;
-    private long lastUpdated = 0;
-    private long counter = 0;
+    private long lastExecutionTime = 0L;
+    private long lastUpdated = 0L;
+    private long counter = 0L;
 
     public Game() {
         super();
@@ -71,7 +71,6 @@ public class Game implements Serializable {
         this.lastExecutionTime = lastExecutionTime;
         lastUpdated = System.currentTimeMillis();
         counter++;
-System.out.println("round: " + counter + ", duration: " + lastExecutionTime); // todo delete
     }
 
     public long getLastExecutionTime() {
@@ -154,7 +153,11 @@ System.out.println("round: " + counter + ", duration: " + lastExecutionTime); //
     public List<String> getWaitingPlayers() { return new Vector<>(waitingPlayers); }
 
     public boolean hasActiveOrQueuedPlayers() {
-        return (!activePlayers.isEmpty()) || (!queuedPlayers.isEmpty());
+        return hasActivePlayers() || hasQueuedPlayers();
+    }
+
+    public boolean hasAnyPlayers() {
+        return hasActivePlayers() || hasQueuedPlayers() || hasWaitingPlayers();
     }
 
     public GameLightState getLightState() {
@@ -184,7 +187,6 @@ System.out.println("round: " + counter + ", duration: " + lastExecutionTime); //
      * @return the {@link Player}'s {@link Position}
      */
     public Position getPosition(final String playerEmail) {
-System.out.println("activePlayerEmailsToPositionAndDirections: " + activePlayerEmailsToPositionAndDirections); // todo delete
         return activePlayerEmailsToPositionAndDirections.get(playerEmail).getPosition();
     }
 
@@ -197,5 +199,15 @@ System.out.println("activePlayerEmailsToPositionAndDirections: " + activePlayerE
      */
     public Direction getDirection(final String playerEmail) {
         return activePlayerEmailsToPositionAndDirections.get(playerEmail).getDirection();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder("GAME - id: ").append(id).append(" ~~ challengeId: ").append(challengeId).append(" @").append(hashCode());
+        stringBuilder.append(" $ players[a/q/w]: ").append(activePlayers.size()).append("/").append(queuedPlayers.size()).append("/").append(waitingPlayers.size()).append("\n");
+        stringBuilder.append("*active: ").append(activePlayers).append("\n");
+        stringBuilder.append("*queued: ").append(queuedPlayers).append("\n");
+        stringBuilder.append("*waiting: ").append(waitingPlayers).append("\n");
+        return stringBuilder.toString();
     }
 }

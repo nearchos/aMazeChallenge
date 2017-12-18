@@ -2,14 +2,8 @@ package org.inspirecenter.amazechallenge.api;
 
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
-import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
-import org.inspirecenter.amazechallenge.algorithms.LeftWallFollower;
-import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
 
@@ -26,7 +20,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class SubmitCodeServlet extends HttpServlet {
 
-    private static final String KEY_MAZE_SOLVER = "instance-%1-player-%2";
+    private static final String KEY_MAZE_SOLVER_CODE = "challenge-%1-player-%2";
 
     private final Gson gson = new Gson();
 
@@ -76,20 +70,10 @@ public class SubmitCodeServlet extends HttpServlet {
                             errors.add("Player not found in specified challenge for 'email': " + playerEmail);
                         } else {
                             game.resetPlayer(playerEmail);
-                            final MazeSolver mazeSolver = new LeftWallFollower(challenge, game, playerEmail); // todo new InterpretedMazeSolver(challenge, game, playerEmail, code);
-                            MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
-                            memcacheService.put(getKey(challengeId, playerEmail), mazeSolver);
 
-                            // trigger processing of game state
-                            final Queue queue = QueueFactory.getDefaultQueue();
-                            TaskOptions taskOptions = TaskOptions.Builder
-                                    .withUrl("/admin/run-engine")
-                                    .param("magic", magic)
-                                    .param("challenge-id", Long.toString(challengeId))
-                                    .param("game-id", Long.toString(game.getId()))
-                                    .countdownMillis(1000) // wait 1 second before the call
-                                    .method(TaskOptions.Method.GET);
-                            queue.add(taskOptions);
+                            // store maze solver code in data-store
+                            final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
+                            memcacheService.put(getKey(challengeId, playerEmail), code);
                         }
                     }
                 }
@@ -110,6 +94,6 @@ public class SubmitCodeServlet extends HttpServlet {
     }
 
     public static String getKey(final long challengeId, final String playerEmail) {
-        return KEY_MAZE_SOLVER.replace("%1", Long.toString(challengeId)).replace("%2", playerEmail);
+        return KEY_MAZE_SOLVER_CODE.replace("%1", Long.toString(challengeId)).replace("%2", playerEmail);
     }
 }

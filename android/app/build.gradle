@@ -8,7 +8,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
-        versionName "0.8"
+        versionName "0.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.android.support:design:27.0.2'
     implementation 'com.android.support:support-vector-drawable:27.0.2'
     implementation 'com.android.support:support-v4:27.0.2'
-    implementation 'org.mozilla:rhino:1.7R4'
+    implementation 'org.mozilla:rhino:1.7.7.2'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compileOnly 'com.googlecode.objectify:objectify:5.1.13'
     implementation 'com.google.code.gson:gson:2.8.2'

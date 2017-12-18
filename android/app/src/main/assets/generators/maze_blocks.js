@@ -76,7 +76,7 @@ Blockly.JavaScript['maze_init_function'] = function(block) {
    statements_init +
    //Save the values into the map:
    "  propNames.forEach(function(item, index) { instance.setJavascriptArgument(item, this[item]); } );\n" +
-   "}//end init()\n\n";
+   "}/*end init()*/\n\n";
   return code;
 };
 
@@ -103,13 +103,13 @@ Blockly.JavaScript['maze_run_function'] = function(block) {
   //Otherwise it's a string/character literal
   "  });\n" +
   //Include the player's code:
-  "\n\n//---- PLAYER'S CODE ----\n\n" + statements_run + "\n\n//-----------------------\n\n" +
+  "\n\n/*---- PLAYER'S CODE ----*/\n\n" + statements_run + "\n\n/*---------------------*/\n\n" +
   //Save all of the values back to the map:
   "  propNames.forEach(function(item, index) { instance.setJavascriptArgument(item, this[item]); } );\n" +
   //If the code does not return yet, return the default value (NO_MOVE).
   "  return __retVal;\n" +
 
-  "}//end run()\n";
+  "}/*end run()*/\n";
   return code;
 };
 

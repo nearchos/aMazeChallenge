@@ -3,19 +3,26 @@ package org.inspirecenter.amazechallenge.algorithms;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.*;
 
-import java.io.Serializable;
-
 /**
  * @author Nearchos
  *         Created: 19-Aug-17
  */
 public abstract class AbstractMazeSolver implements MazeSolver {
 
+    protected transient Challenge challenge;
+    protected transient Game game;
     final String playerEmail;
 
-    AbstractMazeSolver(final String playerEmail) {
+    AbstractMazeSolver(final Challenge challenge, final Game game, final String playerEmail) {
         super();
+        init(challenge, game);
         this.playerEmail = playerEmail;
+    }
+
+    @Override
+    public void init(Challenge challenge, Game game) {
+        this.challenge = challenge;
+        this.game = game;
     }
 
     abstract Grid getGrid();
