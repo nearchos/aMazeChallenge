@@ -12,6 +12,7 @@
         android:layout_centerVertical="true"
         android:text="123"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginLeft="15dp"
         android:textColor="@android:color/black" />
 
     <TextView
