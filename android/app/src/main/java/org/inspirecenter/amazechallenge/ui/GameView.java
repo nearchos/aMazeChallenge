@@ -77,11 +77,6 @@ public class GameView extends View {
         invalidate();
     }
 
-    void update(final GameLightState gameLightState) {
-        // todo
-        invalidate();
-    }
-
     /**
      * This allows this custom view to maintain a 'square' dimension
      */
@@ -108,7 +103,7 @@ public class GameView extends View {
         final int width = canvas.getWidth();
         final int height = canvas.getHeight();
         final int smallestSide = Math.min(width, height);
-        // todo adjust if non-square grids are to be supported at drawn stage
+        // assumes the tiles are squares
         final int tile_size = smallestSide / grid.getWidth();
         final int padding = (smallestSide - (tile_size * grid.getWidth())) / 2;
 

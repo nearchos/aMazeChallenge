@@ -30,8 +30,8 @@
         <activity
             android:name=".ui.PersonalizeActivity"
             android:label="@string/Personalize"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
@@ -57,8 +57,8 @@
         <activity
             android:name=".ui.GameActivity"
             android:label="@string/Game"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ui.TrainingActivity">
+            android:parentActivityName=".ui.TrainingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.TrainingActivity" />
@@ -75,8 +75,8 @@
         <activity
             android:name=".ui.OnlineGameActivity"
             android:label="@string/Play_online"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ui.OnlineChallengeActivity">
+            android:parentActivityName=".ui.OnlineChallengeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.OnlineChallengeActivity" />
@@ -97,6 +97,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.PersonalizeActivity" />
         </activity>
+        <activity
+            android:name=".ui.HelpActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
     </application>
 
 </manifest>

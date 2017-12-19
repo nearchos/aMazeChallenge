@@ -81,12 +81,7 @@ public class GameActivity extends AppCompatActivity {
 
         this.autoPlayButton = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_auto_play_switch);
         this.nextButton = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_button_next);
-        this.nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                makeNextMove();
-            }
-        });
+        this.nextButton.setOnClickListener(v -> makeNextMove());
 
         movesDataTextView = findViewById(R.id.activity_game_moves_data);
         movesDetailsButton = findViewById(R.id.activity_game_moves_details);

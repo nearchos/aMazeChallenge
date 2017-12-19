@@ -19,7 +19,6 @@ class InterpretedMazeSolverExecutor {
         this.DELAY_S = delay_seconds;
     }
 
-    // todo check how well this works on AppEngine
     PlayerMove execute() throws Exception {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<PlayerMove> future = executor.submit(new InterpretedMazeSolverExecutorTask(FUNCTION, INSTANCE));

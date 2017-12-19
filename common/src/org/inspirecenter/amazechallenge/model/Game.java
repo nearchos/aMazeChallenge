@@ -60,10 +60,6 @@ public class Game implements Serializable {
         return lastUpdated;
     }
 
-    public boolean hasBeenUpdatedInTheLastSecond() {
-        return lastUpdated > System.currentTimeMillis() - ONE_SECOND;
-    } // todo delete?
-
     /**
      * Called to indicate the completion of a round
      */

@@ -30,26 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 
-        <ScrollView
-            android:layout_below="@id/activity_online_game_game_view"
-            android:layout_above="@id/activity_online_game_buttons_row"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/activity_online_game_text_view"
-                    android:layout_margin="8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-        </ScrollView>
-
         <LinearLayout
             android:id="@+id/activity_online_game_buttons_row"
             android:layout_alignParentBottom="true"

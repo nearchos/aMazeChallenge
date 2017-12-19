@@ -20,7 +20,6 @@ public class OfyHelper implements ServletContextListener {
         ObjectifyService.register(Game.class);
         ObjectifyService.register(Player.class);
         ObjectifyService.register(Position.class);
-        // todo add more?
     }
 
     public void contextDestroyed(ServletContextEvent event) {

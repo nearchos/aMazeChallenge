@@ -120,14 +120,14 @@ public class RuntimeController {
         return !hasWall(grid, position, rightDirection);
     }
 
-    public static int getGridCell(final Grid grid, final int row, final int col) throws IndexOutOfBoundsException { // todo make private?
+    public static int getGridCell(final Grid grid, final int row, final int col) throws IndexOutOfBoundsException {
         if(col < 0 || col > grid.getWidth()) throw new IndexOutOfBoundsException("col not in bounds [0, " + grid.getWidth() + ")");
         if(row < 0 || row > grid.getHeight()) throw new IndexOutOfBoundsException("row not in bounds [0, " + grid.getHeight() + ")");
         final char c = grid.getData().charAt(row * grid.getWidth() + col);
         return Integer.parseInt(Character.toString(c), 16);
     }
 
-    public static boolean hasWall(final Grid grid, final Position position, final Direction direction) { // todo make private?
+    private static boolean hasWall(final Grid grid, final Position position, final Direction direction) {
         final int shape = getGridCell(grid, position.getRow(), position.getCol());
         switch (direction) {
             case NORTH:

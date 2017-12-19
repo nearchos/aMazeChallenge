@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -24,7 +23,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,7 +36,6 @@ public class OnlineGameActivity extends AppCompatActivity {
     public static final long ONE_SECOND = 1000L;
 
     private GameView gameView;
-    private TextView textView; // todo delete after debugging
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +43,12 @@ public class OnlineGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_online_game);
 
         gameView = findViewById(R.id.activity_online_game_game_view);
-        textView = findViewById(R.id.activity_online_game_text_view);
     }
 
     private Challenge challenge;
     private String email = null;
 
     private Handler handler;
-    private OnlineMazeRunner onlineMazeRunner;
     private Timer timer = new Timer();
 
     @Override
@@ -71,9 +66,8 @@ public class OnlineGameActivity extends AppCompatActivity {
         }
 
         handler = new Handler();
-        onlineMazeRunner = new OnlineMazeRunner();
 
-        timer.schedule(onlineMazeRunner, 0L, ONE_SECOND);
+        timer.schedule(new OnlineMazeRunner(), 0L, ONE_SECOND);
     }
 
     @Override
@@ -220,12 +214,9 @@ public class OnlineGameActivity extends AppCompatActivity {
     private class OnlineMazeRunner extends TimerTask {
         @Override
         public void run() {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(TAG, "getting game-state for challenge: " + challenge.getName());
-                    new GetGameStateAsyncTask(email, challenge.getId()).execute();
-                }
+            handler.post(() -> {
+                Log.d(TAG, "getting game-state for challenge: " + challenge.getName());
+                new GetGameStateAsyncTask(email, challenge.getId()).execute();
             });
         }
     }

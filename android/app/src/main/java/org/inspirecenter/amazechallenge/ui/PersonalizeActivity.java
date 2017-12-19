@@ -109,7 +109,12 @@ public class PersonalizeActivity extends AppCompatActivity {
     }
 
     public void done(final View view) {
-        // todo verify name is non-empty and email is valid
+        // verify name is non-empty and email is valid
+        final String name = nameEditText.getText().toString().trim();
+        final String email = emailEditText.getText().toString().toLowerCase().trim();
+        if(name.isEmpty()) ; // todo show warning dialog
+        if(email.isEmpty()) ; // todo show error dialog - and do not allow to proceed
+
         PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(MainActivity.KEY_PREF_PERSONALIZED, true).apply();
         startActivity(new Intent(this, BlocklyActivity.class));
     }

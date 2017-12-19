@@ -8,6 +8,7 @@
     <string name="Select_challenge">Select challenge</string>
     <string name="Select_Personalization_Options">Select color and icon</string>
     <string name="Home">Home</string>
+    <string name="Learn">Learn</string>
     <string name="Personalize">Personalize</string>
     <string name="Add_player">Add player</string>
     <string name="Start_game">Start game</string>
@@ -16,6 +17,7 @@
     <string name="Color">Color</string>
     <string name="Selected_color">Selected colorName</string>
     <string name="Auto_play">Auto play</string>
+    <string name="Previous">Previous</string>
     <string name="Next">Next</string>
     <string name="Interval">Interval</string>
     <string name="Name">Name</string>

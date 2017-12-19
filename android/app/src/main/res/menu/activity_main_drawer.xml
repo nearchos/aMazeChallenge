@@ -28,9 +28,9 @@
     <group android:id="@+id/group_info">
 
         <item
-            android:id="@+id/nav_help"
+            android:id="@+id/nav_learn"
             android:icon="@drawable/ic_help_black_24dp"
-            android:title="@string/Help" />
+            android:title="@string/Learn" />
 
         <item
             android:id="@+id/nav_info"
