@@ -10,12 +10,15 @@ class ErrorFinderCommons {
     static final String XML_START_BLOCK = "<block";
     static final String XML_END_BLOCK = "</block>";
     static final String XML_LOOP_CONDITIONAL_TRUE = "<field name=\"BOOL\">TRUE</field>";
+    static final String XML_LOOP_CONDITIONAL_FALSE = "<field name=\"BOOL\">FALSE</field>";
     static final String XML_IF_CONDITIONAL_CLAUSE = "<value name=\"IF0\">";
     static final String XML_WHILE_CONDITIONAL_CLAUSE = "<value name=\"BOOL\">";
     static final String XML_NEXT_STATEMENT_TAG = "<next>";
     static final String XML_NEXT_STATEMENT_END = "</next>";
     static final String XML_STATEMENT_BODY = "<statement name=\"DO";
     static final String XML_INIT_FUNCTION_BODY_START = "<statement name=\"init\">";
+    static final String XML_WHILE_MODE_END = "<field name=\"MODE\">WHILE</field>";
+    static final String XML_SHADOW_TAG = "</shadow>";
 
     static int getOccurencesOfSubstring(final String stringToFind, final String str) {
         int lastIndex = 0;
