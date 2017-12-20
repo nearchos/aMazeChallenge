@@ -11,6 +11,7 @@ import org.inspirecenter.amazechallenge.ui.BlocklyActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -209,5 +210,25 @@ public class FileManager {
         File file = a.getBaseContext().getFileStreamPath(filename);
         return file.exists();
     }//end internalFileExists()
+
+    /**
+     * Gets the contents of the temporary workspace as an XML file.
+     * @return A string with the text contents of the temporary workspace XML format.
+     */
+    public static String getTempWorkspaceContents(BlocklyActivity a) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            FileInputStream in = new FileInputStream(new File(a.getFilesDir().getAbsolutePath() + "/" + BlocklyActivity.AUTOSAVE_FILENAME));
+            InputStreamReader inputStreamReader = new InputStreamReader(in);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }//end while
+        }//end try
+        catch (IOException e) { e.printStackTrace(); }
+        return sb.toString();
+    }//end getTempWorkspaceContents()
 
 }//end class FileManager

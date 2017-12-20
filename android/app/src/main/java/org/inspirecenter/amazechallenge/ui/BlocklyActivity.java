@@ -29,6 +29,7 @@ import com.google.blockly.model.DefaultBlocks;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
+import org.inspirecenter.amazechallenge.algorithms.errorfinder.ErrorFinderManager;
 import org.inspirecenter.amazechallenge.filemanager.FileManager;
 
 import java.io.BufferedReader;
@@ -55,14 +56,13 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     private static final String TAG = "MazeBlocklyActivity";
     private static final String DEFAULT_SAVE_FILENAME = "maze_workspace.xml";
     public static String SAVE_FILENAME = DEFAULT_SAVE_FILENAME;
-    private static final String AUTOSAVE_FILENAME = "maze_workspace_temp.xml";
+    public static final String AUTOSAVE_FILENAME = "maze_workspace_temp.xml";
     public static final String KEY_ALGORITHM_ACTIVITY_CODE = "KEY_ALGORITHM_ACTIVITY_CODE";
     public static final String ASSETS_CODES_DIR = "defaultCodes";
     public static ArrayList<String> codeNamesList = new ArrayList<>();
     public static ArrayList<String> codeFilesList = new ArrayList<>();
     public static ArrayList<String> codeFilesLastModifiedList = new ArrayList<>();
     public static AlertDialog loadDialog;
-    public static int snackbarDuration_MS = 5000;
     private final BlocklyActivity instance = this;
 
     private static final List<String> BLOCK_DEFINITIONS = Arrays.asList(
@@ -114,7 +114,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         catch (FileNotFoundException | BlocklySerializerException e) { e.printStackTrace(); }
 
         //Check the code:
-        ArrayList<InterpreterError> errorList = checkCode();
+        ArrayList<InterpreterError> errorList = ErrorFinderManager.checkCode(instance);
 
         int warnings = 0;
         int errors = 0;
@@ -176,7 +176,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                         dialogInterface.dismiss();
                     }
                 });
-                InterpreterError e = getNextError(errorList);
+                InterpreterError e = ErrorFinderManager.getNextError(errorList);
                 if (e == null) throw new RuntimeException("FATAL ERROR IN BLOCKLYACTIVITY: Could not find error in a presumably error-containing arraylist");
                 else errorBuilder.setMessage(e.toString());
                 errorBuilder.create().show();
@@ -239,7 +239,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                         dialogInterface.dismiss();
                     }
                 });
-                InterpreterError e = getNextWarning(errorList);
+                InterpreterError e = ErrorFinderManager.getNextWarning(errorList);
                 if (e == null) throw new RuntimeException("FATAL ERROR IN BLOCKLYACTIVITY: Could not find warning in a presumably warning-containing arraylist");
                 else warningBuilder.setMessage(e.toString());
                 warningBuilder.create().show();
@@ -496,69 +496,5 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         });
         return warningListDialog.create();
     }//end createErrorListDialog()
-
-    /*************** ERROR HANDLING METHODS ***************/
-
-    /**
-     * Checks the code for obvious user mistakes such as missing or empty functions etc.
-     * @return Returns an InterpreterError to describe the error that occured.
-     */
-    private ArrayList<InterpreterError> checkCode() {
-        final String code = getTempWorkspaceContents();
-        ArrayList<InterpreterError> errorList = new ArrayList<>();
-
-        //For each type of error, run its error finder and return a list of errors found:
-        for (InterpreterError e : InterpreterError.values()) {
-            ArrayList<InterpreterError> currentErrorList = e.executeErrorFinder(code);
-            if (!currentErrorList.isEmpty() && currentErrorList != null)
-                errorList.addAll(currentErrorList);
-        }//end foreach InterpreterError
-
-        //Sort the list before returning it:
-        ArrayList<InterpreterError> sortedErrorList = new ArrayList<>();
-        for (final InterpreterError e : errorList) { if (e.type == ERROR) sortedErrorList.add(e); }
-        for (final InterpreterError e : errorList) { if (e.type == WARNING) sortedErrorList.add(e); }
-        return sortedErrorList;
-    }//end checkCode()
-
-    /**
-     * Gets the contents of the temporary workspace as an XML file.
-     * @return A string with the text contents of the temporary workspace XML format.
-     */
-    private String getTempWorkspaceContents() {
-        StringBuilder sb = new StringBuilder();
-        try {
-            FileInputStream in = new FileInputStream(new File(getFilesDir().getAbsolutePath() + "/" + AUTOSAVE_FILENAME));
-            InputStreamReader inputStreamReader = new InputStreamReader(in);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-                sb.append("\n");
-            }//end while
-        }//end try
-        catch (IOException e) { e.printStackTrace(); }
-        return sb.toString();
-    }//end getTempWorkspaceContents()
-
-    /**
-     * Gets the next error found in an array or InterpreterErrors.
-     * @param list The list of InterpreterErrors (ArrayList)
-     * @return Returns null of no errors found, otherwise returns the first error found in the array.
-     */
-    private InterpreterError getNextError(ArrayList<InterpreterError> list) {
-        for (final InterpreterError e : list) if (e.type == ERROR) return e;
-        return null;
-    }//end getNextError()
-
-    /**
-     * Gets the next warning found in an array or InterpreterErrors.
-     * @param list The list of InterpreterErrors (ArrayList)
-     * @return Returns null of no warnings found, otherwise returns the first error found in the array.
-     */
-    private InterpreterError getNextWarning(ArrayList<InterpreterError> list) {
-        for (final InterpreterError e : list) if (e.type == WARNING) return e;
-        return null;
-    }//end getNextWarning()
 
 }//end activity BlocklyActivity
