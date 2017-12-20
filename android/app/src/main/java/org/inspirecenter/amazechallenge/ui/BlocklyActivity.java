@@ -29,6 +29,7 @@ import com.google.blockly.model.DefaultBlocks;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
+import org.inspirecenter.amazechallenge.filemanager.FileManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,7 +54,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
     private static final String TAG = "MazeBlocklyActivity";
     private static final String DEFAULT_SAVE_FILENAME = "maze_workspace.xml";
-    private static String SAVE_FILENAME = DEFAULT_SAVE_FILENAME;
+    public static String SAVE_FILENAME = DEFAULT_SAVE_FILENAME;
     private static final String AUTOSAVE_FILENAME = "maze_workspace_temp.xml";
     public static final String KEY_ALGORITHM_ACTIVITY_CODE = "KEY_ALGORITHM_ACTIVITY_CODE";
     public static final String ASSETS_CODES_DIR = "defaultCodes";
@@ -62,6 +63,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     public static ArrayList<String> codeFilesLastModifiedList = new ArrayList<>();
     public static AlertDialog loadDialog;
     public static int snackbarDuration_MS = 5000;
+    private final BlocklyActivity instance = this;
 
     private static final List<String> BLOCK_DEFINITIONS = Arrays.asList(
             DefaultBlocks.COLOR_BLOCKS_PATH,
@@ -304,7 +306,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                         b.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if (internalFileExists(input.getText().toString())) {
+                                if (FileManager.internalFileExists(instance, input.getText().toString())) {
                                     AlertDialog.Builder confirmOverwriteDialog = new AlertDialog.Builder(BlocklyActivity.this);
                                     confirmOverwriteDialog.setTitle(R.string.code_overwrite)
                                             .setMessage(R.string.code_overwrite_message)
@@ -312,7 +314,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
                                                     String savedFileName = "playercode_" + input.getText().toString() + ".xml";
-                                                    setSaveFilename(savedFileName);
+                                                    FileManager.setSaveFilename(savedFileName);
                                                     onSaveWorkspace();
                                                     dialogInterface.dismiss();
                                                     SAVE_DIALOG.dismiss();
@@ -331,7 +333,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                                     Snackbar.make(view, R.string.save_code_error_invalid, Snackbar.LENGTH_SHORT).show();
                                 else {
                                     String savedFileName = "playercode_" + input.getText().toString() + ".xml";
-                                    setSaveFilename(savedFileName);
+                                    FileManager.setSaveFilename(savedFileName);
                                     onSaveWorkspace();
                                     SAVE_DIALOG.dismiss();
                                 }//end else
@@ -344,14 +346,14 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
 
             case R.id.action_load:
-                updateInternalStorageCodes();
-                getCodes();
+                FileManager.updateInternalStorageCodes(instance);
+                FileManager.getCodes(instance);
                 final ListView list = new ListView(BlocklyActivity.this);
                 loadDialog = createLoadDialog(list);
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        setSaveFilename(codeFilesList.get(i));
+                        FileManager.setSaveFilename(codeFilesList.get(i));
                         onLoadWorkspace();
                         loadDialog.dismiss();
                     }
@@ -386,182 +388,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         submitCode();
     }
 
-    public static void setSaveFilename(String saveFilename) {
-        SAVE_FILENAME = saveFilename;
-    }
-
-    /**
-     * Searches for files within the internal storage (/data/user/0/[app-domain]/files/)
-     * Populates the codeNames and codeFiles lists firstly with demo codes and then with user codes.
-     * codeFilesList stores the raw filename e.g playercode_mySavedCode.xml
-     * codeNamesList stores the filtered filename for display in the list e.g mySavedCode
-     */
-    private void getCodes() {
-        //Clear the arrays first:
-        codeNamesList.clear();
-        codeFilesList.clear();
-        codeFilesLastModifiedList.clear();
-
-        //Get all files from the internal files directory:
-        File mydir = this.getFilesDir();
-        File listFile[] = mydir.listFiles();
-        if (listFile != null && listFile.length > 0) {
-
-            //Default codes:
-            for (File aListFile : listFile) {
-                if (aListFile.isFile() && aListFile.getName().startsWith("defaultcode_")) {
-                    codeFilesList.add(aListFile.getName());
-                    String filteredName = aListFile.getName().replace("defaultcode_", "");
-                    filteredName = filteredName.replace(".xml", "");
-                    codeNamesList.add(filteredName);
-                    codeFilesLastModifiedList.add("(Sample code)");
-                }//end if
-            }//end for (default codes)
-
-            //Player codes:
-            ArrayList<File> unsortedFiles = new ArrayList<>();
-            for (File aListFile : listFile) {
-                if (aListFile.isFile() && aListFile.getName().startsWith("playercode_"))
-                    unsortedFiles.add(aListFile);
-            }//end for (player codes)
-
-            //Sort the player's code files from latest to newest:
-            Collections.sort(unsortedFiles, new Comparator<File>() {
-                @Override
-                public int compare(File file1, File file2) {
-                    long difference = file1.lastModified() - file2.lastModified();
-                    if(difference < 0) return 1;
-                    else if (difference == 0) return 0;
-                    else return -1;
-                }//end compare()
-            });
-
-            //Put the sorted items into the lists:
-            for (File aListFile : unsortedFiles) {
-                if (aListFile.isFile() && aListFile.getName().startsWith("playercode_")) {
-                    codeFilesList.add(aListFile.getName());
-                    String filteredName = aListFile.getName().replace("playercode_", "");
-                    filteredName = filteredName.replace(".xml", "");
-                    codeNamesList.add(filteredName);
-                    Date lastModifiedDate = new Date(aListFile.lastModified());
-                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                    codeFilesLastModifiedList.add("(Modified: " + dateFormat.format(lastModifiedDate) + ")");
-                }//end if
-            }//end for (player codes)
-
-        }//end if
-    }//end getCodes()
-
-    /**
-     * Matches asset code files to internal storage code files.
-     * If an internal file is missing, the asset code file is copied into the internal folder.
-     * This is necessary as Blockly only loads XML files from internal app storage.
-     */
-    private void updateInternalStorageCodes() {
-
-        //Get the asset files:
-        ArrayList<String> assetFiles = new ArrayList<>();
-        try { assetFiles = listAssetCodes(); }
-        catch (IOException e) { e.printStackTrace(); }
-
-        //Get the internal files:
-        ArrayList<String> internalFilesList = new ArrayList<>();
-        File mydir = this.getFilesDir();
-        File listFile[] = mydir.listFiles();
-        if (listFile != null && listFile.length > 0) {
-            for (File aListFile : listFile)
-                if (aListFile.isFile() && aListFile.getName().startsWith("defaultcode_")) internalFilesList.add(aListFile.getName());
-        }//end if
-
-        //Compare files in assets with internal files:
-        for (String filename : assetFiles) {
-            boolean found = false;
-            for (String internalFilename : internalFilesList) {
-                if (internalFilename.equals(filename)) {
-                    found = true;
-                    break;
-                }//end if
-            }//end foreach internal filename
-
-            //If file in assets does not exist in internals, read its content
-            // and create a new file in internals with the same name:
-            if (!found) {
-                //Read the contents of the file in assets:
-                String content = "";
-                try { content = readFromAssets(this, ASSETS_CODES_DIR + "/" + filename); }
-                catch (IOException e) { e.printStackTrace(); }
-                //Create a new file in internals and copy content and name of the assets file:
-                if (!content.isEmpty()) {
-                    File file = new File(this.getFilesDir(), filename);
-                    FileOutputStream outputStream;
-                    try {
-                        outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-                        outputStream.write(content.getBytes());
-                        outputStream.close();
-                    } catch (Exception e) { e.printStackTrace(); }
-                }//end if content non empty
-            }//end if file was not found
-        }//end foreach file in assets
-    }//end updateInternalStorageCodes()
-
-    /**
-     * Finds and returns a list of all the asset (default) codes.
-     * @return Returns an ArrayList of Strings of the asset code files.
-     * @throws IOException Throws exception if a file cannot be accessed.
-     */
-    private ArrayList<String> listAssetCodes() throws IOException {
-        ArrayList<String> assetsFilenames = new ArrayList<>();
-        Resources res = getResources();
-        AssetManager am = res.getAssets();
-        String fileList[] = am.list(ASSETS_CODES_DIR);
-        if (fileList != null) {
-            for (String file : fileList)
-                if (file.startsWith("defaultcode_")) assetsFilenames.add(file);
-        }//end if
-        return assetsFilenames;
-    }//end listAssets()
-
-    /**
-     * Reads a text file from assets.
-     * @param context Current Context
-     * @param filename The filename to read.
-     * @return Returns a string of the file's contents.
-     * @throws IOException Throws exception if the file cannot be accessed.
-     */
-    public static String readFromAssets(Context context, String filename) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open(filename)));
-        StringBuilder sb = new StringBuilder();
-        String mLine = reader.readLine();
-        while (mLine != null) {
-            sb.append(mLine); // process line
-            mLine = reader.readLine();
-        }//end while
-        reader.close();
-        return sb.toString();
-    }//end readFromAssets()
-
-    /**
-     * Delete a given internal file.
-     * @param filename Internal file to delete.
-     */
-    public void deleteInternalFile(String filename) {
-        File dir = getFilesDir();
-        File file = new File(dir, filename);
-        file.delete();
-        updateInternalStorageCodes();
-        getCodes();
-    }//end deleteInternalFile()
-
-    /**
-     * Checks if an internal file with the given name exists.
-     * @param filename The name of the file.
-     * @return Returns true if file exists, false if not.
-     */
-    public boolean internalFileExists(String filename) {
-        filename = "playercode_" + filename + ".xml";
-        File file = getBaseContext().getFileStreamPath(filename);
-        return file.exists();
-    }//end internalFileExists()
+    /*************** DIALOG INTERFACES ***************/
 
     /**
      * Creates the Save Dialog.
@@ -669,6 +496,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         });
         return warningListDialog.create();
     }//end createErrorListDialog()
+
+    /*************** ERROR HANDLING METHODS ***************/
 
     /**
      * Checks the code for obvious user mistakes such as missing or empty functions etc.

@@ -18,13 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.filemanager.FileManager;
 import org.inspirecenter.amazechallenge.ui.BlocklyActivity;
 
 import java.util.ArrayList;
-
-/**
- * Created by Nicos on 29-Oct-17.
- */
 
 public class LoadDialogListAdapter extends BaseAdapter {
 
@@ -75,7 +72,7 @@ public class LoadDialogListAdapter extends BaseAdapter {
                         .setMessage(R.string.delete_code_message)
                         .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                             @Override public void onClick(DialogInterface dialogInterface, int i2) {
-                                activity.deleteInternalFile(fileNames.get(i));
+                                FileManager.deleteInternalFile(activity, fileNames.get(i));
                                 Snackbar.make(activity.findViewById(R.id.blocklyView), R.string.code_deleted, Snackbar.LENGTH_LONG).show();
                                 dialogInterface.dismiss();
                                 BlocklyActivity.loadDialog.dismiss();
