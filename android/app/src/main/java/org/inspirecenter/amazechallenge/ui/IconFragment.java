@@ -38,18 +38,18 @@ public class IconFragment extends Fragment {
         return rootView;
     }//end onCreateView()
 
-    public void playGIF() {
-        stopAllGIFs();
-        if (gifView != null) gifView.play();
-    }//end playGIF()
+//    public void playGIF() {
+//        stopAllGIFs();
+//        if (gifView != null) gifView.play();
+//    }//end playGIF()
 
-    public void stopGIF() {
-        gifView.stop();
-    }
-
-    public void stopAllGIFs() {
-        for (GIFView g : gifViews) if (g != null) g.stop();
-    }//end stopAllGIFs()
+//    public void stopGIF() {
+//        gifView.stop();
+//    }
+//
+//    public void stopAllGIFs() {
+//        for (GIFView g : gifViews) if (g != null) g.stop();
+//    }//end stopAllGIFs()
 
     int getDrawableResourceId(final AmazeIcon amazeIcon) {
         return getResources().getIdentifier(amazeIcon.getResourceName(), "drawable", getActivity().getPackageName());

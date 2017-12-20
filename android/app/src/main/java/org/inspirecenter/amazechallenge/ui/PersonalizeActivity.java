@@ -51,7 +51,7 @@ public class PersonalizeActivity extends AppCompatActivity {
         selectColorButton = findViewById(R.id.activity_personalize_button_select_color);
         selectColorButton.setOnClickListener(view -> startActivity(new Intent(this, PersonalizationSliderActivity.class)));
         updatePersonalization();
-        gifView.play();
+        //gifView.play();
     }
 
     public static final int PERMISSIONS_REQUEST_GET_ACCOUNT = 42;

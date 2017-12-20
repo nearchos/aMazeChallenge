@@ -16,7 +16,7 @@ public class GIFView extends View {
     private Movie movie;
     private long movieStart = 0;
     private int currentAnimationTime = 0;
-    private boolean isPlaying = false;
+    //private boolean isPlaying = false;
     private float lesserGradientScale = 1;
 
     public GIFView(Context context, AttributeSet attrs) {
@@ -53,11 +53,11 @@ public class GIFView extends View {
         int posY = 0;
         drawGif(canvas, posX, posY);
         if (movie != null){
-            if (isPlaying) {            //Important Note: Play the GIF only when it is visible, otherwise the application will slow down significantly.
+            //if (isPlaying) {            //Important Note: Play the GIF only when it is visible, otherwise the application will slow down significantly.
                 updateAnimationTime();
                 drawGif(canvas, posX, posY);
                 invalidate();
-            }//end if isPlaying
+            //}//end if isPlaying
         }//end if
         else         drawGif(canvas, posX, posY);
 
@@ -76,8 +76,8 @@ public class GIFView extends View {
         movie.draw(canvas, posX , posY);
     }//end drawGif()
 
-    public void play() { isPlaying = true; }
-
-    public void stop() { isPlaying = false; }
+//    public void play() { isPlaying = true; }
+//
+//    public void stop() { isPlaying = false; }
 
 }//end class GIFView

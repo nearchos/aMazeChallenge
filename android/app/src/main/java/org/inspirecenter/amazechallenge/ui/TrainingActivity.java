@@ -54,7 +54,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
 
         final GIFView gifView = findViewById(R.id.activity_training_icon);
         gifView.setImageResource(getResources().getIdentifier(userAmazeIcon.getResourceName(), "drawable", this.getPackageName()));
-        gifView.play();
+        //gifView.play();
 
         final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
         final TextView nameTextView = findViewById(R.id.activity_training_user_name);
