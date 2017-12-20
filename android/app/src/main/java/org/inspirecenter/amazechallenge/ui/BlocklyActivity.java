@@ -64,6 +64,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     public static ArrayList<String> codeFilesLastModifiedList = new ArrayList<>();
     public static AlertDialog loadDialog;
     private final BlocklyActivity instance = this;
+    private static final String BLOCKS_FILE = "blocks/maze_blocks.json";
+    private static final String BLOCK_GENERATORS_FILE = "generators/maze_blocks.js";
+    private static final String AMAZE_TOOLEBOX_XML = "toolboxes/maze_toolbox.xml";
+    private static final String ALLOWED_PLAYER_CODE_FILES_REGEX = "[a-zA-Z0-9]*";
 
     private static final List<String> BLOCK_DEFINITIONS = Arrays.asList(
             DefaultBlocks.COLOR_BLOCKS_PATH,
@@ -72,11 +76,11 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             DefaultBlocks.MATH_BLOCKS_PATH,
             DefaultBlocks.TEXT_BLOCKS_PATH,
             DefaultBlocks.VARIABLE_BLOCKS_PATH,
-            "blocks/maze_blocks.json"
+            BLOCKS_FILE
     );//end List BLOCK_DEFINITIONS
 
     private static final List<String> JAVASCRIPT_GENERATORS = Collections.singletonList(
-            "generators/maze_blocks.js"
+            BLOCK_GENERATORS_FILE
     );//end List JAVASCRIPT_GENERATORS
 
     CodeGenerationRequest.CodeGeneratorCallback mCodeGeneratorCallback =
@@ -141,7 +145,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 errorBuilder.setTitle(R.string.errors);
                 errorBuilder.setMessage(getString(R.string.multiple_errors_found));
                 final AlertDialog errorDialog = errorBuilder.create();
-                final AlertDialog errorListDialog = createErrorListDialog(errorList);
+                final AlertDialog errorListDialog = ErrorDialogCreator.createErrorListDialog(instance, errorList);
                 errorDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.view), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -186,7 +190,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 warningBuilder.setTitle(R.string.warnings);
                 warningBuilder.setMessage(getString(R.string.multiple_warnings_found));
                 final AlertDialog warningDialog = warningBuilder.create();
-                final AlertDialog errorListDialog = createWarningListDialog(errorList);
+                final AlertDialog errorListDialog = ErrorDialogCreator.createWarningListDialog(instance, errorList);
                 warningDialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.back_to_menu), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -256,7 +260,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     @NonNull
     @Override
     protected String getToolboxContentsXmlPath() {
-        return "toolboxes/maze_toolbox.xml";
+        return AMAZE_TOOLEBOX_XML;
     }
 
     @NonNull
@@ -298,7 +302,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
             case R.id.action_save:
                 final EditText input = new EditText(BlocklyActivity.this);
-                final AlertDialog SAVE_DIALOG = createSaveDialog(input);
+                final AlertDialog SAVE_DIALOG = ErrorDialogCreator.createSaveDialog(instance, input);
                 SAVE_DIALOG.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface dialog) {
@@ -313,7 +317,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                                             .setPositiveButton(R.string.code_overwrite_yes, new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                                    String savedFileName = "playercode_" + input.getText().toString() + ".xml";
+                                                    String savedFileName = FileManager.PLAYER_CODE_FILENAME_PREFIX + input.getText().toString() + FileManager.XML_FILE_EXTENSION;
                                                     FileManager.setSaveFilename(savedFileName);
                                                     onSaveWorkspace();
                                                     dialogInterface.dismiss();
@@ -329,10 +333,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                                 }
                                 else if (input.getText().toString().isEmpty())
                                     Snackbar.make(view, R.string.save_code_error_empty, Snackbar.LENGTH_SHORT).show();
-                                else if (!input.getText().toString().matches("[a-zA-Z0-9]*"))
+                                else if (!input.getText().toString().matches(ALLOWED_PLAYER_CODE_FILES_REGEX))
                                     Snackbar.make(view, R.string.save_code_error_invalid, Snackbar.LENGTH_SHORT).show();
                                 else {
-                                    String savedFileName = "playercode_" + input.getText().toString() + ".xml";
+                                    String savedFileName = FileManager.PLAYER_CODE_FILENAME_PREFIX + input.getText().toString() + FileManager.XML_FILE_EXTENSION;
                                     FileManager.setSaveFilename(savedFileName);
                                     onSaveWorkspace();
                                     SAVE_DIALOG.dismiss();
@@ -349,7 +353,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 FileManager.updateInternalStorageCodes(instance);
                 FileManager.getCodes(instance);
                 final ListView list = new ListView(BlocklyActivity.this);
-                loadDialog = createLoadDialog(list);
+                loadDialog = ErrorDialogCreator.createLoadDialog(instance, list);
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -388,113 +392,6 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         submitCode();
     }
 
-    /*************** DIALOG INTERFACES ***************/
-
-    /**
-     * Creates the Save Dialog.
-     * @param input The edit text object (code name).
-     * @return Returns an AlertDialog object.
-     */
-    private AlertDialog createSaveDialog(EditText input) {
-        final AlertDialog.Builder saveDialogBuilder = new AlertDialog.Builder(this);
-        //Input EditText for name of the saved code:
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        input.setLayoutParams(lp);
-        saveDialogBuilder.setView(input);
-        //Title, message and responses:
-        saveDialogBuilder.setTitle(R.string.Save_code)
-                .setMessage(R.string.Save_code_name)
-                .setPositiveButton(R.string.Save, null)
-                .setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-        return saveDialogBuilder.create();
-    }//end createSaveDialog()
-
-    /**
-     * Creates the Load Dialog.
-     * @param list The list of items to choose from to load.
-     * @return Returns an AlertDialog object.
-     */
-    private AlertDialog createLoadDialog(ListView list) {
-        final AlertDialog.Builder loadDialog = new AlertDialog.Builder(this);
-        LoadDialogListAdapter listAdapter = new LoadDialogListAdapter(this, codeNamesList, codeFilesList, codeFilesLastModifiedList,  this);
-        list.setAdapter(listAdapter);
-
-        LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        list.setLayoutParams(lp_list);
-        loadDialog.setView(list);
-        loadDialog.setTitle(R.string.load_code);
-        loadDialog.setMessage(R.string.load_code_message);
-        return loadDialog.create();
-    }//end createLoadDialog()
-
-    /**
-     * Creates the error list dialog.
-     * @return Returns an AlertDialog object.
-     */
-    private AlertDialog createErrorListDialog(ArrayList<InterpreterError> errorList) {
-        final ListView list = new ListView(BlocklyActivity.this);
-        final AlertDialog.Builder errorListDialog = new AlertDialog.Builder(this);
-        ErrorListDialogListAdapter listAdapter = new ErrorListDialogListAdapter(this, errorList, this);
-        list.setAdapter(listAdapter);
-
-        LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        list.setLayoutParams(lp_list);
-        errorListDialog.setView(list);
-        errorListDialog.setTitle(R.string.errors);
-        errorListDialog.setMessage(getString(R.string.errors_list_message));
-        errorListDialog.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        return errorListDialog.create();
-    }//end createErrorListDialog()
-
-    /**
-     * Creates the warning list dialog.
-     * @return Returns an AlertDialog object.
-     */
-    private AlertDialog createWarningListDialog(ArrayList<InterpreterError> errorList) {
-        final ListView list = new ListView(BlocklyActivity.this);
-        final AlertDialog.Builder warningListDialog = new AlertDialog.Builder(this);
-        ErrorListDialogListAdapter listAdapter = new ErrorListDialogListAdapter(this, errorList, this);
-        list.setAdapter(listAdapter);
-
-        LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        list.setLayoutParams(lp_list);
-        warningListDialog.setView(list);
-        warningListDialog.setTitle(R.string.warnings);
-        warningListDialog.setMessage(getString(R.string.warnings_list_message));
-        warningListDialog.setNegativeButton(R.string.ignore_all, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Snackbar compilingSnackbar = Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG);
-                View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getColor(R.color.snackbarGreen));
-                compilingSnackbar.show();
-                onRunCode();
-            }
-        });
-        warningListDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        return warningListDialog.create();
-    }//end createErrorListDialog()
+    public void runCode() { onRunCode(); }
 
 }//end activity BlocklyActivity

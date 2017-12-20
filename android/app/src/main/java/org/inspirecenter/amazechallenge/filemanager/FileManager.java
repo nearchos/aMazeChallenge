@@ -24,9 +24,9 @@ import java.util.Date;
 
 public class FileManager {
 
-    private static final String DEFAULT_CODE_FILENAME_PREFIX = "defaultcode_";
-    private static final String PLAYER_CODE_FILENAME_PREFIX = "playercode_";
-    private static final String XML_FILE_EXTENSION = ".xml";
+    public static final String DEFAULT_CODE_FILENAME_PREFIX = "defaultcode_";
+    public static final String PLAYER_CODE_FILENAME_PREFIX = "playercode_";
+    public static final String XML_FILE_EXTENSION = ".xml";
     private static final String DEFAULT_CODE_MARKER = "(Sample code)";
     private static final String SIMPLE_DATE_FORMAT = "dd-MM-yyyy HH:mm";
 
