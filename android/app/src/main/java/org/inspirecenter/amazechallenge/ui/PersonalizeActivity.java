@@ -122,7 +122,7 @@ public class PersonalizeActivity extends AppCompatActivity {
     private void updatePersonalization() {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         {
-            final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.COLOR_BLACK.getName());
+            final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.COLOR_BLACK.getName()); //TODO, This causes errors when installing on a new device...
             final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
             final int userColor = Color.parseColor(userAmazeColor.getCode());
             selectColorButton.setBackgroundColor(userColor);

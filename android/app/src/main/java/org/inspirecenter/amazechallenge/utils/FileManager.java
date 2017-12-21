@@ -1,4 +1,4 @@
-package org.inspirecenter.amazechallenge.filemanager;
+package org.inspirecenter.amazechallenge.utils;
 
 import android.app.Activity;
 import android.content.Context;

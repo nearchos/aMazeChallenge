@@ -1,7 +1,6 @@
-package org.inspirecenter.amazechallenge.algorithms.errorfinder;
+package org.inspirecenter.amazechallenge.utils;
 
 import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
-import org.inspirecenter.amazechallenge.filemanager.FileManager;
 import org.inspirecenter.amazechallenge.ui.BlocklyActivity;
 
 import java.util.ArrayList;

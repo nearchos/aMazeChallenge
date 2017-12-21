@@ -17,11 +17,15 @@ public class InfiniteLoopFinder implements ErrorFinder {
         boolean infiniteLoopExists = false;
         int lineCountAfterShadow = 0;
         boolean hasFalseShadow = false;
+        boolean containsLoop = false;
 
         //Search for the conditional clause lines:
         for (int i = 0;  i < lines.length; i++) {
             if (!parsingWhileLoop) {
-                if (lines[i].contains(ErrorFinderCommons.XML_WHILE_DEFINITION)) parsingWhileLoop = true;
+                if (lines[i].contains(ErrorFinderCommons.XML_WHILE_DEFINITION)) {
+                    parsingWhileLoop = true;
+                    containsLoop = true;
+                }
             }//end if not parsingWhileLoop
             else {
                 if (lines[i].contains(ErrorFinderCommons.XML_WHILE_MODE_END)) {
@@ -52,7 +56,7 @@ public class InfiniteLoopFinder implements ErrorFinder {
                 }//end if not mode end
             }//end if parsingWhileLoop
         }//end foreach line
-        if (lineCountAfterShadow < 2 && !hasFalseShadow) infiniteLoopExists = true;
+        if (lineCountAfterShadow < 2 && !hasFalseShadow && containsLoop) infiniteLoopExists = true;
 
         if (infiniteLoopExists) errorList.add(ERROR);
         return errorList;
