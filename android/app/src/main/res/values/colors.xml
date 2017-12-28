@@ -23,4 +23,8 @@
 
     <color name="ditheredGray">#4ccc</color>
     <color name="ditheredGreen">#40f0</color>
+
+    <color name="menuItemColor1">#88FF9800</color>
+    <color name="menuItemColor2">#88ffb851</color>
+
 </resources>

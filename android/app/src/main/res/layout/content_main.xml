@@ -10,6 +10,7 @@
 
     <LinearLayout
         android:orientation="vertical"
+        android:background="@drawable/app_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -17,6 +18,7 @@
             android:id="@+id/button_learn"
             android:text="@string/Learn"
             android:onClick="learn"
+            android:textSize="18sp"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:drawableStart="@drawable/ic_help_black_24dp"
             android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
@@ -34,6 +36,7 @@
             android:id="@+id/button_personalize"
             android:text="@string/Personalize"
             android:onClick="personalize"
+            android:textSize="18sp"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:drawableStart="@drawable/ic_person_pin_black_24dp"
             android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
@@ -51,6 +54,7 @@
             android:id="@+id/edit_your_code"
             android:text="@string/Edit_your_code"
             android:onClick="codeEditor"
+            android:textSize="18sp"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:drawableStart="@drawable/ic_code_black_24dp"
             android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
@@ -68,6 +72,7 @@
             android:id="@+id/test_locally"
             android:text="@string/Test_locally"
             android:onClick="training"
+            android:textSize="18sp"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:drawableStart="@drawable/ic_play_circle_filled_black_24dp"
             android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
@@ -85,6 +90,7 @@
             android:id="@+id/play_online"
             android:text="@string/Play_online"
             android:onClick="onlineChallenge"
+            android:textSize="18sp"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:drawableStart="@drawable/ic_cloud_upload_black_24dp"
             android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
