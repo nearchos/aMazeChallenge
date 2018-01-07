@@ -30,12 +30,14 @@ public class Challenge implements Serializable {
     private long startTimestamp; // when the challenge starts being available, or zero if available from the beginning of time (timestamp in UTC)
     private long endTimestamp; // when the challenge ends being available, or zero if available forever (timestamp in UTC)
     private Grid grid;
+    private String lineColor;
+    private String backgroundImage;
 
     public Challenge() {
         super();
     }
 
-    public Challenge(String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers, int maxActivePlayers, long startTimestamp, long endTimestamp, Grid grid) {
+    public Challenge(String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers, int maxActivePlayers, long startTimestamp, long endTimestamp, Grid grid, String lineColor, String backgroundImage) {
         this();
         this.name = name;
         this.apiVersion = apiVersion;
@@ -48,10 +50,12 @@ public class Challenge implements Serializable {
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
         this.grid = grid;
+        this.lineColor = lineColor;
+        this.backgroundImage = backgroundImage;
     }
 
-    public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp, long endTimestamp, Grid grid) {
-        this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther, DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp, endTimestamp, grid);
+    public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp, long endTimestamp, Grid grid, String lineColor, String backgroundImage) {
+        this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther, DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp, endTimestamp, grid, lineColor, backgroundImage);
         this.id = id;
     }
 
@@ -114,6 +118,10 @@ public class Challenge implements Serializable {
     public Grid getGrid() {
         return grid;
     }
+
+    public String getLineColor() { return lineColor; }
+
+    public String getBackgroundImage() { return backgroundImage; }
 
     @Override
     public String toString() {

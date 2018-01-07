@@ -107,6 +107,10 @@ public class GameActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         this.challenge = (Challenge) intent.getSerializableExtra(SELECTED_CHALLENGE_KEY);
         this.gameView.setGrid(challenge.getGrid());
+        this.gameView.setLineColor(challenge.getLineColor());
+        String backgroundName = challenge.getBackgroundImage();
+        System.out.println("BACKGROUND NAME: " + backgroundName);
+        this.gameView.setBackgroundDrawable(MazeBackground.getByName(backgroundName).getResourceID());
         this.game = new Game();
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

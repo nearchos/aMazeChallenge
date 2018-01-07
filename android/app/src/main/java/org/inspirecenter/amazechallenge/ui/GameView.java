@@ -6,11 +6,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.GameFullState;
@@ -53,6 +55,8 @@ public class GameView extends View {
     }
 
     private Grid grid = null;
+    private int lineColor = Color.BLACK;
+    private Drawable backgroundDrawable = null;
     public Map<String,Player> allPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
     public List<String> queuedPlayerEmails;
@@ -67,6 +71,14 @@ public class GameView extends View {
             activePlayerPositionAndDirectionMap.put(activePlayerEmail, game.getPlayerPositionAndDirection(activePlayerEmail));
         }
         queuedPlayerEmails = game.getQueuedPlayers();
+    }
+
+    void setLineColor(String lineColor) {
+        this.lineColor = Color.parseColor(lineColor);
+    }
+
+    void setBackgroundDrawable(int backgroundImage) {
+        backgroundDrawable = getResources().getDrawable(backgroundImage);
     }
 
     void update(final GameFullState gameFullState) {
@@ -97,6 +109,9 @@ public class GameView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        backgroundDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        backgroundDrawable.draw(canvas);
+
         if(grid == null) return;
 
         // compute tile_size and padding
@@ -112,7 +127,7 @@ public class GameView extends View {
             for(int col = 0; col < grid.getHeight(); col++) {
                 final int shape = RuntimeController.getGridCell(grid, row, col);
 //                Log.d("aMaze", "row: " + row + ", col: " + col + " -> shape: " + shape);
-                drawGridCell(row, col, tile_size, padding, shape, COLOR_BLACK, canvas);
+                drawGridCell(row, col, tile_size, padding, shape, lineColor, canvas);
             }
         }
 
@@ -152,10 +167,13 @@ public class GameView extends View {
     private void drawGridCell(final int row, final int col, final int tile_size, final int padding, final int shape, final int color, final Canvas canvas) {
 
         paint.setColor(color);
-        paint.setStrokeWidth(2f);
+        paint.setStrokeWidth(5f);
 
         final int topLeftX = col * tile_size + padding;
         final int topLeftY = row * tile_size + padding;
+
+        int gridDimension = Math.max(grid.getHeight(), grid.getWidth());
+        if (gridDimension > 25) paint.setStrokeWidth(3f);
 
         // draw left line
         if((shape & SHAPE_ONLY_LEFT_SIDE) != 0) { canvas.drawLine(topLeftX, topLeftY, topLeftX, topLeftY + tile_size, paint); }
@@ -165,6 +183,7 @@ public class GameView extends View {
         if((shape & SHAPE_ONLY_UPPER_SIDE) != 0) { canvas.drawLine(topLeftX, topLeftY, topLeftX + tile_size, topLeftY, paint); }
         // draw lower line
         if((shape & SHAPE_ONLY_LOWER_SIDE) != 0) { canvas.drawLine(topLeftX, topLeftY + tile_size, topLeftX + tile_size, topLeftY + tile_size, paint); }
+
     }
 
     private void drawPlayer(final Player player, final Position position, final Direction direction, final int tile_size, final int padding, final Canvas canvas) {

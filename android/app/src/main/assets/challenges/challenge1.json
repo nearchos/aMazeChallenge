@@ -22,5 +22,7 @@
             "row": 0,
             "col": 19
         }
-    }
+    },
+    "lineColor": "#FF0000",
+    "backgroundImage": "texture_metal"
 }
