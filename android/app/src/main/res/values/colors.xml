@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorPrimaryLight">#C5CAE9</color>
     <color name="colorAccent">#FF9800</color>
+    <color name="colorAccentLight">#ffa83d</color>
 
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
@@ -24,7 +25,11 @@
     <color name="ditheredGray">#4ccc</color>
     <color name="ditheredGreen">#40f0</color>
 
-    <color name="menuItemColor1">#88FF9800</color>
-    <color name="menuItemColor2">#88ffb851</color>
+    <color name="materialRed">#f44336</color>
+    <color name="materialOrange">#ff6d00</color>
+    <color name="materialYellow">#afb42b</color>
+    <color name="materialGreen">#00c853</color>
+    <color name="materialBlue">#2979ff</color>
+    <color name="materialPurple">#aa00ff</color>
 
 </resources>

@@ -1,22 +1,23 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
-import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.GameFullState;
-import org.inspirecenter.amazechallenge.model.GameLightState;
 import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Direction;
@@ -56,7 +57,7 @@ public class GameView extends View {
 
     private Grid grid = null;
     private int lineColor = Color.BLACK;
-    private Drawable backgroundDrawable = null;
+    private BitmapDrawable backgroundDrawable = null;
     public Map<String,Player> allPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
     public List<String> queuedPlayerEmails;
@@ -78,7 +79,8 @@ public class GameView extends View {
     }
 
     void setBackgroundDrawable(int backgroundImage) {
-        backgroundDrawable = getResources().getDrawable(backgroundImage);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), backgroundImage);
+        backgroundDrawable = new BitmapDrawable(bm);
     }
 
     void update(final GameFullState gameFullState) {
@@ -110,6 +112,7 @@ public class GameView extends View {
         super.onDraw(canvas);
 
         backgroundDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        backgroundDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
         backgroundDrawable.draw(canvas);
 
         if(grid == null) return;
@@ -226,6 +229,7 @@ public class GameView extends View {
                         throw new RuntimeException("Invalid direction: " + direction);
                 }
 
+                //Draw the inner part of the triangle:
                 Path path = new Path();
                 path.setFillType(Path.FillType.EVEN_ODD);
                 path.moveTo(point1.x,point1.y);
@@ -233,8 +237,14 @@ public class GameView extends View {
                 path.lineTo(point3.x,point3.y);
                 path.lineTo(point1.x,point1.y);
                 path.close();
-
                 canvas.drawPath(path, paint);
+
+                //Draw the outline of the triangle:
+                paint.setColor(Color.WHITE);
+                canvas.drawLine(point1.x, point1.y, point2.x, point2.y, paint);
+                canvas.drawLine(point2.x, point2.y, point3.x, point3.y, paint);
+                canvas.drawLine(point1.x, point1.y, point3.x, point3.y, paint);
+
                 break;
 
             case CIRCLE:

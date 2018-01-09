@@ -5,7 +5,8 @@ import org.inspirecenter.amazechallenge.R;
 public enum MazeBackground {
 
     BACKGROUND_GRASS("texture_grass", R.drawable.texture_grass),
-    BACKGROUND_METAL("texture_metal", R.drawable.texture_metal)
+    BACKGROUND_METAL("texture_metal", R.drawable.texture_metal),
+    BACKGROUND_LAVA("texture_lava", R.drawable.texture_lava)
 
     ;
 
@@ -34,7 +35,7 @@ public enum MazeBackground {
         for (MazeBackground b : MazeBackground.values()) {
             if (b.getResourceName().equals(backgroundName)) return b;
         }
-        return null; //TODO IF NOT FOUND.
+        throw new RuntimeException("The background you have tried to use called \"" + backgroundName + "\" is not being defined as a MazeBackground enum type. You must define maze backgrounds in the MazeBackground class under the UI Package.");
     }
 
 }

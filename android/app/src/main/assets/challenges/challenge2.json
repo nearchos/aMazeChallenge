@@ -23,6 +23,6 @@
             "col": 29
         }
     },
-    "lineColor": "#0000FF",
-    "backgroundImage": "texture_grass"
+    "lineColor": "#FFFFFF",
+    "backgroundImage": "texture_lava"
 }

@@ -13,6 +13,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import org.inspirecenter.amazechallenge.R;
@@ -35,16 +37,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        final Toolbar toolbar = findViewById(org.inspirecenter.amazechallenge.R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        final DrawerLayout drawer = findViewById(org.inspirecenter.amazechallenge.R.id.drawer_layout);
-        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, org.inspirecenter.amazechallenge.R.string.navigation_drawer_open, org.inspirecenter.amazechallenge.R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+//        final Toolbar toolbar = findViewById(org.inspirecenter.amazechallenge.R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//
+//        final DrawerLayout drawer = findViewById(org.inspirecenter.amazechallenge.R.id.drawer_layout);
+//        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, org.inspirecenter.amazechallenge.R.string.navigation_drawer_open, org.inspirecenter.amazechallenge.R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
 
         final NavigationView navigationView = findViewById(org.inspirecenter.amazechallenge.R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
