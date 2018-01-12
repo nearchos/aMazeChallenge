@@ -25,11 +25,11 @@
     <color name="ditheredGray">#4ccc</color>
     <color name="ditheredGreen">#40f0</color>
 
-    <color name="materialRed">#f44336</color>
-    <color name="materialOrange">#ff6d00</color>
-    <color name="materialYellow">#afb42b</color>
-    <color name="materialGreen">#00c853</color>
-    <color name="materialBlue">#2979ff</color>
-    <color name="materialPurple">#aa00ff</color>
+    <color name="materialRed">#eff44336</color>
+    <color name="materialOrange">#efff6d00</color>
+    <color name="materialYellow">#efafb42b</color>
+    <color name="materialGreen">#ef00c853</color>
+    <color name="materialBlue">#ef2979ff</color>
+    <color name="materialPurple">#efaa00ff</color>
 
 </resources>

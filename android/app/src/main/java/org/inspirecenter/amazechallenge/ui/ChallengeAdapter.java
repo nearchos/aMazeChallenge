@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,12 +34,16 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
         // each data item is just a string in this case
         final TextView challengeNameTextView;
         final TextView challengeDescriptionTextView;
+        final TextView challengeDimensionsTextView;
+        final TextView challengeDifficultyTextView;
         Challenge challenge;
 
         ViewHolder(final View view, final OnChallengeSelectedListener onChallengeSelectedListener) {
             super(view);
             this.challengeNameTextView = view.findViewById(R.id.item_challenge_name);
             this.challengeDescriptionTextView = view.findViewById(R.id.item_challenge_description);
+            this.challengeDimensionsTextView = view.findViewById(R.id.item_challenge_dimensions);
+            this.challengeDifficultyTextView = view.findViewById(R.id.item_challenge_difficulty);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View view) {
                     onChallengeSelectedListener.onChallengeSelected(challenge);
@@ -99,6 +104,30 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
         holder.challenge = challenge;
         holder.challengeNameTextView.setText(challenge.getName());
         holder.challengeDescriptionTextView.setText(challenge.getDescription());
+        holder.challengeDimensionsTextView.setText(challenge.getGrid().getWidth() + " x " + challenge.getGrid().getHeight());
+        switch(challenge.getDifficulty()) {
+            case VERY_EASY:
+                holder.challengeDifficultyTextView.setText(R.string.very_easy);
+                holder.challengeDifficultyTextView.setTextColor(Color.parseColor("#299e29"));
+                break;
+            case EASY:
+                holder.challengeDifficultyTextView.setText(R.string.easy);
+                holder.challengeDifficultyTextView.setTextColor(Color.parseColor("#299e29"));
+                break;
+            case MEDIUM:
+                holder.challengeDifficultyTextView.setText(R.string.medium);
+                holder.challengeDifficultyTextView.setTextColor(Color.parseColor("#989e29"));
+                break;
+            case HARD:
+                holder.challengeDifficultyTextView.setText(R.string.hard);
+                holder.challengeDifficultyTextView.setTextColor(Color.parseColor("#9e2929"));
+                break;
+            case VERY_HARD:
+                holder.challengeDifficultyTextView.setText(R.string.very_hard);
+                holder.challengeDifficultyTextView.setTextColor(Color.parseColor("#9e295f"));
+                break;
+
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

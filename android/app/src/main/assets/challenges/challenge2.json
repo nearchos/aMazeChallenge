@@ -1,8 +1,9 @@
 {
     "id": 2,
     "apiVersion": 1,
-    "name": "Challenge 2",
-    "description": "Hard",
+    "name": "Lava Fields",
+    "description": "Pure nightmare.",
+    "difficulty": "Hard",
     "canRepeat": true,
     "canJoinAfterStart": true,
     "canStepOnEachOther": true,

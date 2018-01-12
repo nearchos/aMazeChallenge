@@ -1,8 +1,9 @@
 {
     "id": 1,
     "apiVersion": 1,
-    "name": "Challenge 1",
-    "description": "Medium",
+    "name": "Moon Landing",
+    "description": "The eagle has landed!",
+    "difficulty": "Medium",
     "canRepeat": true,
     "canJoinAfterStart": true,
     "canStepOnEachOther": true,

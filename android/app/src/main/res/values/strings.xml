@@ -89,6 +89,11 @@
     <string name="changes_not_saved">Changes have not been saved. Save changes?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="very_easy">Very Easy</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="very_hard">Very Hard</string>
 
     <!-- ERROR/WARNING DIALOGS -->
 

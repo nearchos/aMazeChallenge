@@ -1,8 +1,9 @@
 {
     "id": 0,
     "apiVersion": 1,
-    "name": "Challenge 0",
-    "description": "Easy",
+    "name": "Park Adventure",
+    "description": "A walk in the park!",
+    "difficulty": "Easy",
     "canRepeat": true,
     "canJoinAfterStart": true,
     "canStepOnEachOther": true,

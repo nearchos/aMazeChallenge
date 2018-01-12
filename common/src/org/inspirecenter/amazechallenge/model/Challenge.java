@@ -32,12 +32,13 @@ public class Challenge implements Serializable {
     private Grid grid;
     private String lineColor;
     private String backgroundImage;
+    private String difficulty;
 
     public Challenge() {
         super();
     }
 
-    public Challenge(String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers, int maxActivePlayers, long startTimestamp, long endTimestamp, Grid grid, String lineColor, String backgroundImage) {
+    public Challenge(String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers, int maxActivePlayers, long startTimestamp, long endTimestamp, Grid grid, String lineColor, String backgroundImage, String difficulty) {
         this();
         this.name = name;
         this.apiVersion = apiVersion;
@@ -52,10 +53,11 @@ public class Challenge implements Serializable {
         this.grid = grid;
         this.lineColor = lineColor;
         this.backgroundImage = backgroundImage;
+        this.difficulty = difficulty;
     }
 
-    public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp, long endTimestamp, Grid grid, String lineColor, String backgroundImage) {
-        this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther, DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp, endTimestamp, grid, lineColor, backgroundImage);
+    public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat, boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp, long endTimestamp, Grid grid, String lineColor, String backgroundImage, String difficulty) {
+        this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther, DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp, endTimestamp, grid, lineColor, backgroundImage, difficulty);
         this.id = id;
     }
 
@@ -74,6 +76,8 @@ public class Challenge implements Serializable {
     public String getDescription() {
         return description;
     }
+
+    public ChallengeDifficulty getDifficulty() { return ChallengeDifficulty.getChallengeDifficulty(difficulty); }
 
     public boolean canRepeat() {
         return canRepeat;
@@ -129,6 +133,7 @@ public class Challenge implements Serializable {
                 "name='" + name + '\'' +
                 ", apiVersion=" + apiVersion+
                 ", description=" + description+
+                ", difficulty=" + difficulty+
                 ", canRepeat=" + canRepeat +
                 ", canJoinAfterStart=" + canJoinAfterStart +
                 ", canStepOnEachOther=" + canStepOnEachOther +
