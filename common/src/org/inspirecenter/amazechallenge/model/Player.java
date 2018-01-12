@@ -16,6 +16,8 @@ public class Player implements Serializable {
     private AmazeColor color;
     private AmazeIcon icon;
     private Shape shape;
+    private Health health;
+    private boolean isActive = false;
 
     public Player() {
         super();
@@ -28,6 +30,7 @@ public class Player implements Serializable {
         this.color = color;
         this.icon = icon;
         this.shape = shape;
+        health = new Health();
     }
 
     public String getEmail() {
@@ -50,6 +53,10 @@ public class Player implements Serializable {
         return shape;
     }
 
+    public Health getHealth() { return health; }
+
+    public void setHealth(Health health) { this.health = health; }
+
     @Override
     public String toString() {
         return "Player{" +
@@ -58,6 +65,14 @@ public class Player implements Serializable {
                 ", color=" + color +
                 ", icon=" + icon +
                 ", shape=" + shape +
+                ", health=" + health +
                 '}';
     }
+
+    public void setActive() { isActive = true; }
+
+    public void setInactive() { isActive = false; }
+
+    public boolean isActive() { return isActive; }
+
 }

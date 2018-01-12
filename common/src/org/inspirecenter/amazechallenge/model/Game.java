@@ -90,6 +90,9 @@ public class Game implements Serializable {
         if(activePlayers.remove(playerEmail)) existed = true;
         if(queuedPlayers.remove(playerEmail)) existed = true;
         waitingPlayers.add(playerEmail);
+        //New
+        Player player = getPlayer(playerEmail);
+        player.setInactive();
         return existed;
     }
 
@@ -108,6 +111,10 @@ public class Game implements Serializable {
             final String nextPlayerEmail = queuedPlayers.remove(0); // get first in line from 'queued'
             activePlayers.add(nextPlayerEmail);
             activePlayerEmailsToPositionAndDirections.put(nextPlayerEmail, new PlayerPositionAndDirection(grid.getStartingPosition(), grid.getStartingDirection()));
+            //New
+            Player player = getPlayer(nextPlayerEmail);
+            player.setActive();
+            player.setHealth(new Health());
             return true;
         } else {
             return false;

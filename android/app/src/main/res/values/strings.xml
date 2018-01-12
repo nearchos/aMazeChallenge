@@ -17,6 +17,9 @@
     <string name="Color">Color</string>
     <string name="Selected_color">Selected colorName</string>
     <string name="Auto_play">Auto play</string>
+    <string name="Play">Play</string>
+    <string name="Pause">Pause</string>
+    <string name="Reset">Reset</string>
     <string name="Previous">Previous</string>
     <string name="Next">Next</string>
     <string name="Interval">Interval</string>
@@ -46,6 +49,7 @@
     <string name="Clear">Clear</string>
     <string name="Clear_code">Clear code</string>
     <string name="Are_you_sure_you_want_to_erase_the_code">Are you sure you want to erase the code? This action cannot be undone!</string>
+    <string name="Are_you_sure_you_want_to_reset">Are you sure you would like to reset this game?</string>
     <string name="Save_code">Save code</string>
     <string name="Save_code_name">Enter a name for your saved code:</string>
     <string name="save_code_error_empty">The code name cannot be empty.</string>
@@ -94,6 +98,10 @@
     <string name="medium">Medium</string>
     <string name="hard">Hard</string>
     <string name="very_hard">Very Hard</string>
+
+    <string name="maze_completed">Congratulations! You have completed the maze</string>
+    <string name="maze_lost">You have lost.</string>
+    <string name="maze_play_again">Play again?</string>
 
     <!-- ERROR/WARNING DIALOGS -->
 

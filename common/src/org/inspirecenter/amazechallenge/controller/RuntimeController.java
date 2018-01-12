@@ -22,9 +22,22 @@ public class RuntimeController {
         // then apply next move to active players
         for (final String playerEmail : game.getActivePlayers()) {
             final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirection(playerEmail);
+            final Player player = game.getPlayer(playerEmail);
             final MazeSolver mazeSolver = playerEmailToMazeSolvers.get(playerEmail);
             final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
             applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove);
+
+            //TODO REMOVE:
+            player.getHealth().decreaseBy(5);
+            System.out.println("Health: " + player.getHealth().get());
+
+            //Check the player's health:
+            if (player.getHealth().isAtMin()) {
+                game.resetPlayer(playerEmail);
+                game.setPlayerPositionAndDirection(playerEmail, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
+            }
+
+
         }
     }
 
@@ -156,4 +169,10 @@ public class RuntimeController {
             default: throw new RuntimeException("Invalid direction: " + playerPositionAndDirection.getDirection());
         }
     }
+
+    public static boolean allPlayersHaveLost(final Game game) {
+        if (game.getActivePlayers().isEmpty()) return true;
+        return false;
+    }
+
 }

@@ -190,7 +190,7 @@ public class GameView extends View {
     }
 
     private void drawPlayer(final Player player, final Position position, final Direction direction, final int tile_size, final int padding, final Canvas canvas) {
-        drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
+        if (player.isActive()) drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
     }
 
     private void drawShape(final Position position, final Shape shape, final Direction direction, final int color, final int tile_size, final int padding, final Canvas canvas) {
