@@ -40,7 +40,7 @@ public class Health implements Serializable {
         else health /= 2;
     }//end halveHealth()
 
-    public void resetHealth() { health = 100; }
+    public void resetHealth() { health = DEFAULT_HEALTH; }
 
     public boolean isAtMin() { return (health <= MIN_HEALTH); }
 

@@ -23,6 +23,7 @@ public class Game implements Serializable {
     private List<String> waitingPlayers = new Vector<>();
     private Map<String,Player> allPlayerEmailsToPlayers = new HashMap<>();
     private Map<String,PlayerPositionAndDirection> activePlayerEmailsToPositionAndDirections = new HashMap<>();
+    private List<Obstacle> obstacles = new Vector<>();
     private long lastExecutionTime = 0L;
     private long lastUpdated = 0L;
     private long counter = 0L;
@@ -161,6 +162,26 @@ public class Game implements Serializable {
 
     public boolean hasAnyPlayers() {
         return hasActivePlayers() || hasQueuedPlayers() || hasWaitingPlayers();
+    }
+
+    public int getNumOfObstacles(final ObstacleType obstacleType) {
+        int count = 0;
+        for(final Obstacle obstacle : obstacles) {
+            if(obstacle.getType() == obstacleType) count++;
+        }
+        return count;
+    }
+
+    public List<Obstacle> getObstacles() {
+        return obstacles;
+    }
+
+    public void addObstacle(final Obstacle obstacle) {
+        this.obstacles.add(obstacle);
+    }
+
+    public void removeObstacle(final Obstacle obstacle) { // todo verify that it is indeed removed
+        this.obstacles.remove(obstacle);
     }
 
     public GameLightState getLightState() {

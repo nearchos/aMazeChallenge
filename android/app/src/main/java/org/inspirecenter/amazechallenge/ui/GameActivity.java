@@ -192,7 +192,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void makeNextMove() {
         if (!game.getActivePlayers().isEmpty()) {
-            RuntimeController.makeMove(challenge.getGrid(), game, playerEmailToMazeSolvers);
+            RuntimeController.makeMove(challenge, game, playerEmailToMazeSolvers);
             gameView.update(game);
             gameView.invalidate();
             updateHealthTextView();

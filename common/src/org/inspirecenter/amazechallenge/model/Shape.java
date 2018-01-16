@@ -8,7 +8,8 @@ public enum Shape {
 
     CIRCLE("circle"),
     EMPTY_CIRCLE("empty_circle"),
-    TRIANGLE("triangle");
+    TRIANGLE("triangle"),
+    COIN("coin");
 
     private final String code;
 

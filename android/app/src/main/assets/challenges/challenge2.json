@@ -11,6 +11,11 @@
     "maxActivePlayers": 10,
     "startTimestamp": 0,
     "endTimestamp": 0,
+    "maxObstaclesHealth": 3,
+    "maxObstaclesSkipRound": 3,
+    "maxRewardHealth": 3,
+    "maxRewardDoubleMoves": 3,
+    "maxRewardPoints": 3,
     "grid": {
         "width": 30,
         "height": 30,

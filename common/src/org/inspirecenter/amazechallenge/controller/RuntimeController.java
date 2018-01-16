@@ -5,6 +5,7 @@ import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
 import org.inspirecenter.amazechallenge.model.*;
 
 import java.util.Map;
+import java.util.Random;
 
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LEFT_SIDE;
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LOWER_SIDE;
@@ -18,7 +19,9 @@ import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_UPPER_SIDE;
 
 public class RuntimeController {
 
-    public static void makeMove(final Grid grid, final Game game, final Map<String,MazeSolver> playerEmailToMazeSolvers) {
+    public static void makeMove(final Challenge challenge, final Game game, final Map<String,MazeSolver> playerEmailToMazeSolvers) {
+        final Grid grid = challenge.getGrid();
+
         // then apply next move to active players
         for (final String playerEmail : game.getActivePlayers()) {
             final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirection(playerEmail);
@@ -29,7 +32,7 @@ public class RuntimeController {
 
             //TODO REMOVE:
             player.getHealth().decreaseBy(5);
-            System.out.println("Health: " + player.getHealth().get());
+//            System.out.println("Health: " + player.getHealth().get());
 
             //Check the player's health:
             if (player.getHealth().isAtMin()) {
@@ -37,7 +40,14 @@ public class RuntimeController {
                 game.setPlayerPositionAndDirection(playerEmail, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
             }
 
-
+            // todo add obstacles/rewards
+            if(game.getNumOfObstacles(ObstacleType.OBSTACLE_HEALTH) < challenge.getMaxObstaclesHealth()) {
+                final Random random = new Random();
+                int row = random.nextInt(grid.getHeight());
+                int col = random.nextInt(grid.getWidth());
+                final Position position = new Position(row, col);
+                game.addObstacle(new Obstacle(position, ObstacleType.OBSTACLE_HEALTH));
+            }
         }
     }
 
@@ -54,6 +64,13 @@ public class RuntimeController {
             case MOVE_FORWARD:
                 if (canMoveForward(grid, playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection())) {
                     position = movePlayerForward(playerPositionAndDirection);
+                    // handle obstacles and rewards (i.e. add/substract health etc.)
+                    //todo
+                    for(final Obstacle obstacle : game.getObstacles()) {
+                        if(obstacle.getPosition().equals(position)) {
+                            // todo
+                        }
+                    }
                 }
                 break;
             case NO_MOVE:

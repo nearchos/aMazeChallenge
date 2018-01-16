@@ -19,6 +19,7 @@ import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.GameFullState;
 import org.inspirecenter.amazechallenge.model.Grid;
+import org.inspirecenter.amazechallenge.model.Obstacle;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Direction;
 import org.inspirecenter.amazechallenge.model.PlayerPositionAndDirection;
@@ -61,6 +62,7 @@ public class GameView extends View {
     public Map<String,Player> allPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
     public List<String> queuedPlayerEmails;
+    public List<Obstacle> obstacles;
 
     void setGrid(final Grid grid) {
         this.grid = grid;
@@ -72,6 +74,7 @@ public class GameView extends View {
             activePlayerPositionAndDirectionMap.put(activePlayerEmail, game.getPlayerPositionAndDirection(activePlayerEmail));
         }
         queuedPlayerEmails = game.getQueuedPlayers();
+        this.obstacles = game.getObstacles();
     }
 
     void setLineColor(String lineColor) {
@@ -139,6 +142,14 @@ public class GameView extends View {
         drawGridCell(startingPosition.getRow(), startingPosition.getCol(), tile_size, padding, 0x0, COLOR_BLACK, COLOR_LIGHT_RED, canvas);
         final Position targetPosition = grid.getTargetPosition();
         drawGridCell(targetPosition.getRow(), targetPosition.getCol(), tile_size, padding, 0x0, COLOR_BLACK, COLOR_LIGHT_GREEN, canvas);
+
+        // draw obstacles and rewards
+        //todo
+        for(final Obstacle obstacle : obstacles) {
+            // draw coin
+            drawShape(obstacle.getPosition(), Shape.COIN, Direction.NORTH, Color.YELLOW, tile_size, padding, canvas);
+        }
+
 
         // draw active players
         for(final Map.Entry<String,PlayerPositionAndDirection> entry : activePlayerPositionAndDirectionMap.entrySet()) {
@@ -245,6 +256,16 @@ public class GameView extends View {
                 canvas.drawLine(point2.x, point2.y, point3.x, point3.y, paint);
                 canvas.drawLine(point1.x, point1.y, point3.x, point3.y, paint);
 
+                break;
+
+            case COIN:
+                // draw coin
+                paint.setStyle(Paint.Style.FILL);
+                canvas.drawCircle(topLeftX + tile_size / 2, topLeftY + tile_size / 2, tile_size / 3, paint);
+                paint.setColor(Color.BLACK);
+                paint.setFakeBoldText(true);
+                paint.setTextSize(tile_size/2f);
+                canvas.drawText("10", topLeftX + tile_size / 5f, topLeftY + 3.5f * tile_size / 5f, paint);
                 break;
 
             case CIRCLE:
