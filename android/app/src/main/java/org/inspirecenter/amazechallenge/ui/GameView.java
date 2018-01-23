@@ -29,6 +29,7 @@ import org.inspirecenter.amazechallenge.model.Shape;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LEFT_SIDE;
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LOWER_SIDE;
@@ -48,6 +49,8 @@ public class GameView extends View {
     public static final int COLOR_LIGHT_RED     = Color.rgb(255, 192, 192);
     public static final int COLOR_LIGHT_GREEN   = Color.rgb(192, 255, 192);
 
+    public static final MazeBackground DEFAULT_MAZE_BACKGROUND = MazeBackground.BACKGROUND_GRASS;
+
     public GameView(final Context context) {
         super(context);
     }
@@ -58,11 +61,11 @@ public class GameView extends View {
 
     private Grid grid = null;
     private int lineColor = Color.BLACK;
-    private BitmapDrawable backgroundDrawable = null;
+    private BitmapDrawable backgroundDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), DEFAULT_MAZE_BACKGROUND.getResourceID()));
     public Map<String,Player> allPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
     public List<String> queuedPlayerEmails;
-    public List<Obstacle> obstacles;
+    public List<Obstacle> obstacles = new Vector<>();
 
     void setGrid(final Grid grid) {
         this.grid = grid;
@@ -83,7 +86,7 @@ public class GameView extends View {
 
     void setBackgroundDrawable(int backgroundImage) {
         Bitmap bm = BitmapFactory.decodeResource(getResources(), backgroundImage);
-        backgroundDrawable = new BitmapDrawable(bm);
+        backgroundDrawable = new BitmapDrawable(getResources(), bm);
     }
 
     void update(final GameFullState gameFullState) {

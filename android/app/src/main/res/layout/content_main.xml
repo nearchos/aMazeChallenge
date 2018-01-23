@@ -125,6 +125,7 @@
         <Button
             android:id="@+id/settings"
             android:text="@string/settings"
+            android:onClick="mazeDesigner"
             android:textSize="18sp"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:drawableStart="@drawable/ic_settings_black_24dp"

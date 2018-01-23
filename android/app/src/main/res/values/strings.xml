@@ -67,6 +67,7 @@
     <string name="color_select_title">Select colorName</string>>
     <string name="back_to_menu">Back to menu</string>
     <string name="settings">Settings</string>
+    <string name="Generate">Generate</string>
 
     <string name="instructions">Write your code below to get out of the grid:</string>
     <string name="demoCode_loop1">while (!solved) {</string>

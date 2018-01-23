@@ -32,7 +32,6 @@ import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.Health;
 import org.inspirecenter.amazechallenge.model.Player;
 
 import java.util.HashMap;
@@ -117,7 +116,7 @@ public class GameActivity extends AppCompatActivity {
         updateHealthTextView();
 
 
-        this.gameView = findViewById(org.inspirecenter.amazechallenge.R.id.activity_grid_grid_view);
+        this.gameView = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_game_view);
         this.delaySeekBar = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_delay_spinner);
         final Vector<String> periodOptions = new Vector<>();
         for(final long period : PERIOD_OPTIONS) {
