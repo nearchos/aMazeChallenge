@@ -12,7 +12,7 @@
             <block type="maze_canmove_left"></block>
             <block type="maze_canmove_right"></block>
             <block type="maze_canmove_backward"></block>
-            <block type="maze_obstacle_exists"></block>
+            <block type="maze_object_exists"></block>
             <block type="maze_direction_north"></block>
             <block type="maze_direction_south"></block>
             <block type="maze_direction_east"></block>

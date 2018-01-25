@@ -23,18 +23,18 @@
   "helpUrl": ""
 },
 {
-  "type": "maze_obstacle_exists",
-  "message0": "obstacle exists %1",
+  "type": "maze_object_exists",
+  "message0": "object exists %1",
   "args0": [
     {
       "type": "input_value",
-      "name": "DIRECTION",
+      "name": "playerDirection",
       "check": "Direction"
     }
   ],
-  "output": "Boolean",
+  "output": "PickupItemType",
   "colour": 65,
-  "tooltip": "Returns true if there is an obstacle in a certain direction.",
+  "tooltip": "Returns the type of object that exists in the given direction.",
   "helpUrl": ""
 },
 {

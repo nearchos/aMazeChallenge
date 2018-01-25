@@ -23,7 +23,7 @@ public class Game implements Serializable {
     private List<String> waitingPlayers = new Vector<>();
     private Map<String,Player> allPlayerEmailsToPlayers = new HashMap<>();
     private Map<String,PlayerPositionAndDirection> activePlayerEmailsToPositionAndDirections = new HashMap<>();
-    private List<Obstacle> obstacles = new Vector<>();
+    private List<PickupItem> pickupItems = new Vector<>();
     private long lastExecutionTime = 0L;
     private long lastUpdated = 0L;
     private long counter = 0L;
@@ -94,6 +94,7 @@ public class Game implements Serializable {
         //New
         Player player = getPlayer(playerEmail);
         player.setInactive();
+        player.resetPoints();
         return existed;
     }
 
@@ -112,7 +113,6 @@ public class Game implements Serializable {
             final String nextPlayerEmail = queuedPlayers.remove(0); // get first in line from 'queued'
             activePlayers.add(nextPlayerEmail);
             activePlayerEmailsToPositionAndDirections.put(nextPlayerEmail, new PlayerPositionAndDirection(grid.getStartingPosition(), grid.getStartingDirection()));
-            //New
             Player player = getPlayer(nextPlayerEmail);
             player.setActive();
             player.setHealth(new Health());
@@ -164,25 +164,24 @@ public class Game implements Serializable {
         return hasActivePlayers() || hasQueuedPlayers() || hasWaitingPlayers();
     }
 
-    public int getNumOfObstacles(final ObstacleType obstacleType) {
+    public int getNumOfObstacles(final PickupItemType obstacleType) {
         int count = 0;
-        for(final Obstacle obstacle : obstacles) {
-            if(obstacle.getType() == obstacleType) count++;
+        for(final PickupItem pickupItem : pickupItems) {
+            if(pickupItem.getType() == obstacleType) count++;
         }
         return count;
     }
 
-    public List<Obstacle> getObstacles() {
-        return obstacles;
+    public List<PickupItem> getPickupItems() {
+        return pickupItems;
     }
 
-    public void addObstacle(final Obstacle obstacle) {
-        this.obstacles.add(obstacle);
+    public void addPickupItem(final PickupItem pickupItem) {
+        this.pickupItems.add(pickupItem);
     }
 
-    public void removeObstacle(final Obstacle obstacle) { // todo verify that it is indeed removed
-        this.obstacles.remove(obstacle);
-    }
+
+    public void removePickupItem(int i) { pickupItems.remove(i); }
 
     public GameLightState getLightState() {
         return new GameLightState(activePlayerEmailsToPositionAndDirections, queuedPlayers, lastUpdated, counter);
@@ -202,6 +201,14 @@ public class Game implements Serializable {
 
     public void setPlayerPositionAndDirection(final String playerEmail, final PlayerPositionAndDirection playerPositionAndDirection) {
         activePlayerEmailsToPositionAndDirections.put(playerEmail, playerPositionAndDirection);
+    }
+
+    public void increasePlayerPoints(final String playerEmail, final int value) {
+        allPlayerEmailsToPlayers.get(playerEmail).addPoints(value);
+    }
+
+    public void decreasePlayerPoints(final String playerEmail, final int value) {
+        allPlayerEmailsToPlayers.get(playerEmail).substractPoints(value);
     }
 
     /**
@@ -234,4 +241,9 @@ public class Game implements Serializable {
         stringBuilder.append("*waiting: ").append(waitingPlayers).append("\n");
         return stringBuilder.toString();
     }
+
+    public void reset() {
+        pickupItems = new Vector<>();
+    }
+
 }

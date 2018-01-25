@@ -18,6 +18,7 @@ public class Player implements Serializable {
     private Shape shape;
     private Health health;
     private boolean isActive = false;
+    private int points = 0;
 
     public Player() {
         super();
@@ -57,6 +58,24 @@ public class Player implements Serializable {
 
     public void setHealth(Health health) { this.health = health; }
 
+    public void increaseHealth(int amount) {
+        if (amount < 0) throw new RuntimeException("Cannot increase health by negative amount.");
+        else {
+            Health health = this.getHealth();
+            health.increaseBy(amount);
+            this.health = health;
+        }
+    }
+
+    public void decreaseHealth(int amount) {
+        if (amount < 0) throw new RuntimeException("Cannot decrease health by negative amount.");
+        else {
+            Health health = this.getHealth();
+            health.decreaseBy(amount);
+            this.health = health;
+        }
+    }
+
     @Override
     public String toString() {
         return "Player{" +
@@ -74,5 +93,21 @@ public class Player implements Serializable {
     public void setInactive() { isActive = false; }
 
     public boolean isActive() { return isActive; }
+
+    public int getPoints() { return points; }
+
+    public void substractPoints(int points) {
+        if (points < 0) throw new RuntimeException("Cannot substract negative points.");
+        else this.points -= points;
+    }
+
+    public void addPoints(int points) {
+        if (points < 0) throw new RuntimeException("Cannot add negative points.");
+        else this.points += points;
+    }
+
+    public void resetPoints() {
+        points = 0;
+    }
 
 }

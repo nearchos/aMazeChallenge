@@ -125,6 +125,15 @@
                     android:text="123"
                     />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/activity_game_health"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/activity_game_points"
+                    android:text="123"
+                    />
+
             </RelativeLayout>
 
         </LinearLayout>

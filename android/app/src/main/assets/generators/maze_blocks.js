@@ -19,8 +19,8 @@ Blockly.JavaScript['maze_turn_ccw'] = function(block) {
     return code;
 };
 
-Blockly.JavaScript['maze_obstacle_exists'] = function(block) {
-  var value_direction = Blockly.JavaScript.valueToCode(block, 'DIRECTION', Blockly.JavaScript.ORDER_ATOMIC);
+Blockly.JavaScript['maze_object_exists'] = function(block) {
+  var value_playerdirection = Blockly.JavaScript.valueToCode(block, 'playerDirection', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = '...';
   // TODO: Change ORDER_NONE to the correct strength.

@@ -15,11 +15,13 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.GameFullState;
 import org.inspirecenter.amazechallenge.model.Grid;
-import org.inspirecenter.amazechallenge.model.Obstacle;
+import org.inspirecenter.amazechallenge.model.PickupItem;
+import org.inspirecenter.amazechallenge.model.PickupItemImage;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Direction;
 import org.inspirecenter.amazechallenge.model.PlayerPositionAndDirection;
@@ -29,6 +31,7 @@ import org.inspirecenter.amazechallenge.model.Shape;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Vector;
 
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LEFT_SIDE;
@@ -65,7 +68,7 @@ public class GameView extends View {
     public Map<String,Player> allPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
     public List<String> queuedPlayerEmails;
-    public List<Obstacle> obstacles = new Vector<>();
+    public List<PickupItem> pickupItems = new Vector<>();
 
     void setGrid(final Grid grid) {
         this.grid = grid;
@@ -77,7 +80,7 @@ public class GameView extends View {
             activePlayerPositionAndDirectionMap.put(activePlayerEmail, game.getPlayerPositionAndDirection(activePlayerEmail));
         }
         queuedPlayerEmails = game.getQueuedPlayers();
-        this.obstacles = game.getObstacles();
+        this.pickupItems = game.getPickupItems();
     }
 
     void setLineColor(String lineColor) {
@@ -146,12 +149,9 @@ public class GameView extends View {
         final Position targetPosition = grid.getTargetPosition();
         drawGridCell(targetPosition.getRow(), targetPosition.getCol(), tile_size, padding, 0x0, COLOR_BLACK, COLOR_LIGHT_GREEN, canvas);
 
-        // draw obstacles and rewards
-        //todo
-        for(final Obstacle obstacle : obstacles) {
-            // draw coin
-            drawShape(obstacle.getPosition(), Shape.COIN, Direction.NORTH, Color.YELLOW, tile_size, padding, canvas);
-        }
+        // draw pickupItems and rewards
+        for(final PickupItem pickupItem : pickupItems)
+            drawPickupItem(pickupItem.getPosition(), pickupItem.getImage(), tile_size, padding, canvas);
 
 
         // draw active players
@@ -207,6 +207,63 @@ public class GameView extends View {
         if (player.isActive()) drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
     }
 
+    private void drawPickupItem(final Position position, final PickupItemImage image, final int tile_size, final int padding, final Canvas canvas) {
+
+        final int topLeftX = position.getCol() * tile_size + padding;
+        final int topLeftY = position.getRow() * tile_size + padding;
+
+        Drawable d;
+
+        switch (image) {
+
+            case PICKUP_ITEM_IMAGE_BOMB:
+                d = getResources().getDrawable(R.drawable.bomb);
+                break;
+            case PICKUP_ITEM_IMAGE_APPLE:
+                d = getResources().getDrawable(R.drawable.apple);
+                break;
+            case PICKUP_ITEM_IMAGE_ORANGE:
+                d = getResources().getDrawable(R.drawable.orange);
+                break;
+            case PICKUP_ITEM_IMAGE_STRAWBERRY:
+                d = getResources().getDrawable(R.drawable.strawberry);
+                break;
+            case PICKUP_ITEM_IMAGE_BANANA:
+                d = getResources().getDrawable(R.drawable.banana);
+                break;
+            case PICKUP_ITEM_IMAGE_GRAPES:
+                d = getResources().getDrawable(R.drawable.grapes);
+                break;
+            case PICKUP_ITEM_IMAGE_WATERMELON:
+                d = getResources().getDrawable(R.drawable.watermelon);
+                break;
+            case PICKUP_ITEM_IMAGE_PEACH:
+                d = getResources().getDrawable(R.drawable.peach);
+                break;
+            case PICKUP_ITEM_IMAGE_GIFTBOX:
+                d = getResources().getDrawable(R.drawable.giftbox);
+                break;
+            case PICKUP_ITEM_IMAGE_TRAP:
+                d = getResources().getDrawable(R.drawable.trap);
+                break;
+            case PICKUP_ITEM_IMAGE_DOUBLE_MOVES:
+                d = getResources().getDrawable(R.drawable.twoturns);
+                break;
+            case PICKUP_ITEM_IMAGE_NONE:
+                d = null;
+                break;
+            default:
+                d = null;
+
+        }
+
+        if (d != null) {
+            d.setBounds(topLeftX + tile_size / 8, topLeftY + tile_size / 8, topLeftX + tile_size * 7 / 8, topLeftY + tile_size * 7 / 8);
+            d.draw(canvas);
+        }
+
+    }
+
     private void drawShape(final Position position, final Shape shape, final Direction direction, final int color, final int tile_size, final int padding, final Canvas canvas) {
 
         paint.setColor(color);
@@ -215,6 +272,9 @@ public class GameView extends View {
         final int topLeftY = position.getRow() * tile_size + padding;
 
         switch (shape) {
+
+                //Player shapes:
+
             case TRIANGLE:
                 // draw directed triangle
                 final Point point1, point2, point3;
@@ -261,16 +321,6 @@ public class GameView extends View {
 
                 break;
 
-            case COIN:
-                // draw coin
-                paint.setStyle(Paint.Style.FILL);
-                canvas.drawCircle(topLeftX + tile_size / 2, topLeftY + tile_size / 2, tile_size / 3, paint);
-                paint.setColor(Color.BLACK);
-                paint.setFakeBoldText(true);
-                paint.setTextSize(tile_size/2f);
-                canvas.drawText("10", topLeftX + tile_size / 5f, topLeftY + 3.5f * tile_size / 5f, paint);
-                break;
-
             case CIRCLE:
                 // draw full circle
                 paint.setStyle(Paint.Style.FILL);
@@ -282,6 +332,7 @@ public class GameView extends View {
                 paint.setStyle(Paint.Style.STROKE);
                 canvas.drawCircle(topLeftX + tile_size / 2, topLeftY + tile_size / 2, tile_size / 3, paint);
                 break;
+
 
             default:
                 throw new RuntimeException("Invalid shape: " + shape);

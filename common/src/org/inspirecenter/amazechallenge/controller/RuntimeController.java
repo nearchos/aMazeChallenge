@@ -1,8 +1,10 @@
 package org.inspirecenter.amazechallenge.controller;
 
+import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
 import org.inspirecenter.amazechallenge.model.*;
+import org.inspirecenter.amazechallenge.ui.SoundPlayer;
 
 import java.util.Map;
 import java.util.Random;
@@ -30,24 +32,15 @@ public class RuntimeController {
             final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
             applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove);
 
-            //TODO REMOVE:
-            player.getHealth().decreaseBy(5);
-//            System.out.println("Health: " + player.getHealth().get());
-
             //Check the player's health:
             if (player.getHealth().isAtMin()) {
                 game.resetPlayer(playerEmail);
                 game.setPlayerPositionAndDirection(playerEmail, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
+                game.resetPlayer(playerEmail);
             }
 
-            // todo add obstacles/rewards
-            if(game.getNumOfObstacles(ObstacleType.OBSTACLE_HEALTH) < challenge.getMaxObstaclesHealth()) {
-                final Random random = new Random();
-                int row = random.nextInt(grid.getHeight());
-                int col = random.nextInt(grid.getWidth());
-                final Position position = new Position(row, col);
-                game.addObstacle(new Obstacle(position, ObstacleType.OBSTACLE_HEALTH));
-            }
+            generateItems(game, challenge, grid);
+
         }
     }
 
@@ -64,11 +57,30 @@ public class RuntimeController {
             case MOVE_FORWARD:
                 if (canMoveForward(grid, playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection())) {
                     position = movePlayerForward(playerPositionAndDirection);
-                    // handle obstacles and rewards (i.e. add/substract health etc.)
+                    // handle pickupItems and rewards (i.e. add/substract health etc.)
                     //todo
-                    for(final Obstacle obstacle : game.getObstacles()) {
-                        if(obstacle.getPosition().equals(position)) {
-                            // todo
+                    for(int i = 0; i < game.getPickupItems().size(); i++) {
+                        PickupItem pickupItem = game.getPickupItems().get(i);
+                        if(pickupItem.getPosition().equals(position)) {
+                            switch(pickupItem.getType()) {
+                                case ITEM_OBSTACLE_50_HEALTH:
+                                    game.getPlayer(playerEmail).decreaseHealth(50);
+                                    //TODO: Play sound of bomb?
+                                    break;
+                                case ITEM_REWARD_DOUBLE_MOVES:
+                                    //TODO
+                                    break;
+                                case ITEM_REWARD_10_POINTS:
+                                    game.getPlayer(playerEmail).addPoints(10);
+                                    break;
+                                case ITEM_REWARD_50_HEALTH:
+                                    game.getPlayer(playerEmail).increaseHealth(50);
+                                    break;
+                                case ITEM_OBSTACLE_SKIP_ROUND:
+                                    //TODO
+                                    break;
+                            }
+                            game.removePickupItem(i);
                         }
                     }
                 }
@@ -188,8 +200,141 @@ public class RuntimeController {
     }
 
     public static boolean allPlayersHaveLost(final Game game) {
-        if (game.getActivePlayers().isEmpty()) return true;
-        return false;
+        return game.getActivePlayers().isEmpty();
+    }
+
+    private static void generateItems(Game game, Challenge challenge, Grid grid) {
+        //Pick-up item generation:
+
+        //Reward 50 health:
+        if(game.getNumOfObstacles(PickupItemType.ITEM_REWARD_50_HEALTH) < challenge.getMax_reward_50_health()) {
+            final Random random = new Random();
+            int row = random.nextInt(grid.getHeight());
+            int col = random.nextInt(grid.getWidth());
+            final Position position = new Position(row, col);
+
+            int randomImage = random.nextInt(PickupItemImage.values().length);
+            PickupItemImage image;
+
+            switch(randomImage) {
+
+                case 0:
+                    image = PickupItemImage.PICKUP_ITEM_IMAGE_APPLE;
+                    break;
+                case 1:
+                    image = PickupItemImage.PICKUP_ITEM_IMAGE_BANANA;
+                    break;
+                case 2:
+                    image = PickupItemImage.PICKUP_ITEM_IMAGE_WATERMELON;
+                    break;
+                case 3:
+                    image = PickupItemImage.PICKUP_ITEM_IMAGE_GRAPES;
+                    break;
+                case 4:
+                    image = PickupItemImage.PICKUP_ITEM_IMAGE_ORANGE;
+                    break;
+                case 5:
+                    image = PickupItemImage.PICKUP_ITEM_IMAGE_PEACH;
+                    break;
+                case 6:
+                    image = PickupItemImage.PICKUP_ITEM_IMAGE_STRAWBERRY;
+                    break;
+
+                default:
+                    image = PickupItemImage.PICKUP_ITEM_IMAGE_APPLE;
+                    break;
+
+            }
+
+            boolean exists = false;
+            for (PickupItem i : game.getPickupItems()) {
+                if (i.getPosition().equals(position)) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
+                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_REWARD_50_HEALTH, image));
+
+
+        }
+
+        //Lose 50 health:
+        if(game.getNumOfObstacles(PickupItemType.ITEM_OBSTACLE_50_HEALTH) < challenge.getMax_obstacle_50_health()) {
+            final Random random = new Random();
+            int row = random.nextInt(grid.getHeight());
+            int col = random.nextInt(grid.getWidth());
+            final Position position = new Position(row, col);
+
+            boolean exists = false;
+            for (PickupItem i : game.getPickupItems()) {
+                if (i.getPosition().equals(position)) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
+                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_OBSTACLE_50_HEALTH, PickupItemImage.PICKUP_ITEM_IMAGE_BOMB));
+        }
+
+        //Reward 10 Points:
+        if(game.getNumOfObstacles(PickupItemType.ITEM_REWARD_10_POINTS) < challenge.getMax_reward_10_points()) {
+            final Random random = new Random();
+            int row = random.nextInt(grid.getHeight());
+            int col = random.nextInt(grid.getWidth());
+            final Position position = new Position(row, col);
+
+            boolean exists = false;
+            for (PickupItem i : game.getPickupItems()) {
+                if (i.getPosition().equals(position)) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
+                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_REWARD_10_POINTS, PickupItemImage.PICKUP_ITEM_IMAGE_GIFTBOX));
+        }
+
+        //Obstacle miss round:
+        if(game.getNumOfObstacles(PickupItemType.ITEM_OBSTACLE_SKIP_ROUND) < challenge.getMax_obstacle_miss_round()) {
+            final Random random = new Random();
+            int row = random.nextInt(grid.getHeight());
+            int col = random.nextInt(grid.getWidth());
+            final Position position = new Position(row, col);
+
+            boolean exists = false;
+            for (PickupItem i : game.getPickupItems()) {
+                if (i.getPosition().equals(position)) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
+                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_OBSTACLE_SKIP_ROUND, PickupItemImage.PICKUP_ITEM_IMAGE_TRAP));
+        }
+
+        //Reward Double moves:
+        if(game.getNumOfObstacles(PickupItemType.ITEM_REWARD_DOUBLE_MOVES) < challenge.getMax_reward_double_moves()) {
+            final Random random = new Random();
+            int row = random.nextInt(grid.getHeight());
+            int col = random.nextInt(grid.getWidth());
+            final Position position = new Position(row, col);
+
+            boolean exists = false;
+            for (PickupItem i : game.getPickupItems()) {
+                if (i.getPosition().equals(position)) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
+                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_REWARD_DOUBLE_MOVES, PickupItemImage.PICKUP_ITEM_IMAGE_DOUBLE_MOVES));
+        }
     }
 
 }

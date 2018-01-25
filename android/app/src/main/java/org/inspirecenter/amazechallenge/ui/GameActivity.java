@@ -64,6 +64,7 @@ public class GameActivity extends AppCompatActivity {
     private ToggleButton playPauseToggleButton;
     private Button resetButton;
     private TextView healthTextView;
+    private TextView pointsTextView;
 
     private TextView movesDataTextView;
     private Button movesDetailsButton;
@@ -114,6 +115,9 @@ public class GameActivity extends AppCompatActivity {
 
         healthTextView = findViewById(R.id.activity_game_health);
         updateHealthTextView();
+
+        pointsTextView = findViewById(R.id.activity_game_points);
+        updatePointsTextView();
 
 
         this.gameView = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_game_view);
@@ -195,6 +199,7 @@ public class GameActivity extends AppCompatActivity {
             gameView.update(game);
             gameView.invalidate();
             updateHealthTextView();
+            updatePointsTextView();
             // update movesDataTextView
 //        movesDataTextView.setText(game.getStatisticsDescription()); // todo
             if (RuntimeController.hasSomeoneReachedTheTargetPosition(game, challenge.getGrid())) {
@@ -246,7 +251,9 @@ public class GameActivity extends AppCompatActivity {
         game.queuePlayer(playerEmail);
         game.activateNextPlayer(challenge.getGrid());
         updateHealthTextView();
+        updatePointsTextView();
         player.setActive();
+        game.reset();
         gameView.update(game);
         gameView.invalidate();
     }
@@ -255,6 +262,12 @@ public class GameActivity extends AppCompatActivity {
         final Intent intent = getIntent();
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
         healthTextView.setText("Player health: " + player.getHealth().get() );
+    }
+
+    private void updatePointsTextView() {
+        final Intent intent = getIntent();
+        final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
+        pointsTextView.setText("Player points: " + player.getPoints() );
     }
 
 }

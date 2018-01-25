@@ -1,7 +1,5 @@
 package org.inspirecenter.amazechallenge.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 /**
@@ -31,11 +29,13 @@ public class Challenge implements Serializable {
     private int maxActivePlayers = DEFAULT_MAX_ACTIVE_PLAYERS; // maximum number of players allowed to be active at a time (the rest are in a queue)
     private long startTimestamp; // when the challenge starts being available, or zero if available from the beginning of time (timestamp in UTC)
     private long endTimestamp; // when the challenge ends being available, or zero if available forever (timestamp in UTC)
-    private int maxObstaclesHealth = 0;
-    private int maxObstaclesSkipRound = 0;
-    private int maxRewardHealth = 0;
-    private int maxRewardDoubleMoves = 0;
-    private int maxRewardPoints = 0;
+
+    private int max_reward_50_health = 0;
+    private int max_reward_double_moves = 0;
+    private int max_reward_10_points = 0;
+    private int max_obstacle_50_health = 0;
+    private int max_obstacle_miss_round = 0;
+
     private Grid grid;
     private String lineColor;
     private String backgroundImage;
@@ -48,8 +48,10 @@ public class Challenge implements Serializable {
     public Challenge(String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers,
                      int maxActivePlayers, long startTimestamp, long endTimestamp,
-                     int maxObstaclesHealth, int maxObstaclesSkipRound, int maxRewardHealth,
-                     int maxRewardDoubleMoves, int maxRewardPoints, Grid grid, String lineColor,
+                     int max_reward_50_health, int max_reward_double_moves,
+                     int max_reward_10_points, int max_obstacle_50_health,
+                     int max_obstacle_miss_round,
+                     Grid grid, String lineColor,
                      String backgroundImage, String difficulty) {
         this();
         this.name = name;
@@ -62,11 +64,13 @@ public class Challenge implements Serializable {
         this.maxActivePlayers = maxActivePlayers;
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
-        this.maxObstaclesHealth = maxObstaclesHealth;
-        this.maxObstaclesSkipRound = maxObstaclesSkipRound;
-        this.maxRewardHealth = maxRewardHealth;
-        this.maxRewardDoubleMoves = maxRewardDoubleMoves;
-        this.maxRewardPoints = maxRewardPoints;
+
+        this.max_reward_50_health = max_reward_50_health;
+        this.max_reward_10_points = max_reward_10_points;
+        this.max_reward_double_moves = max_reward_double_moves;
+        this.max_obstacle_50_health = max_obstacle_50_health;
+        this.max_obstacle_miss_round = max_obstacle_miss_round;
+
         this.grid = grid;
         this.lineColor = lineColor;
         this.backgroundImage = backgroundImage;
@@ -75,13 +79,13 @@ public class Challenge implements Serializable {
 
     public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp,
-                     long endTimestamp, int maxObstaclesHealth, int maxObstaclesSkipRound,
-                     int maxRewardHealth, int maxRewardDoubleMoves, int maxRewardPoints,
+                     long endTimestamp, int max_reward_50_health, int max_reward_double_moves,
+                     int max_reward_10_points, int max_obstacle_50_health, int max_obstacle_miss_round,
                      Grid grid, String lineColor, String backgroundImage, String difficulty) {
         this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther,
                 DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp,
-                endTimestamp, maxObstaclesHealth, maxObstaclesSkipRound, maxRewardHealth,
-                maxRewardDoubleMoves, maxRewardPoints, grid, lineColor, backgroundImage, difficulty);
+                endTimestamp, max_reward_50_health, max_reward_double_moves, max_reward_10_points,
+                max_obstacle_50_health, max_obstacle_miss_round, grid, lineColor, backgroundImage, difficulty);
         this.id = id;
     }
 
@@ -135,26 +139,6 @@ public class Challenge implements Serializable {
         return endTimestamp;
     }
 
-    public int getMaxObstaclesHealth() {
-        return maxObstaclesHealth;
-    }
-
-    public int getMaxObstaclesSkipRound() {
-        return maxObstaclesSkipRound;
-    }
-
-    public int getMaxRewardHealth() {
-        return maxRewardHealth;
-    }
-
-    public int getMaxRewardDoubleMoves() {
-        return maxRewardDoubleMoves;
-    }
-
-    public int getMaxRewardPoints() {
-        return maxRewardPoints;
-    }
-
     public boolean hasEnded() {
         return System.currentTimeMillis() > endTimestamp;
     }
@@ -171,6 +155,26 @@ public class Challenge implements Serializable {
 
     public String getBackgroundImage() { return backgroundImage; }
 
+    public int getMax_reward_50_health() {
+        return max_reward_50_health;
+    }
+
+    public int getMax_reward_double_moves() {
+        return max_reward_double_moves;
+    }
+
+    public int getMax_reward_10_points() {
+        return max_reward_10_points;
+    }
+
+    public int getMax_obstacle_50_health() {
+        return max_obstacle_50_health;
+    }
+
+    public int getMax_obstacle_miss_round() {
+        return max_obstacle_miss_round;
+    }
+
     @Override
     public String toString() {
         return "Challenge{" +
@@ -185,11 +189,11 @@ public class Challenge implements Serializable {
                 ", maxActivePlayers=" + maxActivePlayers +
                 ", startTimestamp=" + startTimestamp +
                 ", endTimestamp=" + endTimestamp +
-                ", maxObstaclesHealth=" + maxObstaclesHealth +
-                ", maxObstaclesSkipRound=" + maxObstaclesSkipRound +
-                ", maxRewardHealth=" + maxRewardHealth +
-                ", maxRewardDoubleMoves=" + maxRewardDoubleMoves +
-                ", maxRewardPoints=" + maxRewardPoints +
+                ", max_reward_50_health=" + max_reward_50_health +
+                ", max_reward_double_moves=" + max_reward_double_moves +
+                ", max_reward_10_points=" + max_reward_10_points +
+                ", max_obstacle_50_health=" + max_obstacle_50_health +
+                ", max_obstacle_miss_round=" + max_obstacle_miss_round +
                 ", grid=" + grid +
                 ", lineColor='" + lineColor + '\'' +
                 ", backgroundImage='" + backgroundImage + '\'' +
