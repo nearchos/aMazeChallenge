@@ -12,11 +12,19 @@
             <block type="maze_canmove_left"></block>
             <block type="maze_canmove_right"></block>
             <block type="maze_canmove_backward"></block>
-            <block type="maze_object_exists"></block>
+            <block type="maze_get_object"></block>
+            <block type="maze_get_direction"></block>
             <block type="maze_direction_north"></block>
             <block type="maze_direction_south"></block>
             <block type="maze_direction_east"></block>
             <block type="maze_direction_west"></block>
+            <block type="maze_pickupitem_reward_points10"></block>
+            <block type="maze_pickupitem_reward_health50"></block>
+            <block type="maze_pickupitem_reward_doubleturn"></block>
+            <block type="maze_pickupitem_obstacle_health50"></block>
+            <block type="maze_pickupitem_obstacle_skipturn"></block>
+            <block type="maze_pickupitem_none"></block>
+
 
         </category>
 
@@ -131,6 +139,7 @@
             </block>
             <block type="math_random_float"></block>
         </category>
+
         <category name="Variables" colour="330" custom="VARIABLE"/>
 
     </toolbox>

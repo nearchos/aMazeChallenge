@@ -44,4 +44,9 @@ public abstract class AbstractMazeSolver implements MazeSolver {
     public boolean canMoveRight() {
         return RuntimeController.canMoveRight(getGrid(), getPosition(), getDirection());
     }
+
+    public PickupItemType getObject(Direction direction) {
+        return RuntimeController.getObject(game, getGrid(), getPosition(), direction);
+    }
+
 }

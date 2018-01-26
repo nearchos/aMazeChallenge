@@ -162,6 +162,45 @@ public class RuntimeController {
         return !hasWall(grid, position, rightDirection);
     }
 
+    public static PickupItemType getObject(final Game game, final Grid grid, final Position position, final Direction direction) {
+
+        switch (direction) {
+            case NORTH:
+                if (position.getRow() - 1 > 0) {
+                    for (PickupItem i : game.getPickupItems()) {
+                        if (i.getPosition().getRow() == position.getRow()-1 && i.getPosition().getCol() == position.getCol())
+                            return i.getType();
+                    }
+                }
+                break;
+            case SOUTH:
+                if (position.getRow() + 1 < grid.getHeight()) {
+                    for (PickupItem i : game.getPickupItems()) {
+                        if (i.getPosition().getRow() == position.getRow()+1 && i.getPosition().getCol() == position.getCol())
+                            return i.getType();
+                    }
+                }
+                break;
+            case EAST:
+                if (position.getCol() + 1 < grid.getWidth()) {
+                    for (PickupItem i : game.getPickupItems()) {
+                        if (i.getPosition().getCol() == position.getCol()+1 && i.getPosition().getRow() == position.getRow())
+                            return i.getType();
+                    }
+                }
+                break;
+            case WEST:
+                if (position.getCol() - 1 > 0) {
+                    for (PickupItem i : game.getPickupItems()) {
+                        if (i.getPosition().getCol() == position.getCol()-1 && i.getPosition().getRow() == position.getRow())
+                            return i.getType();
+                    }
+                }
+                break;
+        }
+        return PickupItemType.ITEM_NONE;
+    }
+
     public static int getGridCell(final Grid grid, final int row, final int col) throws IndexOutOfBoundsException {
         if(col < 0 || col > grid.getWidth()) throw new IndexOutOfBoundsException("col not in bounds [0, " + grid.getWidth() + ")");
         if(row < 0 || row > grid.getHeight()) throw new IndexOutOfBoundsException("row not in bounds [0, " + grid.getHeight() + ")");
@@ -204,7 +243,6 @@ public class RuntimeController {
     }
 
     private static void generateItems(Game game, Challenge challenge, Grid grid) {
-        //Pick-up item generation:
 
         //Reward 50 health:
         if(game.getNumOfObstacles(PickupItemType.ITEM_REWARD_50_HEALTH) < challenge.getMax_reward_50_health()) {

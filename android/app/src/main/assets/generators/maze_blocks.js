@@ -19,11 +19,10 @@ Blockly.JavaScript['maze_turn_ccw'] = function(block) {
     return code;
 };
 
-Blockly.JavaScript['maze_object_exists'] = function(block) {
+Blockly.JavaScript['maze_get_object'] = function(block) {
   var value_playerdirection = Blockly.JavaScript.valueToCode(block, 'playerDirection', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = '...';
-  // TODO: Change ORDER_NONE to the correct strength.
+  var code = 'instance.getObject(' + value_playerdirection + ")";
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
@@ -117,5 +116,40 @@ Blockly.JavaScript['maze_randomint'] = function(block) {
   var value_min = Blockly.JavaScript.valueToCode(block, 'min', Blockly.JavaScript.ORDER_ATOMIC);
   var value_max = Blockly.JavaScript.valueToCode(block, 'max', Blockly.JavaScript.ORDER_ATOMIC);
   var code = "_getRandomInt(" + value_min + ", " + value_max + ")";
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_pickupitem_reward_points10'] = function(block) {
+  var code = 'Packages.org.inspirecenter.amazechallenge.model.PickupItemType.ITEM_REWARD_10_POINTS';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_pickupitem_reward_health50'] = function(block) {
+  var code = 'Packages.org.inspirecenter.amazechallenge.model.PickupItemType.ITEM_REWARD_50_HEALTH';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_pickupitem_reward_doubleturn'] = function(block) {
+  var code = 'Packages.org.inspirecenter.amazechallenge.model.PickupItemType.ITEM_REWARD_DOUBLE_MOVES';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_pickupitem_obstacle_health50'] = function(block) {
+  var code = 'Packages.org.inspirecenter.amazechallenge.model.PickupItemType.ITEM_OBSTACLE_50_HEALTH';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_pickupitem_obstacle_skipturn'] = function(block) {
+  var code = 'Packages.org.inspirecenter.amazechallenge.model.PickupItemType.ITEM_OBSTACLE_SKIP_ROUND';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_pickupitem_none'] = function(block) {
+  var code = 'Packages.org.inspirecenter.amazechallenge.model.PickupItemType.ITEM_NONE';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_get_direction'] = function(block) {
+  var code = 'instance.getDirection()';
   return [code, Blockly.JavaScript.ORDER_NONE];
 };

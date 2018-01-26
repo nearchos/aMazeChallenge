@@ -11,12 +11,7 @@ public enum Shape {
     EMPTY_CIRCLE("empty_circle"),
     TRIANGLE("triangle"),
 
-    //Pickup item shapes:
-    PICKUPSHAPE_REWARD_50_HEALTH("Reward 50 health shape"),
-    PICKUPSHAPE_REWARD_DOUBLE_MOVES("Double moves shape"),
-    PICKUPSHAPE_REWARD_10_POINTS("Reward 10 points shape"),
-    PICKUPSHAPE_OBSTACLE_50_HEALTH("Lose 50 health shape"),
-    PIKCUPSHAPE_OBSTACLE_SKIP_ROUND("Skip next round shape")
+    NONE("No shape")
 
     ;
 

@@ -6,19 +6,21 @@ package org.inspirecenter.amazechallenge.model;
 
 public enum PickupItemType {
 
-    ITEM_REWARD_50_HEALTH("Reward +50 Health", Shape.PICKUPSHAPE_REWARD_50_HEALTH),
-    ITEM_REWARD_DOUBLE_MOVES("Reward double moves for next 5 rounds", Shape.PICKUPSHAPE_REWARD_DOUBLE_MOVES),
-    ITEM_REWARD_10_POINTS("Reward +10 Points", Shape.PICKUPSHAPE_REWARD_10_POINTS),
+    ITEM_REWARD_50_HEALTH("Reward +50 Health"),
+    ITEM_REWARD_DOUBLE_MOVES("Reward double moves for next 5 rounds"),
+    ITEM_REWARD_10_POINTS("Reward +10 Points"),
 
-    ITEM_OBSTACLE_50_HEALTH("Lose -50 Health", Shape.PICKUPSHAPE_OBSTACLE_50_HEALTH),
-    ITEM_OBSTACLE_SKIP_ROUND("Miss next round", Shape.PIKCUPSHAPE_OBSTACLE_SKIP_ROUND);
+    ITEM_OBSTACLE_50_HEALTH("Lose -50 Health"),
+    ITEM_OBSTACLE_SKIP_ROUND("Miss next round"),
+
+    ITEM_NONE("No item")
+
+    ;
 
     private String name;
-    private Shape shape;
 
-    PickupItemType(final String name, final Shape shape) {
+    PickupItemType(final String name) {
         this.name = name;
-        this.shape = shape;
     }
 
     @Override
@@ -26,6 +28,5 @@ public enum PickupItemType {
         return name;
     }
 
-    public Shape getShape() { return shape; }
 
 }

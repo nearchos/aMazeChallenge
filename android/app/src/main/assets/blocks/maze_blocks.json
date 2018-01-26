@@ -22,21 +22,21 @@
   "tooltip": "Turn the player counterclockwise.",
   "helpUrl": ""
 },
-{
-  "type": "maze_object_exists",
-  "message0": "object exists %1",
-  "args0": [
-    {
-      "type": "input_value",
-      "name": "playerDirection",
-      "check": "Direction"
-    }
-  ],
-  "output": "PickupItemType",
-  "colour": 65,
-  "tooltip": "Returns the type of object that exists in the given direction.",
-  "helpUrl": ""
-},
+  {
+    "type": "maze_get_object",
+    "message0": "get object %1",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "playerDirection",
+        "check": "Direction"
+      }
+    ],
+    "output": "PickupItemType",
+    "colour": 65,
+    "tooltip": "Returns the type of object that exists in the given direction.",
+    "helpUrl": ""
+  },
 {
   "type": "maze_canmove_left",
   "message0": "can move left",
@@ -161,5 +161,63 @@
     "colour": 225,
     "tooltip": "Returns a random integer in the range provided.",
     "helpUrl": ""
+  },
+
+  {
+    "type": "maze_pickupitem_reward_points10",
+    "message0": "+10 Points reward",
+    "output": "PickupItemType",
+    "colour": 0,
+    "tooltip": "",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_pickupitem_reward_health50",
+    "message0": "+50 Health reward",
+    "output": "PickupItemType",
+    "colour": 0,
+    "tooltip": "",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_pickupitem_reward_doubleturn",
+    "message0": "Double turn reward",
+    "output": "PickupItemType",
+    "colour": 0,
+    "tooltip": "",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_pickupitem_obstacle_health50",
+    "message0": "-50 Health obstacle",
+    "output": "PickupItemType",
+    "colour": 0,
+    "tooltip": "",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_pickupitem_obstacle_skipturn",
+    "message0": "Skip turn obstacle",
+    "output": "PickupItemType",
+    "colour": 0,
+    "tooltip": "",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_pickupitem_none",
+    "message0": "None",
+    "output": "PickupItemType",
+    "colour": 0,
+    "tooltip": "",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_get_direction",
+    "message0": "get Direction",
+    "output": "Direction",
+    "colour": 60,
+    "tooltip": "Returns the current direction of the player",
+    "helpUrl": ""
   }
+
 ]

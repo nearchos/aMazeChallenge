@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.algorithms;
 
+import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.*;
 
 import java.io.*;
@@ -206,4 +207,10 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         }//end foreach line
         return builder.toString();
     }
+
+    @Override
+    public PickupItemType getObject(Direction direction) {
+        return RuntimeController.getObject(game, getGrid(), getPosition(), direction);
+    }
+
 }
