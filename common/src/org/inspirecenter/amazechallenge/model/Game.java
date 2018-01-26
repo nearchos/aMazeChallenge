@@ -1,5 +1,7 @@
 package org.inspirecenter.amazechallenge.model;
 
+import org.inspirecenter.amazechallenge.controller.AudioEventListener;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -246,4 +248,13 @@ public class Game implements Serializable {
         pickupItems = new Vector<>();
     }
 
+    private AudioEventListener audioEventListener = null;
+
+    public void setOnAudioEventListener(AudioEventListener audioEventListener) {
+        this.audioEventListener = audioEventListener;
+    }
+
+    public AudioEventListener getAudioEventListener() {
+        return audioEventListener;
+    }
 }

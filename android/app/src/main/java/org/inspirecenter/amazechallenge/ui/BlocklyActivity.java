@@ -101,6 +101,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
     public void done(final View view) {
         submitCode();
+
     }
 
     private void submitCode() {

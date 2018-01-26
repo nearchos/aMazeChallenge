@@ -6,7 +6,7 @@ import java.io.Serializable;
  * npaspallis on 16/01/2018.
  */
 @com.googlecode.objectify.annotation.Entity
-public class PickupItem implements Serializable {
+public class PickupItem implements Serializable { // todo rename Pickable
 
     @com.googlecode.objectify.annotation.Id
     Long id;
@@ -14,6 +14,7 @@ public class PickupItem implements Serializable {
     private Position position;
     private PickupItemType type;
     private PickupItemImage image;
+    private int state;
 
     public PickupItem() {
         super();

@@ -20,6 +20,7 @@ import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.GameFullState;
 import org.inspirecenter.amazechallenge.model.Grid;
+import org.inspirecenter.amazechallenge.model.PickableType;
 import org.inspirecenter.amazechallenge.model.PickupItem;
 import org.inspirecenter.amazechallenge.model.PickupItemImage;
 import org.inspirecenter.amazechallenge.model.Player;
@@ -208,6 +209,9 @@ public class GameView extends View {
     }
 
     private void drawPickupItem(final Position position, final PickupItemImage image, final int tile_size, final int padding, final Canvas canvas) {
+
+//        PickableType pickableType = null; // todo
+//        final int resId = getResources().getIdentifier(pickableType.getResourceName(), "drawable", getContext().getPackageName());
 
         final int topLeftX = position.getCol() * tile_size + padding;
         final int topLeftY = position.getRow() * tile_size + padding;

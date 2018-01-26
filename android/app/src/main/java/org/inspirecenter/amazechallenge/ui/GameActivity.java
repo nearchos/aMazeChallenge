@@ -29,9 +29,11 @@ import android.widget.ToggleButton;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
+import org.inspirecenter.amazechallenge.controller.AudioEventListener;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.PickupItemType;
 import org.inspirecenter.amazechallenge.model.Player;
 
 import java.util.HashMap;
@@ -41,7 +43,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements AudioEventListener {
 
     public static final String TAG = "aMaze";
 
@@ -171,6 +173,7 @@ public class GameActivity extends AppCompatActivity {
         String backgroundName = challenge.getBackgroundImage();
         this.gameView.setBackgroundDrawable(MazeBackground.getByName(backgroundName).getResourceID());
         this.game = new Game();
+        game.setOnAudioEventListener(this);
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
@@ -270,4 +273,9 @@ public class GameActivity extends AppCompatActivity {
         pointsTextView.setText("Player points: " + player.getPoints() );
     }
 
+    @Override
+    public void onAudioEvent(PickupItemType pickupItemType) {
+        // todo play correct audio
+
+    }
 }

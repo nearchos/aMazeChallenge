@@ -21,7 +21,6 @@ public enum Shape {
         this.code = code;
     }
 
-    //TODO: Is this needed??
     public static Shape getShapeByCode(final String shapeCode) {
         for(final Shape shape : values()) {
             if (shape.code.equals(shapeCode)) {

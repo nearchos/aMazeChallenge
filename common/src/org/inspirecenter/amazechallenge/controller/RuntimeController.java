@@ -1,10 +1,8 @@
 package org.inspirecenter.amazechallenge.controller;
 
-import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
 import org.inspirecenter.amazechallenge.model.*;
-import org.inspirecenter.amazechallenge.ui.SoundPlayer;
 
 import java.util.Map;
 import java.util.Random;
@@ -47,6 +45,7 @@ public class RuntimeController {
     private static void applyPlayerMove(final Grid grid, final Game game, final String playerEmail, final PlayerPositionAndDirection playerPositionAndDirection, final PlayerMove playerMove) {
         Direction direction = playerPositionAndDirection.getDirection();
         Position position = playerPositionAndDirection.getPosition();
+        AudioEventListener audioEventListener = game.getAudioEventListener();
         switch (playerMove) {
             case TURN_CLOCKWISE:
                 direction = playerPositionAndDirection.getDirection().turnClockwise();
@@ -58,17 +57,15 @@ public class RuntimeController {
                 if (canMoveForward(grid, playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection())) {
                     position = movePlayerForward(playerPositionAndDirection);
                     // handle pickupItems and rewards (i.e. add/substract health etc.)
-                    //todo
+                    // todo implement all rewards, penalties etc.
                     for(int i = 0; i < game.getPickupItems().size(); i++) {
                         PickupItem pickupItem = game.getPickupItems().get(i);
                         if(pickupItem.getPosition().equals(position)) {
                             switch(pickupItem.getType()) {
                                 case ITEM_OBSTACLE_50_HEALTH:
                                     game.getPlayer(playerEmail).decreaseHealth(50);
-                                    //TODO: Play sound of bomb?
                                     break;
                                 case ITEM_REWARD_DOUBLE_MOVES:
-                                    //TODO
                                     break;
                                 case ITEM_REWARD_10_POINTS:
                                     game.getPlayer(playerEmail).addPoints(10);
@@ -77,8 +74,10 @@ public class RuntimeController {
                                     game.getPlayer(playerEmail).increaseHealth(50);
                                     break;
                                 case ITEM_OBSTACLE_SKIP_ROUND:
-                                    //TODO
                                     break;
+                            }
+                            if(audioEventListener != null) { // if audio event listener set, notify with event
+                                audioEventListener.onAudioEvent(pickupItem.getType());
                             }
                             game.removePickupItem(i);
                         }

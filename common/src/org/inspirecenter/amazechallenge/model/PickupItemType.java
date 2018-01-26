@@ -2,8 +2,8 @@ package org.inspirecenter.amazechallenge.model;
 
 /**
  * npaspallis on 16/01/2018.
+ * @deprecated todo remove
  */
-
 public enum PickupItemType {
 
     ITEM_REWARD_50_HEALTH("Reward +50 Health"),
@@ -17,6 +17,8 @@ public enum PickupItemType {
 
     ;
 
+    public enum BIAS { REWARD, PENALTY };
+
     private String name;
 
     PickupItemType(final String name) {
@@ -27,6 +29,4 @@ public enum PickupItemType {
     public String toString() {
         return name;
     }
-
-
 }

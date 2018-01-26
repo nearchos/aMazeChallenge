@@ -1,5 +1,8 @@
 package org.inspirecenter.amazechallenge.model;
 
+/**
+ * @deprecated  todo remove
+ */
 public enum PickupItemImage {
 
     PICKUP_ITEM_IMAGE_BOMB("Bomb"),
@@ -14,7 +17,6 @@ public enum PickupItemImage {
     PICKUP_ITEM_IMAGE_TRAP("Trap"),
     PICKUP_ITEM_IMAGE_DOUBLE_MOVES("Double moves"),
     PICKUP_ITEM_IMAGE_NONE("None")
-
     ;
 
     private String name;
