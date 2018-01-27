@@ -23,8 +23,8 @@
   "helpUrl": ""
 },
   {
-    "type": "maze_get_object",
-    "message0": "get object %1",
+    "type": "maze_look",
+    "message0": "look %1",
     "args0": [
       {
         "type": "input_value",
@@ -32,7 +32,7 @@
         "check": "Direction"
       }
     ],
-    "output": "PickupItemType",
+    "output": "PickableTypeBias",
     "colour": 65,
     "tooltip": "Returns the type of object that exists in the given direction.",
     "helpUrl": ""
@@ -164,49 +164,25 @@
   },
 
   {
-    "type": "maze_pickupitem_reward_points10",
-    "message0": "+10 Points reward",
-    "output": "PickupItemType",
+    "type": "maze_pickabletype_reward",
+    "message0": "Reward item",
+    "output": "PickableTypeBias",
     "colour": 0,
     "tooltip": "",
     "helpUrl": ""
   },
   {
-    "type": "maze_pickupitem_reward_health50",
-    "message0": "+50 Health reward",
-    "output": "PickupItemType",
+    "type": "maze_pickabletype_penalty",
+    "message0": "Penalty item",
+    "output": "PickableTypeBias",
     "colour": 0,
     "tooltip": "",
     "helpUrl": ""
   },
   {
-    "type": "maze_pickupitem_reward_doubleturn",
-    "message0": "Double turn reward",
-    "output": "PickupItemType",
-    "colour": 0,
-    "tooltip": "",
-    "helpUrl": ""
-  },
-  {
-    "type": "maze_pickupitem_obstacle_health50",
-    "message0": "-50 Health obstacle",
-    "output": "PickupItemType",
-    "colour": 0,
-    "tooltip": "",
-    "helpUrl": ""
-  },
-  {
-    "type": "maze_pickupitem_obstacle_skipturn",
-    "message0": "Skip turn obstacle",
-    "output": "PickupItemType",
-    "colour": 0,
-    "tooltip": "",
-    "helpUrl": ""
-  },
-  {
-    "type": "maze_pickupitem_none",
-    "message0": "None",
-    "output": "PickupItemType",
+    "type": "maze_pickabletype_none",
+    "message0": "No item",
+    "output": "PickableTypeBias",
     "colour": 0,
     "tooltip": "",
     "helpUrl": ""

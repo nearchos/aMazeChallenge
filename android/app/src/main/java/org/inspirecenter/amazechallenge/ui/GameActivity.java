@@ -34,7 +34,6 @@ import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.PickableType;
-import org.inspirecenter.amazechallenge.model.PickupItemType;
 import org.inspirecenter.amazechallenge.model.Player;
 
 import java.util.HashMap;

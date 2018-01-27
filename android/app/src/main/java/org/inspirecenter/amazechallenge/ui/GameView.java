@@ -22,7 +22,6 @@ import org.inspirecenter.amazechallenge.model.GameFullState;
 import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.PickableItem;
 import org.inspirecenter.amazechallenge.model.PickableType;
-import org.inspirecenter.amazechallenge.model.PickupItemImage;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Direction;
 import org.inspirecenter.amazechallenge.model.PlayerPositionAndDirection;
