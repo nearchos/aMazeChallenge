@@ -20,7 +20,7 @@ import android.widget.Button;
 import org.inspirecenter.amazechallenge.R;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        /*implements NavigationView.OnNavigationItemSelectedListener*/ {
 
     public static final String KEY_PREF_LEARNED = "pref-learned";
     public static final String KEY_PREF_PERSONALIZED = "pref-personalized";
@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity
 //        drawer.addDrawerListener(toggle);
 //        toggle.syncState();
 
-        final NavigationView navigationView = findViewById(org.inspirecenter.amazechallenge.R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+//        final NavigationView navigationView = findViewById(org.inspirecenter.amazechallenge.R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
 
         buttonLearn = findViewById(R.id.button_learn);
         buttonPersonalize = findViewById(R.id.button_personalize);
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
+    /*@Override
     public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity
         final DrawerLayout drawer = findViewById(org.inspirecenter.amazechallenge.R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
+    }*/
 
     public void learn(final View view) {
         startActivity(new Intent(this, HelpActivity.class));
