@@ -209,8 +209,8 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
     }
 
     @Override
-    public PickupItemType getObject(Direction direction) {
-        return RuntimeController.getObject(game, getGrid(), getPosition(), direction);
+    public PickableType.Bias look(Direction direction) {
+        return RuntimeController.look(game, getGrid(), getPosition(), direction);
     }
 
 }

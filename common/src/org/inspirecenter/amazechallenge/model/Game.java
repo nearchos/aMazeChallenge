@@ -25,7 +25,7 @@ public class Game implements Serializable {
     private List<String> waitingPlayers = new Vector<>();
     private Map<String,Player> allPlayerEmailsToPlayers = new HashMap<>();
     private Map<String,PlayerPositionAndDirection> activePlayerEmailsToPositionAndDirections = new HashMap<>();
-    private List<PickupItem> pickupItems = new Vector<>();
+    private List<PickableItem> pickableItems = new Vector<>();
     private long lastExecutionTime = 0L;
     private long lastUpdated = 0L;
     private long counter = 0L;
@@ -166,24 +166,23 @@ public class Game implements Serializable {
         return hasActivePlayers() || hasQueuedPlayers() || hasWaitingPlayers();
     }
 
-    public int getNumOfObstacles(final PickupItemType obstacleType) {
+    public int getNumOfBiasType(final PickableType.Bias biasType) {
         int count = 0;
-        for(final PickupItem pickupItem : pickupItems) {
-            if(pickupItem.getType() == obstacleType) count++;
+        for(final PickableItem pickableItem : pickableItems) {
+            if(pickableItem.getPickableType().getBias() == biasType) count++;
         }
         return count;
     }
 
-    public List<PickupItem> getPickupItems() {
-        return pickupItems;
+    public List<PickableItem> getPickableItems() {
+        return pickableItems;
     }
 
-    public void addPickupItem(final PickupItem pickupItem) {
-        this.pickupItems.add(pickupItem);
+    public void addPickableItem(final PickableItem pickableItem) {
+        this.pickableItems.add(pickableItem);
     }
 
-
-    public void removePickupItem(int i) { pickupItems.remove(i); }
+    public void removePickupItem(int i) { pickableItems.remove(i); }
 
     public GameLightState getLightState() {
         return new GameLightState(activePlayerEmailsToPositionAndDirections, queuedPlayers, lastUpdated, counter);
@@ -244,8 +243,8 @@ public class Game implements Serializable {
         return stringBuilder.toString();
     }
 
-    public void reset() {
-        pickupItems = new Vector<>();
+    public void resetPickables() {
+        pickableItems = new Vector<>();
     }
 
     private AudioEventListener audioEventListener = null;

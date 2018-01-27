@@ -38,6 +38,7 @@ public class RuntimeController {
             }
 
             generateItems(game, challenge, grid);
+            handlePickableState(game);
 
         }
     }
@@ -56,30 +57,27 @@ public class RuntimeController {
             case MOVE_FORWARD:
                 if (canMoveForward(grid, playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection())) {
                     position = movePlayerForward(playerPositionAndDirection);
-                    // handle pickupItems and rewards (i.e. add/substract health etc.)
-                    // todo implement all rewards, penalties etc.
-                    for(int i = 0; i < game.getPickupItems().size(); i++) {
-                        PickupItem pickupItem = game.getPickupItems().get(i);
-                        if(pickupItem.getPosition().equals(position)) {
-                            switch(pickupItem.getType()) {
-                                case ITEM_OBSTACLE_50_HEALTH:
-                                    game.getPlayer(playerEmail).decreaseHealth(50);
-                                    break;
-                                case ITEM_REWARD_DOUBLE_MOVES:
-                                    break;
-                                case ITEM_REWARD_10_POINTS:
-                                    game.getPlayer(playerEmail).addPoints(10);
-                                    break;
-                                case ITEM_REWARD_50_HEALTH:
-                                    game.getPlayer(playerEmail).increaseHealth(50);
-                                    break;
-                                case ITEM_OBSTACLE_SKIP_ROUND:
-                                    break;
+                    // handle pickableItems and rewards (i.e. add/substract health etc.)
+                    for(int i = 0; i < game.getPickableItems().size(); i++) {
+                        PickableItem pickableItem = game.getPickableItems().get(i);
+                        if(pickableItem.getPosition().equals(position)) {
+
+                            //Change stats:
+
+                            if (pickableItem.getPickableType() == PickableType.BOMB) {
+                                if (pickableItem.getState() == 1 || pickableItem.getState() == 2)
+                                    game.getPlayer(playerEmail).getHealth().changeBy(pickableItem.getPickableType().getHealthChange());
                             }
-                            if(audioEventListener != null) { // if audio event listener set, notify with event
-                                audioEventListener.onAudioEvent(pickupItem.getType());
-                            }
-                            game.removePickupItem(i);
+                            else game.getPlayer(playerEmail).getHealth().changeBy(pickableItem.getPickableType().getHealthChange());
+
+                            game.getPlayer(playerEmail).changePointsBy(pickableItem.getPickableType().getPointsChange());
+
+                            //Apply effects:
+                            //todo missing turns or double turns enabling and disabling
+
+                            // if audio event listener set, notify with event
+                            if(audioEventListener != null) audioEventListener.onAudioEvent(pickableItem.getPickableType());
+                            if (pickableItem.getPickableType() != PickableType.BOMB) game.removePickupItem(i);
                         }
                     }
                 }
@@ -161,43 +159,43 @@ public class RuntimeController {
         return !hasWall(grid, position, rightDirection);
     }
 
-    public static PickupItemType getObject(final Game game, final Grid grid, final Position position, final Direction direction) {
+    public static PickableType.Bias look(final Game game, final Grid grid, final Position position, final Direction direction) {
 
         switch (direction) {
             case NORTH:
                 if (position.getRow() - 1 > 0) {
-                    for (PickupItem i : game.getPickupItems()) {
+                    for (PickableItem i : game.getPickableItems()) {
                         if (i.getPosition().getRow() == position.getRow()-1 && i.getPosition().getCol() == position.getCol())
-                            return i.getType();
+                            return i.getPickableType().getBias();
                     }
                 }
                 break;
             case SOUTH:
                 if (position.getRow() + 1 < grid.getHeight()) {
-                    for (PickupItem i : game.getPickupItems()) {
+                    for (PickableItem i : game.getPickableItems()) {
                         if (i.getPosition().getRow() == position.getRow()+1 && i.getPosition().getCol() == position.getCol())
-                            return i.getType();
+                            return i.getPickableType().getBias();
                     }
                 }
                 break;
             case EAST:
                 if (position.getCol() + 1 < grid.getWidth()) {
-                    for (PickupItem i : game.getPickupItems()) {
+                    for (PickableItem i : game.getPickableItems()) {
                         if (i.getPosition().getCol() == position.getCol()+1 && i.getPosition().getRow() == position.getRow())
-                            return i.getType();
+                            return i.getPickableType().getBias();
                     }
                 }
                 break;
             case WEST:
                 if (position.getCol() - 1 > 0) {
-                    for (PickupItem i : game.getPickupItems()) {
+                    for (PickableItem i : game.getPickableItems()) {
                         if (i.getPosition().getCol() == position.getCol()-1 && i.getPosition().getRow() == position.getRow())
-                            return i.getType();
+                            return i.getPickableType().getBias();
                     }
                 }
                 break;
         }
-        return PickupItemType.ITEM_NONE;
+        return PickableType.Bias.NONE;
     }
 
     public static int getGridCell(final Grid grid, final int row, final int col) throws IndexOutOfBoundsException {
@@ -243,48 +241,17 @@ public class RuntimeController {
 
     private static void generateItems(Game game, Challenge challenge, Grid grid) {
 
-        //Reward 50 health:
-        if(game.getNumOfObstacles(PickupItemType.ITEM_REWARD_50_HEALTH) < challenge.getMax_reward_50_health()) {
+        //Generate rewards:
+        if (game.getNumOfBiasType(PickableType.Bias.REWARD) < challenge.getMax_rewards()) {
             final Random random = new Random();
             int row = random.nextInt(grid.getHeight());
             int col = random.nextInt(grid.getWidth());
             final Position position = new Position(row, col);
 
-            int randomImage = random.nextInt(PickupItemImage.values().length);
-            PickupItemImage image;
-
-            switch(randomImage) {
-
-                case 0:
-                    image = PickupItemImage.PICKUP_ITEM_IMAGE_APPLE;
-                    break;
-                case 1:
-                    image = PickupItemImage.PICKUP_ITEM_IMAGE_BANANA;
-                    break;
-                case 2:
-                    image = PickupItemImage.PICKUP_ITEM_IMAGE_WATERMELON;
-                    break;
-                case 3:
-                    image = PickupItemImage.PICKUP_ITEM_IMAGE_GRAPES;
-                    break;
-                case 4:
-                    image = PickupItemImage.PICKUP_ITEM_IMAGE_ORANGE;
-                    break;
-                case 5:
-                    image = PickupItemImage.PICKUP_ITEM_IMAGE_PEACH;
-                    break;
-                case 6:
-                    image = PickupItemImage.PICKUP_ITEM_IMAGE_STRAWBERRY;
-                    break;
-
-                default:
-                    image = PickupItemImage.PICKUP_ITEM_IMAGE_APPLE;
-                    break;
-
-            }
+            PickableType type = PickableType.getRandomReward();
 
             boolean exists = false;
-            for (PickupItem i : game.getPickupItems()) {
+            for (PickableItem i : game.getPickableItems()) {
                 if (i.getPosition().equals(position)) {
                     exists = true;
                     break;
@@ -292,20 +259,21 @@ public class RuntimeController {
             }
 
             if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
-                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_REWARD_50_HEALTH, image));
-
+                game.addPickableItem(new PickableItem(position, type));
 
         }
 
-        //Lose 50 health:
-        if(game.getNumOfObstacles(PickupItemType.ITEM_OBSTACLE_50_HEALTH) < challenge.getMax_obstacle_50_health()) {
+        //Generate penalties:
+        if (game.getNumOfBiasType(PickableType.Bias.PENALTY) < challenge.getMax_penalties()) {
             final Random random = new Random();
             int row = random.nextInt(grid.getHeight());
             int col = random.nextInt(grid.getWidth());
             final Position position = new Position(row, col);
 
+            PickableType type = PickableType.getRandomPenalty();
+
             boolean exists = false;
-            for (PickupItem i : game.getPickupItems()) {
+            for (PickableItem i : game.getPickableItems()) {
                 if (i.getPosition().equals(position)) {
                     exists = true;
                     break;
@@ -313,64 +281,15 @@ public class RuntimeController {
             }
 
             if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
-                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_OBSTACLE_50_HEALTH, PickupItemImage.PICKUP_ITEM_IMAGE_BOMB));
+                game.addPickableItem(new PickableItem(position, type));
+
         }
+    }
 
-        //Reward 10 Points:
-        if(game.getNumOfObstacles(PickupItemType.ITEM_REWARD_10_POINTS) < challenge.getMax_reward_10_points()) {
-            final Random random = new Random();
-            int row = random.nextInt(grid.getHeight());
-            int col = random.nextInt(grid.getWidth());
-            final Position position = new Position(row, col);
-
-            boolean exists = false;
-            for (PickupItem i : game.getPickupItems()) {
-                if (i.getPosition().equals(position)) {
-                    exists = true;
-                    break;
-                }
-            }
-
-            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
-                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_REWARD_10_POINTS, PickupItemImage.PICKUP_ITEM_IMAGE_GIFTBOX));
-        }
-
-        //Obstacle miss round:
-        if(game.getNumOfObstacles(PickupItemType.ITEM_OBSTACLE_SKIP_ROUND) < challenge.getMax_obstacle_miss_round()) {
-            final Random random = new Random();
-            int row = random.nextInt(grid.getHeight());
-            int col = random.nextInt(grid.getWidth());
-            final Position position = new Position(row, col);
-
-            boolean exists = false;
-            for (PickupItem i : game.getPickupItems()) {
-                if (i.getPosition().equals(position)) {
-                    exists = true;
-                    break;
-                }
-            }
-
-            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
-                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_OBSTACLE_SKIP_ROUND, PickupItemImage.PICKUP_ITEM_IMAGE_TRAP));
-        }
-
-        //Reward Double moves:
-        if(game.getNumOfObstacles(PickupItemType.ITEM_REWARD_DOUBLE_MOVES) < challenge.getMax_reward_double_moves()) {
-            final Random random = new Random();
-            int row = random.nextInt(grid.getHeight());
-            int col = random.nextInt(grid.getWidth());
-            final Position position = new Position(row, col);
-
-            boolean exists = false;
-            for (PickupItem i : game.getPickupItems()) {
-                if (i.getPosition().equals(position)) {
-                    exists = true;
-                    break;
-                }
-            }
-
-            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
-                game.addPickupItem(new PickupItem(position, PickupItemType.ITEM_REWARD_DOUBLE_MOVES, PickupItemImage.PICKUP_ITEM_IMAGE_DOUBLE_MOVES));
+    public static void handlePickableState(Game game) {
+        for (int i = 0; i < game.getPickableItems().size(); i++) {
+            game.getPickableItems().get(i).reduceState();
+            if (game.getPickableItems().get(i).getState() <= 0) game.removePickupItem(i);
         }
     }
 

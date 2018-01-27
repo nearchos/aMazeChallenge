@@ -33,6 +33,7 @@ import org.inspirecenter.amazechallenge.controller.AudioEventListener;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.PickableType;
 import org.inspirecenter.amazechallenge.model.PickupItemType;
 import org.inspirecenter.amazechallenge.model.Player;
 
@@ -256,7 +257,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         updateHealthTextView();
         updatePointsTextView();
         player.setActive();
-        game.reset();
+        game.resetPickables();
         gameView.update(game);
         gameView.invalidate();
     }
@@ -274,7 +275,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     }
 
     @Override
-    public void onAudioEvent(PickupItemType pickupItemType) {
+    public void onAudioEvent(PickableType pickableType) {
         // todo play correct audio
 
     }

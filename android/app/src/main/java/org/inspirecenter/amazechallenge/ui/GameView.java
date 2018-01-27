@@ -20,8 +20,8 @@ import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.GameFullState;
 import org.inspirecenter.amazechallenge.model.Grid;
+import org.inspirecenter.amazechallenge.model.PickableItem;
 import org.inspirecenter.amazechallenge.model.PickableType;
-import org.inspirecenter.amazechallenge.model.PickupItem;
 import org.inspirecenter.amazechallenge.model.PickupItemImage;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Direction;
@@ -32,7 +32,6 @@ import org.inspirecenter.amazechallenge.model.Shape;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Vector;
 
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LEFT_SIDE;
@@ -53,14 +52,18 @@ public class GameView extends View {
     public static final int COLOR_LIGHT_RED     = Color.rgb(255, 192, 192);
     public static final int COLOR_LIGHT_GREEN   = Color.rgb(192, 255, 192);
 
+    private final Context context;
+
     public static final MazeBackground DEFAULT_MAZE_BACKGROUND = MazeBackground.BACKGROUND_GRASS;
 
     public GameView(final Context context) {
         super(context);
+        this.context = context;
     }
 
     public GameView(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
     }
 
     private Grid grid = null;
@@ -69,7 +72,7 @@ public class GameView extends View {
     public Map<String,Player> allPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
     public List<String> queuedPlayerEmails;
-    public List<PickupItem> pickupItems = new Vector<>();
+    public List<PickableItem> pickableItems = new Vector<>();
 
     void setGrid(final Grid grid) {
         this.grid = grid;
@@ -81,7 +84,7 @@ public class GameView extends View {
             activePlayerPositionAndDirectionMap.put(activePlayerEmail, game.getPlayerPositionAndDirection(activePlayerEmail));
         }
         queuedPlayerEmails = game.getQueuedPlayers();
-        this.pickupItems = game.getPickupItems();
+        this.pickableItems = game.getPickableItems();
     }
 
     void setLineColor(String lineColor) {
@@ -150,9 +153,9 @@ public class GameView extends View {
         final Position targetPosition = grid.getTargetPosition();
         drawGridCell(targetPosition.getRow(), targetPosition.getCol(), tile_size, padding, 0x0, COLOR_BLACK, COLOR_LIGHT_GREEN, canvas);
 
-        // draw pickupItems and rewards
-        for(final PickupItem pickupItem : pickupItems)
-            drawPickupItem(pickupItem.getPosition(), pickupItem.getImage(), tile_size, padding, canvas);
+        // draw pickableItems and rewards
+        for(final PickableItem pickableItem : pickableItems)
+            drawPickupItem(pickableItem.getPosition(), getDrawableResourceId(pickableItem), tile_size, padding, canvas);
 
 
         // draw active players
@@ -208,58 +211,12 @@ public class GameView extends View {
         if (player.isActive()) drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
     }
 
-    private void drawPickupItem(final Position position, final PickupItemImage image, final int tile_size, final int padding, final Canvas canvas) {
-
-//        PickableType pickableType = null; // todo
-//        final int resId = getResources().getIdentifier(pickableType.getResourceName(), "drawable", getContext().getPackageName());
+    private void drawPickupItem(final Position position, final int imageResourceID, final int tile_size, final int padding, final Canvas canvas) {
 
         final int topLeftX = position.getCol() * tile_size + padding;
         final int topLeftY = position.getRow() * tile_size + padding;
 
-        Drawable d;
-
-        switch (image) {
-
-            case PICKUP_ITEM_IMAGE_BOMB:
-                d = getResources().getDrawable(R.drawable.bomb);
-                break;
-            case PICKUP_ITEM_IMAGE_APPLE:
-                d = getResources().getDrawable(R.drawable.apple);
-                break;
-            case PICKUP_ITEM_IMAGE_ORANGE:
-                d = getResources().getDrawable(R.drawable.orange);
-                break;
-            case PICKUP_ITEM_IMAGE_STRAWBERRY:
-                d = getResources().getDrawable(R.drawable.strawberry);
-                break;
-            case PICKUP_ITEM_IMAGE_BANANA:
-                d = getResources().getDrawable(R.drawable.banana);
-                break;
-            case PICKUP_ITEM_IMAGE_GRAPES:
-                d = getResources().getDrawable(R.drawable.grapes);
-                break;
-            case PICKUP_ITEM_IMAGE_WATERMELON:
-                d = getResources().getDrawable(R.drawable.watermelon);
-                break;
-            case PICKUP_ITEM_IMAGE_PEACH:
-                d = getResources().getDrawable(R.drawable.peach);
-                break;
-            case PICKUP_ITEM_IMAGE_GIFTBOX:
-                d = getResources().getDrawable(R.drawable.giftbox);
-                break;
-            case PICKUP_ITEM_IMAGE_TRAP:
-                d = getResources().getDrawable(R.drawable.trap);
-                break;
-            case PICKUP_ITEM_IMAGE_DOUBLE_MOVES:
-                d = getResources().getDrawable(R.drawable.twoturns);
-                break;
-            case PICKUP_ITEM_IMAGE_NONE:
-                d = null;
-                break;
-            default:
-                d = null;
-
-        }
+        Drawable d = getResources().getDrawable(imageResourceID);
 
         if (d != null) {
             d.setBounds(topLeftX + tile_size / 8, topLeftY + tile_size / 8, topLeftX + tile_size * 7 / 8, topLeftY + tile_size * 7 / 8);
@@ -341,5 +298,14 @@ public class GameView extends View {
             default:
                 throw new RuntimeException("Invalid shape: " + shape);
         }
+    }
+
+    private int getDrawableResourceId(final PickableItem item) {
+        if (item.getPickableType() == PickableType.BOMB) {
+            if (item.getState() > 5) return R.drawable.bomb;
+            else if (item.getState() > 1) return R.drawable.bomb_stage2;
+            else return R.drawable.bomb_stage3;
+        }
+        return getResources().getIdentifier(item.getPickableType().getImageResourceName(), "drawable", context.getPackageName());
     }
 }

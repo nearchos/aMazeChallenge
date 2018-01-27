@@ -11,11 +11,8 @@
     "maxActivePlayers": 10,
     "startTimestamp": 0,
     "endTimestamp": 0,
-    "max_reward_50_health": 3,
-    "max_reward_double_moves": 3,
-    "max_reward_10_points": 3,
-    "max_obstacle_50_health": 3,
-    "max_obstacle_miss_round": 3,
+    "max_rewards": 3,
+    "max_penalties": 3,
     "grid": {
         "width": 30,
         "height": 30,

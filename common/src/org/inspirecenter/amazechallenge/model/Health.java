@@ -18,6 +18,12 @@ public class Health implements Serializable {
         else health = amount;
     }//end setTo()
 
+    public void changeBy(int amount) {
+        if (health + amount > MAX_HEALTH) health = MAX_HEALTH;
+        else if (health + amount < MIN_HEALTH) health = MIN_HEALTH;
+        else health += amount;
+    }
+
     public void increaseBy(int amount) {
         if (amount < 0) throw new RuntimeException("Health Error: Cannot increase health by a negative number: " + amount);
         if (health + amount > MAX_HEALTH) health = MAX_HEALTH;

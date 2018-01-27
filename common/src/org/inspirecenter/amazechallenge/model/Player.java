@@ -96,6 +96,11 @@ public class Player implements Serializable {
 
     public int getPoints() { return points; }
 
+    public void changePointsBy(int amount) {
+        if (points + amount < 0) points = 0;
+        else points += amount;
+    }
+
     public void substractPoints(int points) {
         if (points < 0) throw new RuntimeException("Cannot substract negative points.");
         else this.points -= points;
