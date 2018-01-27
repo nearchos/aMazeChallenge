@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     private Button buttonTestLocally;
     private Button buttonPlayOnline;
     private Button buttonSettings;
+    private Button buttonGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity
         buttonTestLocally = findViewById(R.id.test_locally);
         buttonPlayOnline = findViewById(R.id.play_online);
         buttonSettings = findViewById(R.id.settings);
+        buttonGenerator = findViewById(R.id.generator);
     }
 
     @Override
@@ -140,4 +142,9 @@ public class MainActivity extends AppCompatActivity
     public void mazeDesigner(final View view) {
         startActivity(new Intent(this, ActivityMazeDesigner.class));
     }
+
+    public void settings(final View view) {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
 }

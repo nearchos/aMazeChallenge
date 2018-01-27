@@ -31,5 +31,6 @@
     <color name="materialGreen">#ef00c853</color>
     <color name="materialBlue">#ef2979ff</color>
     <color name="materialPurple">#efaa00ff</color>
+    <color name="materialViolet">#efc51162</color>
 
 </resources>

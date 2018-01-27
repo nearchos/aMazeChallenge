@@ -123,15 +123,31 @@
             android:layout_height="0dp" />
 
         <Button
+            android:id="@+id/generator"
+            android:text="@string/maze_designer"
+            android:onClick="mazeDesigner"
+            android:textSize="18sp"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:drawableStart="@drawable/ic_create_white_24dp"
+            android:drawableTint="@color/white"
+            android:textColor="@color/white"
+            android:background="@color/materialPurple"
+            android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp" />
+
+        <Button
             android:id="@+id/settings"
             android:text="@string/settings"
-            android:onClick="mazeDesigner"
+            android:onClick="settings"
             android:textSize="18sp"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:drawableStart="@drawable/ic_settings_black_24dp"
             android:drawableTint="@color/white"
             android:textColor="@color/white"
-            android:background="@color/materialPurple"
+            android:background="@color/materialViolet"
             android:drawableEnd="@drawable/ic_check_box_outline_blank_black_24dp"
             android:padding="16dp"
             android:layout_width="match_parent"
