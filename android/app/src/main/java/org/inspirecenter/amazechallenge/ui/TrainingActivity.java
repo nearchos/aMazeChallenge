@@ -1,11 +1,13 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,9 +25,13 @@ import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Shape;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
+import org.inspirecenter.amazechallenge.utils.FileManager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_COLOR;
@@ -33,10 +39,14 @@ import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_ICON;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
 
-public class TrainingActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener {
+public class TrainingActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener, ChallengeAdapter.OnChallengeRemoveListener {
 
     public static final String TAG = "aMaze";
     public static final String CHALLENGES_PATH = "challenges";
+
+    ChallengeAdapter challengeAdapter;
+    Gson gson;
+    RecyclerView challengesRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,28 +80,13 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         emailTextView.setText(email);
         emailTextView.setTextColor(Color.parseColor(userAmazeColor.getCode()));
 
-        final RecyclerView challengesRecyclerView = findViewById(R.id.activity_training_challenges_list_view);
+        challengesRecyclerView = findViewById(R.id.activity_training_challenges_list_view);
         challengesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         challengesRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
-        final Gson gson = new Gson();
-        final ChallengeAdapter challengeAdapter = new ChallengeAdapter(this);
-        try {
-            final String [] allAssets = getAssets().list(CHALLENGES_PATH);
-            for(final String asset : allAssets) {
-                final InputStream inputStream = getAssets().open(CHALLENGES_PATH + "/" + asset);
-                final String json = convertStreamToString(inputStream);
-                inputStream.close();
-                final Challenge challenge = gson.fromJson(json, Challenge.class);
-                challengeAdapter.add(challenge);
-                inputStream.close();
-            }
-            challengesRecyclerView.setAdapter(challengeAdapter);
-        } catch (IOException e) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("challenges", "Error: " + e.getMessage());
-            finish();
-        }
+        gson = new Gson();
+        challengeAdapter = new ChallengeAdapter(this, this);
+        updateChallengesAdapter();
     }
 
     @Override
@@ -116,5 +111,73 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
     public static String convertStreamToString(final InputStream inputStream) {
         final Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
         return scanner.hasNext() ? scanner.next() : "";
+    }
+
+    @Override
+    public void onChallengeRemove(Challenge challenge) {
+        if (!challenge.getCreatedBy().equals("admin")) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(getString(R.string.challenge_delete_title));
+            dialog.setMessage(getString(R.string.challenge_delete_message));
+            dialog.setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    final String combinedName = FileManager.SAVED_MAZES_FILENAME_PREFIX + challenge.getName() + ".json";
+                    boolean delete = FileManager.deleteFile(TrainingActivity.this, combinedName);
+                    if (delete) {
+                        Toast.makeText(TrainingActivity.this, challenge.getName() + " " + getString(R.string.challenge_deleted), Toast.LENGTH_LONG).show();
+                        updateChallengesAdapter();
+                    }
+                }
+            });
+            dialog.setPositiveButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            dialog.create().show();
+        }
+    }
+
+    public void updateChallengesAdapter() {
+        challengeAdapter.clear();
+        ArrayList<Challenge> challenges = new ArrayList<>();
+        try {
+            //Challenges from assets:
+            final String [] allAssets = getAssets().list(CHALLENGES_PATH);
+            for(final String asset : allAssets) {
+                final InputStream inputStream = getAssets().open(CHALLENGES_PATH + "/" + asset);
+                final String json = convertStreamToString(inputStream);
+                inputStream.close();
+                final Challenge challenge = gson.fromJson(json, Challenge.class);
+                challenges.add(challenge);
+                inputStream.close();
+            }
+
+            //Player-created challenges:
+            final ArrayList<String> playerChallenges = FileManager.readPlayerMazes(this);
+            for (String content : playerChallenges) {
+                final Challenge challenge = gson.fromJson(content, Challenge.class);
+                challenges.add(challenge);
+            }
+
+            Collections.sort(challenges, new Comparator<Challenge>() {
+                @Override
+                public int compare(Challenge challenge, Challenge t1) {
+                    if (challenge.getCreatedOn() < t1.getCreatedOn()) return 1;
+                    else if (challenge.getCreatedOn() == t1.getCreatedOn()) return 0;
+                    else return -1;
+                }
+            });
+
+            for (Challenge c : challenges) challengeAdapter.add(c);
+
+        } catch (IOException e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("challenges", "Error: " + e.getMessage());
+            finish();
+        }
+        challengesRecyclerView.setAdapter(challengeAdapter);
     }
 }

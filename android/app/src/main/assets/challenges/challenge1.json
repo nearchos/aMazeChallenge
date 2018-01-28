@@ -4,6 +4,8 @@
     "name": "Moon Landing",
     "description": "The eagle has landed!",
     "difficulty": "Medium",
+    "createdOn": 0,
+    "createdBy": "admin",
     "canRepeat": true,
     "canJoinAfterStart": true,
     "canStepOnEachOther": true,

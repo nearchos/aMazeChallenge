@@ -9,6 +9,7 @@
 
     <org.inspirecenter.amazechallenge.ui.GameView
         android:id="@+id/activity_maze_designer_game_view"
+        android:keepScreenOn="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -496,14 +497,39 @@
 
             </android.support.v7.widget.CardView>
 
-            <Button
-                android:text="@string/Generate"
-                android:onClick="generate"
-                android:background="@color/materialBlue"
-                android:textColor="@color/white"
-                android:textStyle="bold"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    style="@style/Base.TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
+                    android:text="@string/Generate"
+                    android:onClick="generate"
+                    android:background="@color/materialBlue"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    style="@style/Base.TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
+                    android:id="@+id/designer_add_to_training_button"
+                    android:text="@string/add_to_training"
+                    android:onClick="addToTraining"
+                    android:enabled="false"
+                    android:background="@color/materialRed"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

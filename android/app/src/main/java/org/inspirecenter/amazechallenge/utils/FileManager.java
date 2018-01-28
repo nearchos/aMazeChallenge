@@ -8,10 +8,12 @@ import android.content.res.Resources;
 import com.google.blockly.model.Block;
 
 import org.inspirecenter.amazechallenge.ui.BlocklyActivity;
+import org.inspirecenter.amazechallenge.ui.TrainingActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 
 public class FileManager {
 
@@ -29,6 +32,8 @@ public class FileManager {
     public static final String XML_FILE_EXTENSION = ".xml";
     private static final String DEFAULT_CODE_MARKER = "(Sample code)";
     private static final String SIMPLE_DATE_FORMAT = "dd-MM-yyyy HH:mm";
+    public static final String FILENAME_REGEX = "[a-zA-Z0-9]*";
+    public static final String SAVED_MAZES_FILENAME_PREFIX = "playermaze_";
 
     /**
      * Sets the file name for the saved code.
@@ -192,24 +197,24 @@ public class FileManager {
      * Delete a given internal file.
      * @param filename Internal file to delete.
      */
-    public static void deleteInternalFile(BlocklyActivity a, String filename) {
+    public static void deleteCodesInternalFile(BlocklyActivity a, String filename) {
         File dir = a.getFilesDir();
         File file = new File(dir, filename);
         file.delete();
         updateInternalStorageCodes(a);
         getCodes(a);
-    }//end deleteInternalFile()
+    }//end deleteCodesInternalFile()
 
     /**
      * Checks if an internal file with the given name exists.
      * @param filename The name of the file.
      * @return Returns true if file exists, false if not.
      */
-    public static boolean internalFileExists(BlocklyActivity a, String filename) {
+    public static boolean internalPlayerFileExists(BlocklyActivity a, String filename) {
         filename = PLAYER_CODE_FILENAME_PREFIX + filename + XML_FILE_EXTENSION;
         File file = a.getBaseContext().getFileStreamPath(filename);
         return file.exists();
-    }//end internalFileExists()
+    }//end internalPlayerFileExists()
 
     /**
      * Gets the contents of the temporary workspace as an XML file.
@@ -230,5 +235,61 @@ public class FileManager {
         catch (IOException e) { e.printStackTrace(); }
         return sb.toString();
     }//end getTempWorkspaceContents()
+
+    public static void writeToFile(Activity activity, String filename, String content) {
+        try {
+            FileOutputStream outputStream;
+            outputStream = activity.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(content.getBytes());
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean fileExists(Activity activity, String filename) {
+        File file = activity.getBaseContext().getFileStreamPath(filename);
+        return file.exists();
+    }
+
+    public static String readFile(Activity activity, String filename) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            FileInputStream in = new FileInputStream(new File(activity.getFilesDir().getAbsolutePath() + "/" + filename));
+            InputStreamReader inputStreamReader = new InputStreamReader(in);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }//end while
+        }//end try
+        catch (IOException e) { e.printStackTrace(); }
+        return sb.toString();
+    }
+
+    public static ArrayList<String> readPlayerMazes(TrainingActivity activity) {
+        //Get matching files:
+        ArrayList<String> internalFilesList = new ArrayList<>();
+        File mydir = activity.getFilesDir();
+        File listFile[] = mydir.listFiles();
+        if (listFile != null && listFile.length > 0) {
+            for (File aListFile : listFile) {
+                if (aListFile.isFile() && aListFile.getName().startsWith(SAVED_MAZES_FILENAME_PREFIX))
+                    internalFilesList.add(aListFile.getName());
+            }
+        }//end if
+
+        //Read file contents and save them:
+        ArrayList<String> fileList = new ArrayList<>();
+        for (String filename : internalFilesList) fileList.add(readFile(activity, filename));
+        return fileList;
+    }
+
+    public static boolean deleteFile(Activity a, String filename) {
+        File dir = a.getFilesDir();
+        File file = new File(dir, filename);
+        return file.delete();
+    }//end deleteFile()
 
 }//end class FileManager

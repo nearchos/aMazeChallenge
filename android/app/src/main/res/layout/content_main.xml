@@ -86,8 +86,8 @@
             android:layout_height="1dp"/>
 
         <Button
-            android:id="@+id/test_locally"
-            android:text="@string/Test_locally"
+            android:id="@+id/training"
+            android:text="@string/Training"
             android:onClick="training"
             android:textSize="18sp"
             style="@style/Base.Widget.AppCompat.Button.Borderless"

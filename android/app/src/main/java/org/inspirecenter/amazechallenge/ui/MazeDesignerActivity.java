@@ -1,7 +1,7 @@
 package org.inspirecenter.amazechallenge.ui;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +12,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -23,12 +23,32 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.generator.MazeGenerator;
+import org.inspirecenter.amazechallenge.model.ChallengeDifficulty;
 import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Position;
+import org.inspirecenter.amazechallenge.utils.FileManager;
 
 import java.util.ArrayList;
 
 public class MazeDesignerActivity extends AppCompatActivity {
+
+    public enum PickablesOption {
+        LOW(0),
+        MEDIUM(1),
+        HIGH(2)
+        ;
+
+        int id;
+        PickablesOption(int id) { this.id = id; }
+        public int getID() { return id; }
+        public static PickablesOption getOptionFromID(int id) {
+            if (id == 0) return LOW;
+            if (id == 1) return MEDIUM;
+            if (id == 2) return HIGH;
+            throw new RuntimeException("Invalid PickablesOption id.");
+        }
+
+    };
 
     public static final String TAG = "amaze";
     private static final int MAX_ROWS = 30;
@@ -38,19 +58,28 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
     private Button selectColorButton;
     private Button selectImageButton;
+    private Button addToTrainingButton;
     private Spinner maze_size_Spinner;
     private Spinner startPos_Row_Spinner;
     private Spinner startPos_Column_Spinner;
     private Spinner targetPos_Row_Spinner;
     private Spinner targetPos_Column_Spinner;
+    private Spinner penaltiesSpinner;
+    private Spinner rewardsSpinner;
+    private EditText mazeNameEditText;
+    private EditText mazeDescriptionEditText;
 
-    private int selectedWallColor = 0;
+    private int selectedWallColor = Color.BLACK;
     private String selectedImageResourceName = "";
-    private int size = 5;
+    private int size = 5; //Default setting
     private int startPos_row = 0;
     private int startPos_column = 0;
     private int targetPos_row = 0;
     private int targetPos_column = 0;
+    private int penalties = size / 5; //Default low setting formula
+    private int rewards = size / 5; //Default low setting formula
+    private PickablesOption rewardsOption = PickablesOption.LOW;
+    private PickablesOption penaltiesOption = PickablesOption.LOW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +89,18 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_maze_designer);
 
+        //GameView:
         gameView = findViewById(R.id.activity_maze_designer_game_view);
+
+        //EditTexts:
+        mazeNameEditText = findViewById(R.id.designer_name_txt);
+        mazeDescriptionEditText = findViewById(R.id.designer_description_txt);
 
         //Buttons:
         selectColorButton = findViewById(R.id.designer_wallcolor_button);
+        selectImageButton = findViewById(R.id.designer_backgroundImage_button);
+        addToTrainingButton = findViewById(R.id.designer_add_to_training_button);
+
         selectColorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,7 +108,6 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }
         });
 
-        selectImageButton = findViewById(R.id.designer_backgroundImage_button);
         selectImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,7 +121,10 @@ public class MazeDesignerActivity extends AppCompatActivity {
         startPos_Column_Spinner = findViewById(R.id.designer_column_start_spinner);
         targetPos_Row_Spinner = findViewById(R.id.designer_row_target_spinner);
         targetPos_Column_Spinner = findViewById(R.id.designer_column_target_spinner);
+        rewardsSpinner = findViewById(R.id.designer_rewards_spinner);
+        penaltiesSpinner = findViewById(R.id.designer_penalties_spinner);
 
+        //Maze Size Selection
         maze_size_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -98,6 +137,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }
         });
 
+        //Start Row Selection
         startPos_Row_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -110,6 +150,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }
         });
 
+        //Start Column Selection
         startPos_Column_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -122,6 +163,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }
         });
 
+        //Target Row Selection
         targetPos_Row_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -134,6 +176,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }
         });
 
+        //Target Column Selection
         targetPos_Column_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -146,33 +189,118 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }
         });
 
-    }
+        //Rewards Selection
+        rewardsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setRewards(PickablesOption.getOptionFromID(i));
+                System.out.println(rewards);
+            }
 
-//    public void generate(final View view) {
-//        final int gridSize = 10;
-//        final Position startingPosition = new Position(0, gridSize - 1);
-//        final Position targetPosition = new Position(gridSize - 1, 0);
-//        final String data = MazeGenerator.generate(gridSize, startingPosition, targetPosition);
-//        final Grid grid = new Grid(gridSize, gridSize, data, startingPosition, targetPosition);
-//        gameView.setBackgroundDrawable(MazeBackground.BACKGROUND_GRASS.getResourceID());
-//        gameView.setGrid(grid);
-//        gameView.invalidate();
-//    }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
+        //Penalties Selection
+        penaltiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setPenalties(PickablesOption.getOptionFromID(i));
+                System.out.println(penalties);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+    }
 
 
     public void generate(final View view) {
-        //TODO FIX
-        System.out.println("Start Pos: " + startPos_row + "," + startPos_column);
-        System.out.println("Target Pos: " + targetPos_row + "," + targetPos_column);
-
         final Position startingPosition = new Position(startPos_row, startPos_column);
         final Position targetPosition = new Position(targetPos_row, targetPos_column);
-        final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
-        final Grid grid = new Grid(size, size, data, startingPosition, targetPosition);
-        gameView.setBackgroundDrawable(MazeBackground.BACKGROUND_GRASS.getResourceID());
-        //TODO Implement background selection
-        gameView.setGrid(grid);
-        gameView.invalidate();
+
+        if (startingPosition.equals(targetPosition)) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(getString(R.string.invalid_positions_title));
+            dialog.setMessage(getString(R.string.invalid_positions_message));
+            dialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).create().show();
+        }
+        else if (mazeNameEditText.getText().toString().isEmpty()) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(getString(R.string.invalid_maze_name_title));
+            dialog.setMessage(getString(R.string.invalid_maze_name_message));
+            dialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).create().show();
+        }
+        else {
+            final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
+            final Grid grid = new Grid(size, size, data, startingPosition, targetPosition);
+            gameView.setBackgroundDrawable(MazeBackground.BACKGROUND_GRASS.getResourceID());
+            //TODO Implement background selection
+            gameView.setGrid(grid);
+            gameView.invalidate();
+            addToTrainingButton.setEnabled(true);
+        }
+    }
+
+    public void addToTraining(View view) {
+        String combinedFileName = FileManager.SAVED_MAZES_FILENAME_PREFIX + mazeNameEditText.getText().toString() + ".json";
+        if (mazeNameEditText.getText().toString().isEmpty()) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(getString(R.string.invalid_maze_name_title));
+            dialog.setMessage(getString(R.string.invalid_maze_name_message));
+            dialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).create().show();
+        }
+        else if (FileManager.fileExists(this, combinedFileName)) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(getString(R.string.challenge_exists_title));
+            dialog.setMessage(getString(R.string.challenge_exists_message));
+            dialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).create().show();
+        }
+        else if (!mazeNameEditText.getText().toString().matches(FileManager.FILENAME_REGEX)) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(getString(R.string.challenge_name_title));
+            dialog.setMessage(getString(R.string.challenge_name_message));
+            dialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).create().show();
+        }
+        else {
+            String json = toJSON();
+            FileManager.writeToFile(
+                    this,
+                    FileManager.SAVED_MAZES_FILENAME_PREFIX + mazeNameEditText.getText().toString() + ".json",
+                    json
+            );
+            Toast.makeText(this, mazeNameEditText.getText().toString() + " " + getString(R.string.challenge_added_training), Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 
     private void getSelectedWallColorFromPicker() {
@@ -185,7 +313,6 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 .setOnColorSelectedListener(new OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int selectedColor) {
-                        //Toast.makeText(MazeDesignerActivity.this, "Selected " + Integer.toHexString(selectedColor));
                     }
                 })
                 .setPositiveButton(getString(R.string.ok), new ColorPickerClickListener() {
@@ -209,6 +336,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         if (ColorFragment.isBrightColor(color)) selectColorButton.setTextColor(Color.BLACK);
         else selectColorButton.setTextColor(Color.WHITE);
         gameView.setLineColor("#"+Integer.toHexString(color));
+        gameView.invalidate();
     }
 
     public int getWallColor() {
@@ -259,5 +387,86 @@ public class MazeDesignerActivity extends AppCompatActivity {
         targetPos_column = column;
     }
 
+    private void setRewards(PickablesOption option) {
+        rewardsOption = option;
+        switch (option) {
+            case LOW:
+                rewards = size / 5;
+                break;
+            case MEDIUM:
+                rewards = size / 3;
+                break;
+            case HIGH:
+                rewards = size / 2;
+                break;
+        }
+    }
+
+    private void setPenalties(PickablesOption option) {
+        penaltiesOption = option;
+        switch (option) {
+            case LOW:
+                penalties = size / 5;
+                break;
+            case MEDIUM:
+                penalties = size / 3;
+                break;
+            case HIGH:
+                penalties = size / 2;
+                break;
+        }
+    }
+
+    private ChallengeDifficulty calculateDifficulty(PickablesOption rewardsOption, PickablesOption penaltiesOption) {
+        if (rewardsOption == penaltiesOption) return ChallengeDifficulty.MEDIUM;
+        else {
+            if (rewardsOption == PickablesOption.LOW && penaltiesOption == PickablesOption.HIGH) return ChallengeDifficulty.VERY_HARD;
+            else if (rewardsOption == PickablesOption.HIGH && penaltiesOption == PickablesOption.LOW) return ChallengeDifficulty.VERY_EASY;
+            else if (rewardsOption == PickablesOption.MEDIUM && penaltiesOption == PickablesOption.LOW) return ChallengeDifficulty.EASY;
+            else if (rewardsOption == PickablesOption.LOW && penaltiesOption == PickablesOption.MEDIUM) return ChallengeDifficulty.HARD;
+            else if (rewardsOption == PickablesOption.MEDIUM && penaltiesOption == PickablesOption.HIGH) return ChallengeDifficulty.HARD;
+            else /*if (rewardsOption == PickablesOption.HIGH && penaltiesOption == PickablesOption.MEDIUM)*/ return ChallengeDifficulty.EASY;
+        }
+    }
+
+    private String toJSON() {
+        final Position startingPosition = new Position(startPos_row, startPos_column);
+        final Position targetPosition = new Position(targetPos_row, targetPos_column);
+        final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
+
+        return  "{\n" +
+                "    \"id\": 0,\n" +
+                "    \"apiVersion\": 1,\n" +
+                "    \"name\": \"" + mazeNameEditText.getText().toString() + "\",\n" +
+                "    \"description\": \"" + mazeDescriptionEditText.getText().toString() + "\",\n" +
+                "    \"difficulty\": \"" + calculateDifficulty(rewardsOption, penaltiesOption).toString() + "\",\n" +
+                "    \"createdOn\":" + System.currentTimeMillis() + ",\n" +
+                "    \"createdBy\": \"player\"," +
+                "    \"canRepeat\": true,\n" +
+                "    \"canJoinAfterStart\": true,\n" +      //Default for training
+                "    \"canStepOnEachOther\": true,\n" +     //Default for training
+                "    \"minActivePlayers\": 1,\n" +          //Default for training
+                "    \"maxActivePlayers\": 10,\n" +         //Default for training
+                "    \"startTimestamp\": 0,\n" +            //Default for training
+                "    \"endTimestamp\": 0,\n" +              //Default for training
+                "    \"max_rewards\": " + rewards + ",\n" +
+                "    \"max_penalties\": " + penalties + ",\n" +
+                "    \"grid\": {\n" +
+                "        \"width\": " + size + ",\n" +
+                "        \"height\": " + size + ",\n" +
+                "        \"data\": \"" + data + "\",\n" +
+                "        \"startingPosition\": {\n" +
+                "            \"row\": " + startPos_row + ",\n" +
+                "            \"col\": " + startPos_column + "\n" +
+                "        },\n" +
+                "        \"targetPosition\": {\n" +
+                "            \"row\": " + targetPos_row + ",\n" +
+                "            \"col\": " + targetPos_column + "\n" +
+                "        }\n" +
+                "    },\n" +
+                "    \"lineColor\": \"#" + Integer.toHexString(selectedWallColor) + "\",\n" +
+                "    \"backgroundImage\": \"texture_grass\"\n" +    //TODO Implement selection of backgrounds
+                "}";
+    }
 
 }

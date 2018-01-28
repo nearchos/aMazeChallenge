@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         buttonLearn = findViewById(R.id.button_learn);
         buttonPersonalize = findViewById(R.id.button_personalize);
         buttonEditYourCode = findViewById(R.id.edit_your_code);
-        buttonTestLocally = findViewById(R.id.test_locally);
+        buttonTestLocally = findViewById(R.id.training);
         buttonPlayOnline = findViewById(R.id.play_online);
         buttonSettings = findViewById(R.id.settings);
         buttonGenerator = findViewById(R.id.generator);

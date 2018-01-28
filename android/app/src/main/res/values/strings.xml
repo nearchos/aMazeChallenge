@@ -68,6 +68,7 @@
     <string name="back_to_menu">Back to menu</string>
     <string name="settings">Settings</string>
     <string name="Generate">Generate</string>
+    <string name="add_to_training">Add to training</string>
 
     <string name="maze_designer">Maze Designer</string>
     <string name="generator_numof_rewards">Number of rewards:</string>
@@ -88,6 +89,19 @@
     <string name="generator_maze_colors">Maze Colors</string>
     <string name="select_color">Select color</string>
     <string name="select_image">Select image</string>
+    <string name="invalid_positions_title">Invalid start/target positions</string>
+    <string name="invalid_positions_message">The starting and target positions must be on a different cell.</string>
+    <string name="invalid_maze_name_title">Invalid maze name</string>
+    <string name="invalid_maze_name_message">The maze name cannot be empty.</string>
+    <string name="challenge_exists_title">Maze exists</string>
+    <string name="challenge_exists_message">The maze you tried to add already exists. Please use another name.</string>
+    <string name="challenge_name_title">Invalid name</string>
+    <string name="challenge_name_message">The maze name you entered is invalid. Please make sure you use only letters and numbers.</string>
+    <string name="challenge_added_training">added to training!</string>
+    <string name="challenge_delete_title">Delete challenge</string>
+    <string name="challenge_delete_message">Are you sure you would like to delete this challenge? This action cannot be undone.</string>
+    <string name="challenge_deleted">challenge was deleted.</string>
+
 
     <string name="instructions">Write your code below to get out of the grid:</string>
     <string name="demoCode_loop1">while (!solved) {</string>

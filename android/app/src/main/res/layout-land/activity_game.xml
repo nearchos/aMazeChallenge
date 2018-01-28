@@ -10,7 +10,8 @@
     <org.inspirecenter.amazechallenge.ui.GameView
         android:id="@+id/activity_game_game_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:keepScreenOn="true"/>
 
     <View
         android:background="@color/colorAccent"

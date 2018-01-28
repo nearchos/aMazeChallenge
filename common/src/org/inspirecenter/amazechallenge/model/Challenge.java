@@ -37,6 +37,8 @@ public class Challenge implements Serializable {
     private String lineColor;
     private String backgroundImage;
     private String difficulty;
+    private String createdBy;
+    private long createdOn;
 
     public Challenge() {
         super();
@@ -47,7 +49,7 @@ public class Challenge implements Serializable {
                      int maxActivePlayers, long startTimestamp, long endTimestamp,
                      int max_rewards, int max_penalties,
                      Grid grid, String lineColor,
-                     String backgroundImage, String difficulty) {
+                     String backgroundImage, String difficulty, String createdBy, long createdOn) {
         this();
         this.name = name;
         this.apiVersion = apiVersion;
@@ -67,15 +69,19 @@ public class Challenge implements Serializable {
         this.lineColor = lineColor;
         this.backgroundImage = backgroundImage;
         this.difficulty = difficulty;
+        this.createdBy = createdBy;
+        this.createdOn = createdOn;
     }
 
     public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp,
                      long endTimestamp, int max_rewards, int max_penalties,
-                     Grid grid, String lineColor, String backgroundImage, String difficulty) {
+                     Grid grid, String lineColor, String backgroundImage, String difficulty, String createdBy,
+                     long createdOn) {
         this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther,
                 DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp,
-                endTimestamp, max_rewards, max_penalties, grid, lineColor, backgroundImage, difficulty);
+                endTimestamp, max_rewards, max_penalties, grid, lineColor, backgroundImage,
+                difficulty, createdBy, createdOn);
         this.id = id;
     }
 
@@ -153,6 +159,10 @@ public class Challenge implements Serializable {
         return max_penalties;
     }
 
+    public long getCreatedOn() { return createdOn; }
+
+    public String getCreatedBy() { return createdBy; }
+
     @Override
     public String toString() {
         return "Challenge{" +
@@ -173,6 +183,8 @@ public class Challenge implements Serializable {
                 ", lineColor='" + lineColor + '\'' +
                 ", backgroundImage='" + backgroundImage + '\'' +
                 ", difficulty='" + difficulty + '\'' +
+                ", createdBy='" + createdBy + '\'' +
+                ", createdOn=" + createdOn +
                 '}';
     }
 }

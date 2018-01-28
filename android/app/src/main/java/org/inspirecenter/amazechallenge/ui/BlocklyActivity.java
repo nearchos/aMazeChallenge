@@ -80,7 +80,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BlocklyActivity.this);
                     sharedPreferences.edit().putString (KEY_ALGORITHM_ACTIVITY_CODE, generatedCode).apply();
                     if(generatedCode != null && !generatedCode.isEmpty()) sharedPreferences.edit().putBoolean(MainActivity.KEY_PREF_EDITED_CODE, true).apply();
-                    finish();
+                    //finish();
+                    startActivity(new Intent(BlocklyActivity.this, MainActivity.class));
                 }
             };//end mCodeGeneratorCallback
 
@@ -302,7 +303,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                         b.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if (FileManager.internalFileExists(instance, input.getText().toString())) {
+                                if (FileManager.internalPlayerFileExists(instance, input.getText().toString())) {
                                     AlertDialog.Builder confirmOverwriteDialog = new AlertDialog.Builder(BlocklyActivity.this);
                                     confirmOverwriteDialog.setTitle(R.string.code_overwrite)
                                             .setMessage(R.string.code_overwrite_message)

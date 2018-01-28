@@ -4,6 +4,8 @@
     "name": "Park Adventure",
     "description": "A walk in the park!",
     "difficulty": "Easy",
+    "createdOn": 0,
+    "createdBy": "admin",
     "canRepeat": true,
     "canJoinAfterStart": true,
     "canStepOnEachOther": true,

@@ -41,7 +41,7 @@ import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_SHAPE_CODE;
 
-public class OnlineChallengeActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener {
+public class OnlineChallengeActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener, ChallengeAdapter.OnChallengeRemoveListener {
 
     public static final String TAG = "aMazeChallenge";
 
@@ -65,7 +65,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         challengesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         challengesRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
-        challengeAdapter = new ChallengeAdapter(this);
+        challengeAdapter = new ChallengeAdapter(this, this);
         challengesRecyclerView.setAdapter(challengeAdapter);
     }
 
@@ -90,6 +90,11 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         final String iconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.getDefault().getName());
         final String shapeCode = sharedPreferences.getString(PREFERENCE_SHAPE_CODE, "triangle");
         new JoinChallengeAsyncTask(email, name, colorName, iconName, shapeCode, challenge).execute();
+    }
+
+    @Override
+    public void onChallengeRemove(Challenge challenge) {
+        //Do nothing
     }
 
     private class FetchChallengesAsyncTask extends AsyncTask<Void, Void, Reply> {

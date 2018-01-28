@@ -4,6 +4,8 @@
     "name": "Lava Fields",
     "description": "Pure nightmare.",
     "difficulty": "Hard",
+    "createdOn": 0,
+    "createdBy": "admin",
     "canRepeat": true,
     "canJoinAfterStart": true,
     "canStepOnEachOther": true,
