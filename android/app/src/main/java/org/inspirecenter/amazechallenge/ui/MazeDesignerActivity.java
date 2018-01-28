@@ -98,9 +98,53 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }
         });
 
+        startPos_Row_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setStartingPositionRow(i);
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
 
+        startPos_Column_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setStartingPositionColumn(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        targetPos_Row_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setTargetPositionRow(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        targetPos_Column_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setTargetPositionColumn(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
     }
 
@@ -118,6 +162,9 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
     public void generate(final View view) {
         //TODO FIX
+        System.out.println("Start Pos: " + startPos_row + "," + startPos_column);
+        System.out.println("Target Pos: " + targetPos_row + "," + targetPos_column);
+
         final Position startingPosition = new Position(startPos_row, startPos_column);
         final Position targetPosition = new Position(targetPos_row, targetPos_column);
         final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
@@ -187,13 +234,29 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private void setSize(int size) {
         this.size = size;
         ArrayList<String> validItems = new ArrayList<>();
-        for (int i = 0; i <= size; i++) validItems.add(String.valueOf(i));
+        for (int i = 0; i < size; i++) validItems.add(String.valueOf(i));
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, validItems);
         startPos_Row_Spinner.setAdapter(adapter);
         startPos_Column_Spinner.setAdapter(adapter);
         targetPos_Row_Spinner.setAdapter(adapter);
         targetPos_Column_Spinner.setAdapter(adapter);
+    }
+
+    private void setStartingPositionRow(int row) {
+        startPos_row = row;
+    }
+
+    private void setStartingPositionColumn(int column) {
+        startPos_column = column;
+    }
+
+    private void setTargetPositionRow(int row) {
+        targetPos_row = row;
+    }
+
+    private void setTargetPositionColumn(int column) {
+        targetPos_column = column;
     }
 
 
