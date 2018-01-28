@@ -104,7 +104,7 @@
             android:name=".ui.HelpActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.ActivityMazeDesigner"
+            android:name=".ui.MazeDesignerActivity"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

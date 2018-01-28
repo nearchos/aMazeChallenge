@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.inspirecenter.amazechallenge.ui.ActivityMazeDesigner">
+    tools:context="org.inspirecenter.amazechallenge.ui.MazeDesignerActivity">
 
     <org.inspirecenter.amazechallenge.ui.GameView
         android:id="@+id/activity_maze_designer_game_view"
@@ -26,14 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:text="@string/Generate"
-                android:onClick="generate"
-                android:background="@color/materialBlue"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -56,27 +49,483 @@
                         android:layout_centerHorizontal="true"
                         />
 
-                    <TextView
-                        android:id="@+id/designer_name_lbl"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/generator_maze_name"
+                        android:id="@+id/layout_name"
                         android:layout_below="@id/designer_title_lbl"
-                        android:layout_alignParentLeft="true"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/designer_name_lbl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/generator_maze_name"
+                            />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/designer_name_txt"
+                            />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/layout_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/layout_name"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/designer_description_lbl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/generator_maze_description"
+                            />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/designer_description_txt"
+                            />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="horizontal"
+                        android:background="@color/lightGray"
+                        android:id="@+id/divider0"
+                        android:layout_below="@id/layout_description">
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/maze_size_lbl"
+                        android:text="@string/generator_maze_size"
+                        android:layout_below="@id/divider0"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="10dp"
+                        android:layout_centerHorizontal="true"
                         />
 
-                    <EditText
-                        android:layout_width="wrap_content"
+                    <!--Maze size-->
+
+                    <LinearLayout
+                        android:baselineAligned="true"
+                        android:id="@+id/layout_rows_and_columns"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/designer_name_lbl"
-                        android:layout_below="@id/designer_title_lbl"
-                        android:id="@+id/designer_name_txt"
-                        android:layout_marginLeft="10dp"
+                        android:layout_below="@id/maze_size_lbl"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/layout_rows"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/designer_rows_lbl"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_maze_rows"
+                                />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/designer_rows_spinner"
+                                android:entries="@array/rows_and_cols_selection">
+                            </Spinner>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_columns"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/designer_columns_lbl"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_maze_cols"
+                                />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/designer_columns_spinner"
+                                android:entries="@array/rows_and_cols_selection">
+                            </Spinner>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <!--end maze size-->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="horizontal"
+                        android:background="@color/lightGray"
+                        android:id="@+id/divider1"
+                        android:layout_below="@id/layout_rows_and_columns">
+                    </LinearLayout>
+
+                    <!--Start Position-->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generator_maze_startpos"
+                        android:id="@+id/start_pos_lbl"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_below="@id/divider1"
                         />
+
+                    <LinearLayout
+                        android:baselineAligned="true"
+                        android:id="@+id/layout_start_position"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/start_pos_lbl"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/layout_row_start"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/designer_row_start_lbl"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_maze_row"
+                                />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/designer_row_start_spinner">
+                            </Spinner>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_column_start"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/designer_column_start_lbl"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_maze_col"
+                                />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/designer_column_start_spinner">
+                            </Spinner>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <!--end start position-->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="1dp"
+                        android:background="@color/lightGray"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:id="@+id/divider2"
+                        android:layout_below="@id/layout_start_position">
+                    </LinearLayout>
+
+                    <!--Target position-->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generator_maze_targetpos"
+                        android:id="@+id/target_pos_lbl"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_below="@id/divider2"
+                    />
+
+                    <LinearLayout
+                        android:baselineAligned="true"
+                        android:id="@+id/layout_target_position"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/target_pos_lbl"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/layout_row_target"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/designer_row_target_lbl"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_maze_row"
+                                />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/designer_row_target_spinner">
+                            </Spinner>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_column_target"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/designer_column_target_lbl"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_maze_col"
+                                />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/designer_column_target_spinner">
+                            </Spinner>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <!--end target position-->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="1dp"
+                        android:background="@color/lightGray"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:id="@+id/divider3"
+                        android:layout_below="@id/layout_target_position">
+                    </LinearLayout>
+
+                    <!-- Pickable objects -->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generator_pickables"
+                        android:id="@+id/pickables_lbl"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_below="@id/divider3"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/pickables_lbl"
+                        android:orientation="vertical"
+                        android:id="@+id/layout_pickables">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/layout_rewards"
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_numof_rewards"
+                                />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:entries="@array/rewardsAndPenalties"
+                                android:id="@+id/designer_rewards_spinner">
+                            </Spinner>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/layout_penalties"
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_numof_penalties"
+                                />
+
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:entries="@array/rewardsAndPenalties"
+                                android:id="@+id/designer_penalties_spinner">
+                            </Spinner>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                    <!--end pickable objects -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="1dp"
+                        android:background="@color/lightGray"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:id="@+id/divider4"
+                        android:layout_below="@id/layout_pickables">
+                    </LinearLayout>
+
+                    <!-- Line color & maze background -->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/generator_maze_colors"
+                        android:id="@+id/mazedesign_lbl"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_below="@id/divider4"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/mazedesign_lbl"
+                        android:orientation="vertical"
+                        android:id="@+id/layout_mazeColors">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/layout_linecolor"
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_wall_color"
+                                />
+
+                            <Button
+                                style="@style/Base.TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:textColor="@android:color/black"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/select_color"
+                                android:id="@+id/designer_wallcolor_button">
+                            </Button>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/layout_backgroundcolor"
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/generator_background_image"
+                                />
+
+                            <Button
+                                style="@style/Base.TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:textColor="@android:color/black"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:text="@string/select_image"
+                                android:id="@+id/designer_backgroundImage_button">
+                            </Button>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <!--end line color and maze background-->
+
+
+                    <!--<LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/lightGray"
+                        android:layout_below="@id/layout_rows_and_columns">
+                    </LinearLayout>-->
+
 
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
+
+            <Button
+                android:text="@string/Generate"
+                android:onClick="generate"
+                android:background="@color/materialBlue"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

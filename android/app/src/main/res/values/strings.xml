@@ -72,16 +72,22 @@
     <string name="maze_designer">Maze Designer</string>
     <string name="generator_numof_rewards">Number of rewards:</string>
     <string name="generator_numof_penalties">Number of penalties:</string>
-    <string name="generator_maze_size_rows">Rows:</string>
-    <string name="generator_maze_size_columns">Columns:</string>
+    <string name="generator_pickables">Rewards &amp; Penalties</string>
     <string name="generator_maze_name">Name:</string>
     <string name="generator_maze_description">Description:</string>
+    <string name="generator_maze_size">Maze Size</string>
     <string name="generator_maze_startpos">Starting Position</string>
     <string name="generator_maze_targetpos">Target Position</string>
+    <string name="generator_maze_rows">Rows:</string>
+    <string name="generator_maze_cols">Columns:</string>
     <string name="generator_maze_row">Row:</string>
     <string name="generator_maze_col">Column:</string>
     <string name="generator_wall_color">Wall color:</string>
+    <string name="generator_background_image">Background image:</string>
     <string name="generator_options">Maze options:</string>
+    <string name="generator_maze_colors">Maze Colors</string>
+    <string name="select_color">Select color</string>
+    <string name="select_image">Select image</string>
 
     <string name="instructions">Write your code below to get out of the grid:</string>
     <string name="demoCode_loop1">while (!solved) {</string>
@@ -223,5 +229,42 @@
     <string name="error_function_in_function">Function in function statement detected.</string>
     <string name="error_infinite_loop">Infinite loop detected.</string>
     <string name="error_noerror">No error.</string>
+
+
+    <string-array name="rows_and_cols_selection">
+        <item>5 (Tiny)</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10 (Small)</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15 (Medium)</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20 (Large)</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25 (Very large)</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30 (Huge)</item>
+    </string-array>
+
+    <string-array name="rewardsAndPenalties">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
 
 </resources>
