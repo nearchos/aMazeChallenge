@@ -136,40 +136,16 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/designer_rows_lbl"
+                                android:id="@+id/designer_size_lbl"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/generator_maze_rows"
+                                android:text="@string/generator_maze_size"
                                 />
 
                             <Spinner
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/designer_rows_spinner"
-                                android:entries="@array/rows_and_cols_selection">
-                            </Spinner>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layout_columns"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="15dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/designer_columns_lbl"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/generator_maze_cols"
-                                />
-
-                            <Spinner
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/designer_columns_spinner"
+                                android:id="@+id/designer_size_spinner"
                                 android:entries="@array/rows_and_cols_selection">
                             </Spinner>
 
@@ -383,6 +359,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:entries="@array/rewardsAndPenalties"
+                                android:textAlignment="center"
                                 android:id="@+id/designer_rewards_spinner">
                             </Spinner>
 
@@ -405,6 +382,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:entries="@array/rewardsAndPenalties"
+                                android:textAlignment="center"
                                 android:id="@+id/designer_penalties_spinner">
                             </Spinner>
 

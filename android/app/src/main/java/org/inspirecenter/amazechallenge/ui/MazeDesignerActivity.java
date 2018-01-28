@@ -38,8 +38,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
     private Button selectColorButton;
     private Button selectImageButton;
-    private Spinner mazeSize_Rows_Spinner;
-    private Spinner mazeSize_Columns_Spinner;
+    private Spinner maze_size_Spinner;
     private Spinner startPos_Row_Spinner;
     private Spinner startPos_Column_Spinner;
     private Spinner targetPos_Row_Spinner;
@@ -47,8 +46,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
     private int selectedWallColor = 0;
     private String selectedImageResourceName = "";
-    private int size_rows = 0;
-    private int size_columns = 0;
+    private int size = 5;
     private int startPos_row = 0;
     private int startPos_column = 0;
     private int targetPos_row = 0;
@@ -82,29 +80,16 @@ public class MazeDesignerActivity extends AppCompatActivity {
         });
 
         //Spinners:
-        mazeSize_Rows_Spinner = findViewById(R.id.designer_rows_spinner);
-        mazeSize_Columns_Spinner = findViewById(R.id.designer_columns_spinner);
+        maze_size_Spinner = findViewById(R.id.designer_size_spinner);
         startPos_Row_Spinner = findViewById(R.id.designer_row_start_spinner);
         startPos_Column_Spinner = findViewById(R.id.designer_column_start_spinner);
         targetPos_Row_Spinner = findViewById(R.id.designer_row_target_spinner);
         targetPos_Column_Spinner = findViewById(R.id.designer_column_target_spinner);
 
-        mazeSize_Rows_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        maze_size_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setSizeRows(i + 5);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        mazeSize_Columns_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setSizeColumns(i + 5);
+                setSize(i + 5);
             }
 
             @Override
@@ -135,8 +120,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
         //TODO FIX
         final Position startingPosition = new Position(startPos_row, startPos_column);
         final Position targetPosition = new Position(targetPos_row, targetPos_column);
-        final String data = MazeGenerator.generate(size_columns, startingPosition, targetPosition);
-        final Grid grid = new Grid(size_rows, size_columns, data, startingPosition, targetPosition);
+        final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
+        final Grid grid = new Grid(size, size, data, startingPosition, targetPosition);
         gameView.setBackgroundDrawable(MazeBackground.BACKGROUND_GRASS.getResourceID());
         //TODO Implement background selection
         gameView.setGrid(grid);
@@ -176,6 +161,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         selectColorButton.setBackgroundColor(color);
         if (ColorFragment.isBrightColor(color)) selectColorButton.setTextColor(Color.BLACK);
         else selectColorButton.setTextColor(Color.WHITE);
+        gameView.setLineColor("#"+Integer.toHexString(color));
     }
 
     public int getWallColor() {
@@ -198,23 +184,15 @@ public class MazeDesignerActivity extends AppCompatActivity {
         return selectedImageResourceName;
     }
 
-    private void setSizeRows(int rows) {
-        size_rows = rows;
+    private void setSize(int size) {
+        this.size = size;
         ArrayList<String> validItems = new ArrayList<>();
-        for (int i = 0; i <= rows; i++) validItems.add(String.valueOf(i));
+        for (int i = 0; i <= size; i++) validItems.add(String.valueOf(i));
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, validItems);
         startPos_Row_Spinner.setAdapter(adapter);
-        targetPos_Row_Spinner.setAdapter(adapter);
-    }
-
-    private void setSizeColumns(int columns) {
-        size_columns = columns;
-        ArrayList<String> validItems = new ArrayList<>();
-        for (int i = 0; i <= columns; i++) validItems.add(String.valueOf(i));
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, validItems);
         startPos_Column_Spinner.setAdapter(adapter);
+        targetPos_Row_Spinner.setAdapter(adapter);
         targetPos_Column_Spinner.setAdapter(adapter);
     }
 
