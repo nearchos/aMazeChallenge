@@ -1,6 +1,7 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,9 +33,10 @@ import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.controller.AudioEventListener;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
+import org.inspirecenter.amazechallenge.model.Audio;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.PickableType;
+import org.inspirecenter.amazechallenge.model.PickableItem;
 import org.inspirecenter.amazechallenge.model.Player;
 
 import java.util.HashMap;
@@ -53,6 +55,9 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
 
     public static final int DEFAULT_PERIOD_INDEX = 3;
     public static final long [] PERIOD_OPTIONS = new long [] { 100L, 200L, 500L, 1000L, 2000L, 5000L };
+
+    private static final float DEFAULT_EVENTS_VOLUME = 1f;
+    private static final float DEFAULT_AMBIENT_VOLUME = 0.7f;
 
     private boolean isRunning = false;
 
@@ -73,7 +78,10 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     private Button movesDetailsButton;
 
     final GameActivity instance = this;
-    private MediaPlayer bombSound;
+
+    HashMap<String, MediaPlayer> audioEventsMap = new HashMap<>();
+    MediaPlayer backgroundAudio;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +90,6 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_game);
-
-        bombSound = MediaPlayer.create(this, R.raw.bomb1);
 
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
@@ -157,6 +163,19 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
                 // todo show a dialog displaying the details of all players' moves
             }
         });
+
+        //Create audio map:
+        for (final Audio a : Audio.values()) {
+            if (a.getAudioType() == Audio.AudioType.EVENT) {
+                if (a.getAudioFormat() != Audio.AudioFormat.NO_FORMAT && !a.getSoundResourceName().equals(Audio.AUDIO_NONE.getSoundResourceName())) {
+                    int r = getResources().getIdentifier(a.getSoundResourceName(), "raw", getPackageName());
+                    MediaPlayer t = MediaPlayer.create(this, r);
+                    t.setVolume(DEFAULT_EVENTS_VOLUME, DEFAULT_EVENTS_VOLUME);
+                    audioEventsMap.put(a.toString(), t);
+                }
+            }
+        }
+
     }
 
     private Handler handler;
@@ -192,11 +211,25 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         gameView.update(game);
 
         timer.schedule(new MazeRunner(), 0L, PERIOD_OPTIONS[0]);
+
+        //Play background audio:
+        Audio.AudioFormat audioFormat = challenge.getBackgroundAudioFormat();
+        String audioResource = challenge.getBackgroundAudioName();
+        if (audioFormat != Audio.AudioFormat.NO_FORMAT && !audioResource.equals(Audio.AUDIO_NONE.getSoundResourceName())) {
+            backgroundAudio = MediaPlayer.create(this, getResources().getIdentifier(audioResource, "raw", getPackageName()));
+            if (backgroundAudio != null) {
+                backgroundAudio.setLooping(true);
+                backgroundAudio.setVolume(DEFAULT_AMBIENT_VOLUME, DEFAULT_AMBIENT_VOLUME);
+                backgroundAudio.start();
+            }
+        }
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (backgroundAudio != null) backgroundAudio.stop();
         timer.cancel();
     }
 
@@ -212,10 +245,12 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             if (RuntimeController.hasSomeoneReachedTheTargetPosition(game, challenge.getGrid())) {
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(MainActivity.KEY_PREF_LOCALLY_TESTED, true).apply();
                 Toast.makeText(this, getString(R.string.maze_completed) + " " + challenge.getName() + "!", Toast.LENGTH_LONG).show();
+                if (backgroundAudio != null) backgroundAudio.stop();
                 finish();
             }
 
             if (RuntimeController.allPlayersHaveLost(game)) {
+                RuntimeController.resetTurnEffects();
                 Snackbar.make(gameView, getString(R.string.maze_lost), Snackbar.LENGTH_INDEFINITE).setAction(R.string.maze_play_again, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -278,40 +313,49 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     }
 
     @Override
-    public void onAudioEvent(PickableType pickableType) {
+    public void onAudioEvent(PickableItem pickableItem) {
 
-        //TODO -> Find sound files
-        //bombSound.start();
-
-        switch (pickableType) {
+        switch (pickableItem.getPickableType()) {
             case APPLE:
-                break;
             case BANANA:
-                break;
             case STRAWBERRY:
-                break;
             case PEACH:
-                break;
             case WATERMELON:
-                break;
             case GRAPES:
-                break;
             case ORANGE:
+                MediaPlayer p = audioEventsMap.get(Audio.EVENT_REWARD_EATING.toString());
+                p.setVolume(1.5f, 1.5f);
+                p.start();
                 break;
             case COIN_5:
+                audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
                 break;
             case COIN_10:
+                audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
                 break;
             case COIN_20:
+                audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
                 break;
             case GIFTBOX:
+                audioEventsMap.get(Audio.EVENT_REWARD_PICKUP_1.toString()).start();
                 break;
             case BOMB:
+                if (pickableItem.getState() == 1  || pickableItem.getState() == 2)
+                    audioEventsMap.get(Audio.EVENT_BOMB.toString()).start();
                 break;
-            case DOUBLE_MOVES:
+            case SPEEDHACK:
+                audioEventsMap.get(Audio.EVENT_REWARD_PICKUP_2.toString()).start();
                 break;
             case TRAP:
+                audioEventsMap.get(Audio.EVENT_PENALTY_PICKUP_1.toString()).start();
                 break;
         }
     }
+
+
+    public static MediaPlayer toMediaPlayer(Activity activity, Audio audio) {
+        return MediaPlayer.create(activity, activity.getResources().getIdentifier(audio.getSoundResourceName(),
+                "raw", activity.getPackageName()));
+    }
+
 }

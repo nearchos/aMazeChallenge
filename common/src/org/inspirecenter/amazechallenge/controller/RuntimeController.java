@@ -4,6 +4,7 @@ import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
 import org.inspirecenter.amazechallenge.model.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -19,6 +20,9 @@ import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_UPPER_SIDE;
 
 public class RuntimeController {
 
+    private static HashMap<String, Integer> doubleTurnsMap = new HashMap<>();
+    private static HashMap<String, Integer> lostTurnsMap = new HashMap<>();
+
     public static void makeMove(final Challenge challenge, final Game game, final Map<String,MazeSolver> playerEmailToMazeSolvers) {
         final Grid grid = challenge.getGrid();
 
@@ -28,13 +32,34 @@ public class RuntimeController {
             final Player player = game.getPlayer(playerEmail);
             final MazeSolver mazeSolver = playerEmailToMazeSolvers.get(playerEmail);
             final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
-            applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove);
+
+            //Manage the double turns effect:
+            if (playerHasDoubleTurns(playerEmail)) {
+                //System.out.println("Move 1: " + nextPlayerMove.toString());
+                applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove);
+
+                //TODO If possible
+                //PlayerMove nextPlayerMove2 = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
+                //System.out.println("Move 2: " + nextPlayerMove.toString());
+                //applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove2);
+
+                decreasePlayerDoubleTurnsRemaining(playerEmail);
+                System.out.println("Double Turn");
+            }
+
+            if (playerHasLostTurns(playerEmail)) {
+                decreasePlayerLostTurnsRemaining(playerEmail);
+                //System.out.println("Skipped Turn");
+            }
+            else
+                applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove);
 
             //Check the player's health:
             if (player.getHealth().isAtMin()) {
                 game.resetPlayer(playerEmail);
                 game.setPlayerPositionAndDirection(playerEmail, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
                 game.resetPlayer(playerEmail);
+                resetTurnEffects();
             }
 
             generateItems(game, challenge, grid);
@@ -47,6 +72,7 @@ public class RuntimeController {
         Direction direction = playerPositionAndDirection.getDirection();
         Position position = playerPositionAndDirection.getPosition();
         AudioEventListener audioEventListener = game.getAudioEventListener();
+
         switch (playerMove) {
             case TURN_CLOCKWISE:
                 direction = playerPositionAndDirection.getDirection().turnClockwise();
@@ -73,10 +99,13 @@ public class RuntimeController {
                             game.getPlayer(playerEmail).changePointsBy(pickableItem.getPickableType().getPointsChange());
 
                             //Apply effects:
-                            //todo missing turns or double turns enabling and disabling
+                            if (pickableItem.getPickableType() == PickableType.SPEEDHACK)
+                                addPlayerDoubleTurns(playerEmail, PickableType.SPEEDHACK_TURNS_AMOUNT);
+                            else if (pickableItem.getPickableType() == PickableType.TRAP)
+                                addPlayerLostTurns(playerEmail, PickableType.TRAP_TURNS_AMOUNT);
 
                             // if audio event listener set, notify with event
-                            if(audioEventListener != null) audioEventListener.onAudioEvent(pickableItem.getPickableType());
+                            if(audioEventListener != null) audioEventListener.onAudioEvent(pickableItem);
                             if (pickableItem.getPickableType() != PickableType.BOMB) game.removePickupItem(i);
                         }
                     }
@@ -99,6 +128,7 @@ public class RuntimeController {
             final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirection(playerEmail);
             if (targetPosition.equals(playerPositionAndDirection.getPosition())) {
                 someoneHasReachedTheTargetPosition = true;
+                resetTurnEffects();
             }
         }
         return someoneHasReachedTheTargetPosition;
@@ -291,6 +321,55 @@ public class RuntimeController {
             game.getPickableItems().get(i).reduceState();
             if (game.getPickableItems().get(i).getState() <= 0) game.removePickupItem(i);
         }
+    }
+
+    public static int getPlayerDoubleTurnsRemaining(String playerEmail) {
+        if (!doubleTurnsMap.containsKey(playerEmail)) return 0;
+        return doubleTurnsMap.get(playerEmail);
+    }
+
+    public static int getPlayerLostTurnsRemaining(String playerEmail) {
+        if (!lostTurnsMap.containsKey(playerEmail)) return 0;
+        return lostTurnsMap.get(playerEmail);
+    }
+
+    public static boolean playerHasDoubleTurns(String playerEmail) {
+        return doubleTurnsMap.containsKey(playerEmail);
+    }
+
+    public static boolean playerHasLostTurns(String playerEmail) {
+        return lostTurnsMap.containsKey(playerEmail);
+    }
+
+    public static void decreasePlayerDoubleTurnsRemaining(String playerEmail) {
+        if (playerHasDoubleTurns(playerEmail)) {
+            Integer turnsLeft = doubleTurnsMap.get(playerEmail);
+            doubleTurnsMap.remove(playerEmail);
+            turnsLeft--;
+            if (turnsLeft > 0) doubleTurnsMap.put(playerEmail, turnsLeft);
+        }
+    }
+
+    public static void decreasePlayerLostTurnsRemaining(String playerEmail) {
+        if (playerHasLostTurns(playerEmail)) {
+            Integer turnsLeft = lostTurnsMap.get(playerEmail);
+            lostTurnsMap.remove(playerEmail);
+            turnsLeft--;
+            if (turnsLeft > 0) lostTurnsMap.put(playerEmail, turnsLeft);
+        }
+    }
+
+    public static void addPlayerDoubleTurns(String playerEmail, Integer doubleTurnsAmount) {
+        doubleTurnsMap.put(playerEmail, doubleTurnsAmount);
+    }
+
+    public static void addPlayerLostTurns(String playerEmail, Integer lostTurnsAmount) {
+        lostTurnsMap.put(playerEmail, lostTurnsAmount);
+    }
+
+    public static void resetTurnEffects() {
+        lostTurnsMap = new HashMap<>();
+        doubleTurnsMap = new HashMap<>();
     }
 
 }

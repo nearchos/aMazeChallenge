@@ -1,7 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +22,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.generator.MazeGenerator;
+import org.inspirecenter.amazechallenge.model.Audio;
 import org.inspirecenter.amazechallenge.model.ChallengeDifficulty;
 import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Position;
@@ -66,6 +66,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private Spinner targetPos_Column_Spinner;
     private Spinner penaltiesSpinner;
     private Spinner rewardsSpinner;
+    private Spinner backgroundAudioSpinner;
     private EditText mazeNameEditText;
     private EditText mazeDescriptionEditText;
 
@@ -80,6 +81,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private int rewards = size / 5; //Default low setting formula
     private PickablesOption rewardsOption = PickablesOption.LOW;
     private PickablesOption penaltiesOption = PickablesOption.LOW;
+    private Audio backgroundAudio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +125,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         targetPos_Column_Spinner = findViewById(R.id.designer_column_target_spinner);
         rewardsSpinner = findViewById(R.id.designer_rewards_spinner);
         penaltiesSpinner = findViewById(R.id.designer_penalties_spinner);
+        backgroundAudioSpinner = findViewById(R.id.designer_audio_spinner);
 
         //Maze Size Selection
         maze_size_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -194,7 +197,6 @@ public class MazeDesignerActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 setRewards(PickablesOption.getOptionFromID(i));
-                System.out.println(rewards);
             }
 
             @Override
@@ -207,7 +209,30 @@ public class MazeDesignerActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 setPenalties(PickablesOption.getOptionFromID(i));
-                System.out.println(penalties);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //Audio Spinner Options:
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        ArrayList<Audio> audioList = new ArrayList<>();
+        for (Audio a : Audio.values()) {
+            if (a.getAudioType() == Audio.AudioType.AMBIENT || a.getAudioType() == Audio.AudioType.NONE) {
+                audioList.add(a);
+                adapter.add(a.toString());
+            }
+        }
+        backgroundAudioSpinner.setAdapter(adapter);
+
+        //Audio Spinner Selection
+        backgroundAudioSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                backgroundAudio = audioList.get(i);
             }
 
             @Override
@@ -465,7 +490,9 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "        }\n" +
                 "    },\n" +
                 "    \"lineColor\": \"#" + Integer.toHexString(selectedWallColor) + "\",\n" +
-                "    \"backgroundImage\": \"texture_grass\"\n" +    //TODO Implement selection of backgrounds
+                "    \"backgroundImage\": \"texture_grass\",\n" +    //TODO Implement selection of backgrounds
+                "    \"backgroundAudioName\": \"" + backgroundAudio.getSoundResourceName() + "\",\n" +
+                "    \"backgroundAudioFormat\": \"" + backgroundAudio.getAudioFormat().toString() + "\"" +
                 "}";
     }
 

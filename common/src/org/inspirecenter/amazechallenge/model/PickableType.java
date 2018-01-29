@@ -28,8 +28,8 @@ public enum PickableType {
 
     BOMB("bomb", Bias.PENALTY, NONE, "Bomb penalty -50 health", 50, 0, 10), // customize bombs?
 
-    DOUBLE_MOVES("doublemoves", REWARD, NONE, "Player gets to do 2 moves", 0, 0, 2),
-    TRAP("trap", PENALTY, NONE, "Player loses 1 move", 0, 0, 2)
+    SPEEDHACK("doublemoves", REWARD, NONE, "Player gets to do 2 moves", 0, 0, Integer.MAX_VALUE),
+    TRAP("trap", PENALTY, NONE, "Player loses 1 move", 0, 0, Integer.MAX_VALUE)
 
     ;
 
@@ -44,9 +44,8 @@ public enum PickableType {
     private int absolutePoints; // a zero or positive integer
     private int defaultState; // used for countdowns, e.g. in the bomb
 
-    /*public static PickableType getRandomFruit() {
-        return random(REWARD, FRUIT);
-    }*/
+    public static int SPEEDHACK_TURNS_AMOUNT = 5;
+    public static int TRAP_TURNS_AMOUNT = 5;
 
     public static PickableType getRandomReward() {
         final Vector<PickableType> selected = new Vector<>();

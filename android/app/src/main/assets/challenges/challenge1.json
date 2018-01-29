@@ -29,5 +29,7 @@
         }
     },
     "lineColor": "#00FFFF",
-    "backgroundImage": "texture_metal"
+    "backgroundImage": "texture_metal",
+    "backgroundAudioName": "",
+    "backgroundAudioFormat": ""
 }

@@ -39,6 +39,8 @@ public class Challenge implements Serializable {
     private String difficulty;
     private String createdBy;
     private long createdOn;
+    private String backgroundAudioName;
+    private Audio.AudioFormat backgroundAudioFormat;
 
     public Challenge() {
         super();
@@ -49,7 +51,9 @@ public class Challenge implements Serializable {
                      int maxActivePlayers, long startTimestamp, long endTimestamp,
                      int max_rewards, int max_penalties,
                      Grid grid, String lineColor,
-                     String backgroundImage, String difficulty, String createdBy, long createdOn) {
+                     String backgroundImage, String difficulty,
+                     String createdBy, long createdOn,
+                     String backgroundAudioName, String backgroundAudioFormat) {
         this();
         this.name = name;
         this.apiVersion = apiVersion;
@@ -71,17 +75,20 @@ public class Challenge implements Serializable {
         this.difficulty = difficulty;
         this.createdBy = createdBy;
         this.createdOn = createdOn;
+
+        this.backgroundAudioFormat = Audio.AudioFormat.fromText(backgroundAudioFormat);
+        this.backgroundAudioName = backgroundAudioName;
     }
 
     public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp,
                      long endTimestamp, int max_rewards, int max_penalties,
                      Grid grid, String lineColor, String backgroundImage, String difficulty, String createdBy,
-                     long createdOn) {
+                     long createdOn, String backgroundAudioName, String backgroundAudioFormat) {
         this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther,
                 DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp,
                 endTimestamp, max_rewards, max_penalties, grid, lineColor, backgroundImage,
-                difficulty, createdBy, createdOn);
+                difficulty, createdBy, createdOn, backgroundAudioName, backgroundAudioFormat);
         this.id = id;
     }
 
@@ -163,6 +170,10 @@ public class Challenge implements Serializable {
 
     public String getCreatedBy() { return createdBy; }
 
+    public String getBackgroundAudioName() { return backgroundAudioName; }
+
+    public Audio.AudioFormat getBackgroundAudioFormat() { return backgroundAudioFormat; }
+
     @Override
     public String toString() {
         return "Challenge{" +
@@ -185,6 +196,8 @@ public class Challenge implements Serializable {
                 ", difficulty='" + difficulty + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdOn=" + createdOn +
+                ", backgroundAudioName='" + backgroundAudioName + '\'' +
+                ", backgroundAudioFormat=" + backgroundAudioFormat +
                 '}';
     }
 }
