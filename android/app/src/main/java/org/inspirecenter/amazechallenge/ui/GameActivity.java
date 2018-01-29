@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -72,6 +73,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     private Button movesDetailsButton;
 
     final GameActivity instance = this;
+    private MediaPlayer bombSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_game);
+
+        bombSound = MediaPlayer.create(this, R.raw.bomb1);
 
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
@@ -275,7 +279,39 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
 
     @Override
     public void onAudioEvent(PickableType pickableType) {
-        // todo play correct audio
 
+        //TODO -> Find sound files
+        //bombSound.start();
+
+        switch (pickableType) {
+            case APPLE:
+                break;
+            case BANANA:
+                break;
+            case STRAWBERRY:
+                break;
+            case PEACH:
+                break;
+            case WATERMELON:
+                break;
+            case GRAPES:
+                break;
+            case ORANGE:
+                break;
+            case COIN_5:
+                break;
+            case COIN_10:
+                break;
+            case COIN_20:
+                break;
+            case GIFTBOX:
+                break;
+            case BOMB:
+                break;
+            case DOUBLE_MOVES:
+                break;
+            case TRAP:
+                break;
+        }
     }
 }
