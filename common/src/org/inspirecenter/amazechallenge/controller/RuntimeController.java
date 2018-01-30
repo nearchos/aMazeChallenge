@@ -5,8 +5,10 @@ import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
 import org.inspirecenter.amazechallenge.model.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Vector;
 
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LEFT_SIDE;
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LOWER_SIDE;
@@ -27,32 +29,25 @@ public class RuntimeController {
         final Grid grid = challenge.getGrid();
 
         // then apply next move to active players
-        for (final String playerEmail : game.getActivePlayers()) {
+        final List<String> playersToMove = game.getActivePlayers();
+        for (final String playerEmail : playersToMove) {
             final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirection(playerEmail);
             final Player player = game.getPlayer(playerEmail);
             final MazeSolver mazeSolver = playerEmailToMazeSolvers.get(playerEmail);
-            final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
-
-            //Manage the double turns effect:
-            if (playerHasDoubleTurns(playerEmail)) {
-                //System.out.println("Move 1: " + nextPlayerMove.toString());
-                applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove);
-
-                //TODO If possible
-                //PlayerMove nextPlayerMove2 = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
-                //System.out.println("Move 2: " + nextPlayerMove.toString());
-                //applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove2);
-
-                decreasePlayerDoubleTurnsRemaining(playerEmail);
-                System.out.println("Double Turn");
-            }
 
             if (playerHasLostTurns(playerEmail)) {
                 decreasePlayerLostTurnsRemaining(playerEmail);
-                //System.out.println("Skipped Turn");
-            }
-            else
+            } else {
+                final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
                 applyPlayerMove(grid, game, playerEmail, playerPositionAndDirection, nextPlayerMove);
+            }
+
+            // check if a second move is needed
+            if (playerHasDoubleTurns(playerEmail)) {
+                final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
+                applyPlayerMove(grid, game, playerEmail, game.getPlayerPositionAndDirection(playerEmail), nextPlayerMove);
+                decreasePlayerDoubleTurnsRemaining(playerEmail);
+            }
 
             //Check the player's health:
             if (player.getHealth().isAtMin()) {
@@ -64,7 +59,6 @@ public class RuntimeController {
 
             generateItems(game, challenge, grid);
             handlePickableState(game);
-
         }
     }
 
