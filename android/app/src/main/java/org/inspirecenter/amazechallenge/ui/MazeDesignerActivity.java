@@ -55,6 +55,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     public static final String TAG = "amaze";
     private static final int MAX_ROWS = 30;
     private static final int MAX_COLUMNS = 30;
+    private final BackgroundImage DEFAULT_BACKGROUND_IMAGE = BackgroundImage.TEXTURE_GRASS;
 
     private GameView gameView;
 
@@ -92,6 +93,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_maze_designer);
+
+        backgroundImage = DEFAULT_BACKGROUND_IMAGE;
 
         //GameView:
         gameView = findViewById(R.id.activity_maze_designer_game_view);
@@ -389,7 +392,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         ArrayList<String> validItems = new ArrayList<>();
         for (int i = 0; i < size; i++) validItems.add(String.valueOf(i));
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, validItems);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, validItems);
         startPos_Row_Spinner.setAdapter(adapter);
         startPos_Column_Spinner.setAdapter(adapter);
         targetPos_Row_Spinner.setAdapter(adapter);
@@ -416,13 +419,13 @@ public class MazeDesignerActivity extends AppCompatActivity {
         rewardsOption = option;
         switch (option) {
             case LOW:
-                rewards = size / 5;
+                rewards = size*size / 5;
                 break;
             case MEDIUM:
-                rewards = size / 3;
+                rewards = size*size / 3;
                 break;
             case HIGH:
-                rewards = size / 2;
+                rewards = size*size / 2;
                 break;
         }
     }
@@ -431,13 +434,13 @@ public class MazeDesignerActivity extends AppCompatActivity {
         penaltiesOption = option;
         switch (option) {
             case LOW:
-                penalties = size / 5;
+                penalties = size*size / 5;
                 break;
             case MEDIUM:
-                penalties = size / 3;
+                penalties = size*size / 3;
                 break;
             case HIGH:
-                penalties = size / 2;
+                penalties = size*size / 2;
                 break;
         }
     }

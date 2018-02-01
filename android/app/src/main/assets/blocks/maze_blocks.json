@@ -103,7 +103,7 @@
 },
 {
   "type": "maze_init_function",
-  "message0": "Initialize %1 %2",
+  "message0": "Initialize() %1 %2",
   "args0": [
     {
       "type": "input_dummy"
@@ -120,7 +120,7 @@
 },
   {
     "type": "maze_run_function",
-    "message0": "Run %1  %2",
+    "message0": "Run() %1  %2",
     "args0": [
       {
         "type": "input_dummy"

@@ -100,7 +100,11 @@ public class GameView extends View {
     }
 
     void setBackgroundDrawable(BackgroundImage backgroundImage) {
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(backgroundImage.getResourceName(), "drawable", context.getPackageName()));
+        Bitmap bm;
+        if (backgroundImage != null)
+            bm = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(backgroundImage.getResourceName(), "drawable", context.getPackageName()));
+        else
+            bm = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(DEFAULT_MAZE_BACKGROUND.getResourceName(), "drawable", context.getPackageName()));
         backgroundDrawable = new BitmapDrawable(getResources(), bm);
     }
 
