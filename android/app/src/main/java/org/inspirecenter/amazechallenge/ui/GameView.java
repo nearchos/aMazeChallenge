@@ -17,6 +17,7 @@ import android.view.View;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
+import org.inspirecenter.amazechallenge.model.BackgroundImage;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.GameFullState;
 import org.inspirecenter.amazechallenge.model.Grid;
@@ -53,21 +54,24 @@ public class GameView extends View {
 
     private final Context context;
 
-    public static final MazeBackground DEFAULT_MAZE_BACKGROUND = MazeBackground.BACKGROUND_GRASS;
+    public static final BackgroundImage DEFAULT_MAZE_BACKGROUND = BackgroundImage.TEXTURE_GRASS;
 
     public GameView(final Context context) {
         super(context);
         this.context = context;
+        //backgroundDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), DEFAULT_MAZE_BACKGROUND.getResourceID()));
+        backgroundDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(BackgroundImage.TEXTURE_GRASS.getResourceName(), "drawable", context.getPackageName())));
     }
 
     public GameView(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        backgroundDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(BackgroundImage.TEXTURE_GRASS.getResourceName(), "drawable", context.getPackageName())));
     }
 
     private Grid grid = null;
     private int lineColor = Color.BLACK;
-    private BitmapDrawable backgroundDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), DEFAULT_MAZE_BACKGROUND.getResourceID()));
+    private BitmapDrawable backgroundDrawable;
     public Map<String,Player> allPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
     public List<String> queuedPlayerEmails;
@@ -92,6 +96,11 @@ public class GameView extends View {
 
     void setBackgroundDrawable(int backgroundImage) {
         Bitmap bm = BitmapFactory.decodeResource(getResources(), backgroundImage);
+        backgroundDrawable = new BitmapDrawable(getResources(), bm);
+    }
+
+    void setBackgroundDrawable(BackgroundImage backgroundImage) {
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(backgroundImage.getResourceName(), "drawable", context.getPackageName()));
         backgroundDrawable = new BitmapDrawable(getResources(), bm);
     }
 

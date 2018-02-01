@@ -34,6 +34,7 @@ import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.controller.AudioEventListener;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Audio;
+import org.inspirecenter.amazechallenge.model.BackgroundImage;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.PickableItem;
@@ -193,8 +194,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         this.challenge = (Challenge) intent.getSerializableExtra(SELECTED_CHALLENGE_KEY);
         this.gameView.setGrid(challenge.getGrid());
         this.gameView.setLineColor(challenge.getLineColor());
-        String backgroundName = challenge.getBackgroundImage();
-        this.gameView.setBackgroundDrawable(MazeBackground.getByName(backgroundName).getResourceID());
+        BackgroundImage backgroundImage = challenge.getBackgroundImage();
+        this.gameView.setBackgroundDrawable(backgroundImage);
         this.game = new Game();
         game.setOnAudioEventListener(this);
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);

@@ -35,12 +35,13 @@ public class Challenge implements Serializable {
 
     private Grid grid;
     private String lineColor;
-    private String backgroundImage;
     private String difficulty;
     private String createdBy;
     private long createdOn;
     private String backgroundAudioName;
     private Audio.AudioFormat backgroundAudioFormat;
+    private String backgroundImageName;
+    private BackgroundImage.BackgroundImageType backgroundImageType;
 
     public Challenge() {
         super();
@@ -50,10 +51,9 @@ public class Challenge implements Serializable {
                      boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers,
                      int maxActivePlayers, long startTimestamp, long endTimestamp,
                      int max_rewards, int max_penalties,
-                     Grid grid, String lineColor,
-                     String backgroundImage, String difficulty,
-                     String createdBy, long createdOn,
-                     String backgroundAudioName, String backgroundAudioFormat) {
+                     Grid grid, String lineColor, String difficulty, String createdBy, long createdOn,
+                     String backgroundAudioName, String backgroundAudioFormat,
+                     String backgroundImageName, BackgroundImage.BackgroundImageType backgroundImageType) {
         this();
         this.name = name;
         this.apiVersion = apiVersion;
@@ -71,24 +71,28 @@ public class Challenge implements Serializable {
 
         this.grid = grid;
         this.lineColor = lineColor;
-        this.backgroundImage = backgroundImage;
         this.difficulty = difficulty;
         this.createdBy = createdBy;
         this.createdOn = createdOn;
 
         this.backgroundAudioFormat = Audio.AudioFormat.fromText(backgroundAudioFormat);
         this.backgroundAudioName = backgroundAudioName;
+
+        this.backgroundImageName = backgroundImageName;
+        this.backgroundImageType = backgroundImageType;
     }
 
     public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp,
                      long endTimestamp, int max_rewards, int max_penalties,
-                     Grid grid, String lineColor, String backgroundImage, String difficulty, String createdBy,
-                     long createdOn, String backgroundAudioName, String backgroundAudioFormat) {
+                     Grid grid, String lineColor, String difficulty, String createdBy,
+                     long createdOn, String backgroundAudioName, String backgroundAudioFormat,
+                     String backgroundImageName, BackgroundImage.BackgroundImageType backgroundImageType) {
         this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther,
                 DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp,
-                endTimestamp, max_rewards, max_penalties, grid, lineColor, backgroundImage,
-                difficulty, createdBy, createdOn, backgroundAudioName, backgroundAudioFormat);
+                endTimestamp, max_rewards, max_penalties, grid, lineColor,
+                difficulty, createdBy, createdOn, backgroundAudioName, backgroundAudioFormat,
+                backgroundImageName, backgroundImageType);
         this.id = id;
     }
 
@@ -156,7 +160,9 @@ public class Challenge implements Serializable {
 
     public String getLineColor() { return lineColor; }
 
-    public String getBackgroundImage() { return backgroundImage; }
+    public BackgroundImage getBackgroundImage() { return BackgroundImage.fromResourceText(backgroundImageName); }
+
+    public BackgroundImage.BackgroundImageType getBackgroundImageType() { return backgroundImageType; }
 
     public int getMax_rewards() {
         return max_rewards;
@@ -192,12 +198,13 @@ public class Challenge implements Serializable {
                 ", max_penalties=" + max_penalties +
                 ", grid=" + grid +
                 ", lineColor='" + lineColor + '\'' +
-                ", backgroundImage='" + backgroundImage + '\'' +
                 ", difficulty='" + difficulty + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdOn=" + createdOn +
                 ", backgroundAudioName='" + backgroundAudioName + '\'' +
                 ", backgroundAudioFormat=" + backgroundAudioFormat +
+                ", backgroundImageName='" + backgroundImageName + '\'' +
+                ", backgroundImageType=" + backgroundImageType +
                 '}';
     }
 }

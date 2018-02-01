@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +24,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.generator.MazeGenerator;
 import org.inspirecenter.amazechallenge.model.Audio;
+import org.inspirecenter.amazechallenge.model.BackgroundImage;
 import org.inspirecenter.amazechallenge.model.ChallengeDifficulty;
 import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Position;
@@ -71,7 +73,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private EditText mazeDescriptionEditText;
 
     private int selectedWallColor = Color.BLACK;
-    private String selectedImageResourceName = "";
+    private BackgroundImage backgroundImage;
     private int size = 5; //Default setting
     private int startPos_row = 0;
     private int startPos_column = 0;
@@ -273,7 +275,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         else {
             final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
             final Grid grid = new Grid(size, size, data, startingPosition, targetPosition);
-            gameView.setBackgroundDrawable(MazeBackground.BACKGROUND_GRASS.getResourceID());
+            gameView.setBackgroundDrawable(backgroundImage);
             //TODO Implement background selection
             gameView.setGrid(grid);
             gameView.invalidate();
@@ -369,19 +371,17 @@ public class MazeDesignerActivity extends AppCompatActivity {
     }
 
     private void getSelectedImageFromPicker() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.select_image)
-                .setMessage("TODO");
-        builder.create().show();
-        //TODO Implement image selection from assets (repeatable textures only)
+        buildImageSelectionDialog(this).show();
     }
 
-    private void setImageResourceName(String imageResourceName) {
-        selectedImageResourceName = imageResourceName;
+    public void setBackgroundImage(BackgroundImage image) {
+        this.backgroundImage = image;
+        gameView.setBackgroundDrawable(getResources().getIdentifier(image.getResourceName(), "drawable", getPackageName()));
+        gameView.invalidate();
     }
 
-    public String getImageResourceName() {
-        return selectedImageResourceName;
+    public BackgroundImage getBackgroundImage() {
+        return backgroundImage;
     }
 
     private void setSize(int size) {
@@ -490,10 +490,37 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "        }\n" +
                 "    },\n" +
                 "    \"lineColor\": \"#" + Integer.toHexString(selectedWallColor) + "\",\n" +
-                "    \"backgroundImage\": \"texture_grass\",\n" +    //TODO Implement selection of backgrounds
+                "    \"backgroundImageName\": \"" + backgroundImage.getResourceName() + "\",\n" +
+                "    \"backgroundImageType\": \"" + backgroundImage.getType().toString() + "\",\n" +
                 "    \"backgroundAudioName\": \"" + backgroundAudio.getSoundResourceName() + "\",\n" +
                 "    \"backgroundAudioFormat\": \"" + backgroundAudio.getAudioFormat().toString() + "\"" +
                 "}";
     }
+
+    private AlertDialog buildImageSelectionDialog(Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setIcon(R.drawable.ic_menu_gallery);
+        builder.setTitle(R.string.select_image);
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.select_dialog_item);
+        for (BackgroundImage i : BackgroundImage.values()) adapter.add(i.getName());
+
+        builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                setBackgroundImage(BackgroundImage.values()[i]);
+            }
+        });
+
+        return builder.create();
+    }
+
 
 }

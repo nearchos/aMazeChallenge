@@ -29,7 +29,8 @@
         }
     },
     "lineColor": "#FFFFFF",
-    "backgroundImage": "texture_lava",
+    "backgroundImageName": "texture_lava",
+    "backgroundImageType": "jpg",
     "backgroundAudioName": "",
     "backgroundAudioFormat": ""
 }
