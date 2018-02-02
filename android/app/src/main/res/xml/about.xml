@@ -4,7 +4,7 @@
 
     <Preference
         android:title="@string/app_name"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/amaze_logo_round"
         android:summary="@string/application_motto">
         <intent android:action="android.intent.action.VIEW"
             android:data="@string/application_url" />

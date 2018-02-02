@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@mipmap/ic_launcher"
+        app:srcCompat="@mipmap/amaze_logo_round"
         android:contentDescription="@string/app_name"/>
 
     <TextView

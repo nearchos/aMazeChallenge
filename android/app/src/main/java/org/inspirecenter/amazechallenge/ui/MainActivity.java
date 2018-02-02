@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity
         buttonEditYourCode = findViewById(R.id.edit_your_code);
         buttonTestLocally = findViewById(R.id.training);
         buttonPlayOnline = findViewById(R.id.play_online);
-        buttonSettings = findViewById(R.id.settings);
         buttonGenerator = findViewById(R.id.generator);
+        buttonSettings = findViewById(R.id.settings);
     }
 
     @Override
@@ -90,30 +90,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /*@Override
-    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_personalize) {
-            personalize(null);
-        } else if (id == R.id.nav_code_editor) {
-            codeEditor(null);
-        } else if (id == R.id.nav_testing) {
-            training(null);
-        } else if (id == R.id.nav_online_challenge) {
-            onlineChallenge(null);
-        } else if (id == R.id.nav_learn) {
-            learn(null);
-        } else if (id == R.id.nav_info) {
-            startActivity(new Intent(this, AboutActivity.class));
-        }
-
-        final DrawerLayout drawer = findViewById(org.inspirecenter.amazechallenge.R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }*/
-
     public void learn(final View view) {
         startActivity(new Intent(this, HelpActivity.class));
     }
@@ -139,7 +115,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void settings(final View view) {
-        startActivity(new Intent(this, SettingsActivity.class));
+        startActivity(new Intent(this, AboutActivity.class));
     }
 
 }

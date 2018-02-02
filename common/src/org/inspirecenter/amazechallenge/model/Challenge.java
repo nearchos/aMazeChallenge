@@ -29,6 +29,7 @@ public class Challenge implements Serializable {
     private int maxActivePlayers = DEFAULT_MAX_ACTIVE_PLAYERS; // maximum number of players allowed to be active at a time (the rest are in a queue)
     private long startTimestamp; // when the challenge starts being available, or zero if available from the beginning of time (timestamp in UTC)
     private long endTimestamp; // when the challenge ends being available, or zero if available forever (timestamp in UTC)
+    private boolean hasQuestionnaire; // true when the challenge requires answering a questionnaire before/after the game
 
     private int max_rewards = 0;
     private int max_penalties = 0;

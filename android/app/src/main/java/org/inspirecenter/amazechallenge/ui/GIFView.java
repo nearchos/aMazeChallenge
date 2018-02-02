@@ -1,12 +1,10 @@
 package org.inspirecenter.amazechallenge.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Movie;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 public class GIFView extends View {
@@ -16,12 +14,17 @@ public class GIFView extends View {
     private Movie movie;
     private long movieStart = 0;
     private int currentAnimationTime = 0;
-    //private boolean isPlaying = false;
-    private float lesserGradientScale = 1;
+
+    private int dpHeight;
+    private int dpWidth;
 
     public GIFView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        dpHeight = (int) (displayMetrics.heightPixels / displayMetrics.density);
+        dpWidth = (int) (displayMetrics.widthPixels / displayMetrics.density);
     }//end GIFView()
 
     public GIFView(Context context, AttributeSet attrs, final int defStyleAttr) {
@@ -35,8 +38,8 @@ public class GIFView extends View {
     public void setImageResource(int mvId){
         this.movieResourceID = mvId;
         movie = Movie.decodeStream(getResources().openRawResource(movieResourceID));
-        movieWidth = movie.width();
-        movieHeight = movie.height();
+        movieWidth = Math.min(dpWidth / 2, movie.width());
+        movieHeight = Math.min(dpHeight / 2, movie.height());
         requestLayout();
     }//end setImageResource()
 

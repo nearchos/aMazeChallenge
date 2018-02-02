@@ -132,6 +132,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         protected void onPostExecute(final Reply reply) {
             super.onPostExecute(reply);
             progressBar.setVisibility(View.GONE);
+            // todo check if reply is null first
             if(reply.isOk()) {
                 final Collection<Challenge> challenges = ((ChallengesReply) reply).getChallenges();
                 challengeAdapter.addAll(challenges);

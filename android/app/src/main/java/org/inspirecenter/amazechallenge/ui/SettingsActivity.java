@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import org.inspirecenter.amazechallenge.R;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity { // todo delete
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
