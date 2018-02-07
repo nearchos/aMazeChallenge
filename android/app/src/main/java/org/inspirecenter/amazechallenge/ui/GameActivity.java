@@ -80,8 +80,9 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
 
     final GameActivity instance = this;
 
-    HashMap<String, MediaPlayer> audioEventsMap = new HashMap<>();
-    MediaPlayer backgroundAudio;
+    private HashMap<String, MediaPlayer> audioEventsMap = new HashMap<>();
+    private MediaPlayer backgroundAudio;
+    private boolean sound = true;
 
 
     @Override
@@ -177,6 +178,9 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             }
         }
 
+        //Sound prefs:
+        sound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(MainActivity.KEY_PREF_SOUND, true);
+
     }
 
     private Handler handler;
@@ -216,9 +220,10 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         //Play background audio:
         Audio.AudioFormat audioFormat = challenge.getBackgroundAudioFormat();
         String audioResource = challenge.getBackgroundAudioName();
+        System.out.println("Sound is: " + sound);
         if (audioFormat != Audio.AudioFormat.NO_FORMAT && !audioResource.equals(Audio.AUDIO_NONE.getSoundResourceName())) {
             backgroundAudio = MediaPlayer.create(this, getResources().getIdentifier(audioResource, "raw", getPackageName()));
-            if (backgroundAudio != null) {
+            if (backgroundAudio != null && sound) {
                 backgroundAudio.setLooping(true);
                 backgroundAudio.setVolume(DEFAULT_AMBIENT_VOLUME, DEFAULT_AMBIENT_VOLUME);
                 backgroundAudio.start();
@@ -324,39 +329,42 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             case WATERMELON:
             case GRAPES:
             case ORANGE:
-                MediaPlayer p = audioEventsMap.get(Audio.EVENT_REWARD_EATING.toString());
-                p.setVolume(1.5f, 1.5f);
-                p.start();
+                if (sound) {
+                    MediaPlayer p = audioEventsMap.get(Audio.EVENT_REWARD_EATING.toString());
+                    p.setVolume(1.5f, 1.5f);
+                    p.start();
+                }
                 break;
             case COIN_5:
-                audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
                 break;
             case COIN_10:
-                audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
                 break;
             case COIN_20:
-                audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
                 break;
             case GIFTBOX:
-                audioEventsMap.get(Audio.EVENT_REWARD_PICKUP_1.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_REWARD_PICKUP_1.toString()).start();
                 break;
             case BOMB:
                 if (pickableItem.getState() == 1  || pickableItem.getState() == 2)
-                    audioEventsMap.get(Audio.EVENT_BOMB.toString()).start();
+                    if (sound) audioEventsMap.get(Audio.EVENT_BOMB.toString()).start();
                 break;
             case SPEEDHACK:
-                audioEventsMap.get(Audio.EVENT_REWARD_PICKUP_2.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_REWARD_PICKUP_2.toString()).start();
                 break;
             case TRAP:
-                audioEventsMap.get(Audio.EVENT_PENALTY_PICKUP_1.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_PENALTY_PICKUP_1.toString()).start();
                 break;
         }
     }
 
-
-    public static MediaPlayer toMediaPlayer(Activity activity, Audio audio) {
-        return MediaPlayer.create(activity, activity.getResources().getIdentifier(audio.getSoundResourceName(),
-                "raw", activity.getPackageName()));
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (Map.Entry<String, MediaPlayer> entry : audioEventsMap.entrySet()) {
+            audioEventsMap.get(entry.getKey()).release();
+        }
     }
-
 }

@@ -1,6 +1,8 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Movie;
 import android.util.AttributeSet;
@@ -9,22 +11,29 @@ import android.view.View;
 
 public class GIFView extends View {
 
+    private static final float SCALE_LOWRES_HEIGHT = 0.5f;
+    private static final float SCALE_LOWRES_WIDTH = 0.5f;
+
     private static final int DEFAULT_MOVIE_DURATION = 1000;
+    private Context context;
     private int movieResourceID;
     private Movie movie;
     private long movieStart = 0;
     private int currentAnimationTime = 0;
 
-    private int dpHeight;
-    private int dpWidth;
+    private boolean scaleToFitLowerResolutions = false;
+    private int viewportHeight;
+    private int viewportWidth;
 
     public GIFView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        dpHeight = (int) (displayMetrics.heightPixels / displayMetrics.density);
-        dpWidth = (int) (displayMetrics.widthPixels / displayMetrics.density);
+        viewportWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        viewportHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+        if (viewportHeight < 960 && viewportWidth < 540) {
+            scaleToFitLowerResolutions = true;
+        }
     }//end GIFView()
 
     public GIFView(Context context, AttributeSet attrs, final int defStyleAttr) {
@@ -38,8 +47,8 @@ public class GIFView extends View {
     public void setImageResource(int mvId){
         this.movieResourceID = mvId;
         movie = Movie.decodeStream(getResources().openRawResource(movieResourceID));
-        movieWidth = Math.min(dpWidth / 2, movie.width());
-        movieHeight = Math.min(dpHeight / 2, movie.height());
+        movieWidth = Math.min(viewportWidth / 2, movie.width());
+        movieHeight = Math.min(viewportHeight / 2, movie.height());
         requestLayout();
     }//end setImageResource()
 
@@ -50,20 +59,19 @@ public class GIFView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        float scaleX = (float) this.getWidth() / (float) movie.width();
-        float scaleY = (float) this.getHeight() / (float) movie.height();
+//        float scaleX = (float) this.getWidth() / (float) movie.width();
+//        float scaleY = (float) this.getHeight() / (float) movie.height();
         int posX = (getWidth() - movie.width()) / 2;
+        if (scaleToFitLowerResolutions) posX = (viewportWidth - movie.width()) /2;
+        //System.out.println("X:" + posX);
         int posY = 0;
-        drawGif(canvas, posX, posY);
+        if (scaleToFitLowerResolutions) canvas.scale(SCALE_LOWRES_WIDTH, SCALE_LOWRES_HEIGHT);
         if (movie != null){
-            //if (isPlaying) {            //Important Note: Play the GIF only when it is visible, otherwise the application will slow down significantly.
-                updateAnimationTime();
-                drawGif(canvas, posX, posY);
-                invalidate();
-            //}//end if isPlaying
+            updateAnimationTime();
+            drawGif(canvas, posX, posY);
+            invalidate();
         }//end if
-        else         drawGif(canvas, posX, posY);
-
+        else drawGif(canvas, posX, posY);
     }//end onDraw()
 
     private void updateAnimationTime() {
@@ -78,9 +86,5 @@ public class GIFView extends View {
         movie.setTime(currentAnimationTime);
         movie.draw(canvas, posX , posY);
     }//end drawGif()
-
-//    public void play() { isPlaying = true; }
-//
-//    public void stop() { isPlaying = false; }
 
 }//end class GIFView

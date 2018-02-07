@@ -18,16 +18,6 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
-            <!--
-            <ImageView
-                android:id="@+id/activity_training_user_image"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/User_image"
-                app:srcCompat="@drawable/ic_person_outline_black_24dp" />
-                -->
-
             <org.inspirecenter.amazechallenge.ui.GIFView
                 android:id="@+id/activity_training_icon"
                 android:layout_width="wrap_content"

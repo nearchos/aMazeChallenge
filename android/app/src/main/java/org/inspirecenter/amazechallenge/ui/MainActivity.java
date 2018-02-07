@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,14 +15,14 @@ import android.widget.Button;
 
 import org.inspirecenter.amazechallenge.R;
 
-public class MainActivity extends AppCompatActivity
-        /*implements NavigationView.OnNavigationItemSelectedListener*/ {
+public class MainActivity extends AppCompatActivity {
 
     public static final String KEY_PREF_LEARNED = "pref-learned";
     public static final String KEY_PREF_PERSONALIZED = "pref-personalized";
     public static final String KEY_PREF_EDITED_CODE = "pref-code-edited";
     public static final String KEY_PREF_LOCALLY_TESTED = "pref-local-tested";
     public static final String KEY_PREF_PLAYED_ONLINE = "pref-played-online";
+    public static final String KEY_PREF_SOUND = "pref-sound";
 
     private Button buttonLearn;
     private Button buttonPersonalize;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     private Button buttonPlayOnline;
     private Button buttonSettings;
     private Button buttonGenerator;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +41,6 @@ public class MainActivity extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-//        final Toolbar toolbar = findViewById(org.inspirecenter.amazechallenge.R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//
-//        final DrawerLayout drawer = findViewById(org.inspirecenter.amazechallenge.R.id.drawer_layout);
-//        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, org.inspirecenter.amazechallenge.R.string.navigation_drawer_open, org.inspirecenter.amazechallenge.R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
-
-//        final NavigationView navigationView = findViewById(org.inspirecenter.amazechallenge.R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(this);
-
         buttonLearn = findViewById(R.id.button_learn);
         buttonPersonalize = findViewById(R.id.button_personalize);
         buttonEditYourCode = findViewById(R.id.edit_your_code);
@@ -58,6 +48,7 @@ public class MainActivity extends AppCompatActivity
         buttonPlayOnline = findViewById(R.id.play_online);
         buttonGenerator = findViewById(R.id.generator);
         buttonSettings = findViewById(R.id.settings);
+        fab = findViewById(R.id.activity_main_sound);
     }
 
     @Override
@@ -118,4 +109,11 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(this, AboutActivity.class));
     }
 
+    public void sound(View view) {
+        boolean sound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_SOUND, true);
+        sound = !sound;
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(KEY_PREF_SOUND, sound).apply();
+        if (sound) fab.setImageDrawable(getDrawable(R.drawable.ic_volume_up_black_24dp));
+        else fab.setImageDrawable(getDrawable(R.drawable.ic_volume_off_black_24dp));
+    }
 }
