@@ -13,6 +13,7 @@
     "maxActivePlayers": 10,
     "startTimestamp": 0,
     "endTimestamp": 0,
+    "hasQuestionnaire": true,
     "max_rewards": 3,
     "max_penalties": 3,
     "grid": {

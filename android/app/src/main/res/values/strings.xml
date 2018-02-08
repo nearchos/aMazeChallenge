@@ -245,6 +245,18 @@
     <string name="error_function_in_function">Function in function statement detected.</string>
     <string name="error_infinite_loop">Infinite loop detected.</string>
     <string name="error_noerror">No error.</string>
+    <string name="questionnaire">Questionnaire</string>
+    <string name="questionnaire_instructions_body">Please answer questions honestly. Do not provide any more information than what is required. If you are not sure what a question is asking, please speak to someone who can help. You may choose to skip this questionnaire but your feedback would be highly appreciated.</string>
+    <string name="questionnaire_instructions_title"><u>Questionnaire Instructions:</u></string>
+    <string name="question_1">Did you have fun playing aMaze Challenge?</string>
+    <string name="answer_1_no">Not at all</string>
+    <string name="answer_1_yes">Absolutely!</string>
+    <string name="Skip">Skip</string>
+    <string name="question_2">Would you share this experience with your friends?</string>
+    <string name="question_3">How much do you believe this experience helped you in learning more about programming?</string>
+    <string name="answer_3_no">Not at all</string>
+    <string name="answer_3_yes">A lot</string>
+    <string name="submit">Submit</string>
 
 
     <string-array name="rows_and_cols_selection">
@@ -280,6 +292,12 @@
         <item>Low</item>
         <item>Medium</item>
         <item>High</item>
+    </string-array>
+
+    <string-array name="question2_entries">
+        <item>Yes</item>
+        <item>No</item>
+        <item>I would rather not say</item>
     </string-array>
 
 

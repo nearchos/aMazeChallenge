@@ -252,7 +252,11 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(MainActivity.KEY_PREF_LOCALLY_TESTED, true).apply();
                 Toast.makeText(this, getString(R.string.maze_completed) + " " + challenge.getName() + "!", Toast.LENGTH_LONG).show();
                 if (backgroundAudio != null) backgroundAudio.stop();
-                finish();
+
+                if (challenge.getHasQuestionnaire())
+                    startActivity(new Intent(this, QuestionnaireActivity.class));
+                else
+                    finish();
             }
 
             if (RuntimeController.allPlayersHaveLost(game)) {

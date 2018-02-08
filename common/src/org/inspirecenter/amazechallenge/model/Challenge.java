@@ -50,7 +50,7 @@ public class Challenge implements Serializable {
 
     public Challenge(String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers,
-                     int maxActivePlayers, long startTimestamp, long endTimestamp,
+                     int maxActivePlayers, long startTimestamp, long endTimestamp, boolean hasQuestionnaire,
                      int max_rewards, int max_penalties,
                      Grid grid, String lineColor, String difficulty, String createdBy, long createdOn,
                      String backgroundAudioName, String backgroundAudioFormat,
@@ -66,6 +66,7 @@ public class Challenge implements Serializable {
         this.maxActivePlayers = maxActivePlayers;
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
+        this.hasQuestionnaire = hasQuestionnaire;
 
         this.max_rewards = max_rewards;
         this.max_penalties = max_penalties;
@@ -85,13 +86,13 @@ public class Challenge implements Serializable {
 
     public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp,
-                     long endTimestamp, int max_rewards, int max_penalties,
+                     long endTimestamp, boolean hasQuestionnaire, int max_rewards, int max_penalties,
                      Grid grid, String lineColor, String difficulty, String createdBy,
                      long createdOn, String backgroundAudioName, String backgroundAudioFormat,
                      String backgroundImageName, BackgroundImage.BackgroundImageType backgroundImageType) {
         this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther,
                 DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp,
-                endTimestamp, max_rewards, max_penalties, grid, lineColor,
+                endTimestamp, hasQuestionnaire, max_rewards, max_penalties, grid, lineColor,
                 difficulty, createdBy, createdOn, backgroundAudioName, backgroundAudioFormat,
                 backgroundImageName, backgroundImageType);
         this.id = id;
@@ -180,6 +181,8 @@ public class Challenge implements Serializable {
     public String getBackgroundAudioName() { return backgroundAudioName; }
 
     public Audio.AudioFormat getBackgroundAudioFormat() { return backgroundAudioFormat; }
+
+    public boolean getHasQuestionnaire() { return hasQuestionnaire; }
 
     @Override
     public String toString() {
