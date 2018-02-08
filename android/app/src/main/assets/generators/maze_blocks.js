@@ -138,3 +138,8 @@ Blockly.JavaScript['maze_get_direction'] = function(block) {
   var code = 'instance.getDirection()';
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
+
+Blockly.JavaScript['maze_compass'] = function(block) {
+  var code = 'instance.compass()';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};

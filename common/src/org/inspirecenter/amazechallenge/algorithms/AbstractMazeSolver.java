@@ -49,4 +49,8 @@ public abstract class AbstractMazeSolver implements MazeSolver {
         return RuntimeController.look(game, getGrid(), getPosition(), direction);
     }
 
+    public Direction compass() {
+        return RuntimeController.compass(getGrid().getTargetPosition(), getPosition());
+    }
+
 }

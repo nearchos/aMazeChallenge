@@ -194,6 +194,15 @@
     "colour": 60,
     "tooltip": "Returns the current direction of the player",
     "helpUrl": ""
+  },
+  {
+    "type": "maze_compass",
+    "message0": "compass",
+    "inputsInline": true,
+    "output": "Direction",
+    "colour": 60,
+    "tooltip": "Gets the direction the player needs to go to find the exit.",
+    "helpUrl": ""
   }
 
 ]

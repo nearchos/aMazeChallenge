@@ -4,6 +4,7 @@ import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
 import org.inspirecenter.amazechallenge.model.*;
 
+import java.net.NoRouteToHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -220,6 +221,38 @@ public class RuntimeController {
                 break;
         }
         return PickableType.Bias.NONE;
+    }
+
+    public static Direction compass(final Position targetPosition, final Position playerPosition) {
+        Direction direction = Direction.NORTH;
+        int rowDifference = playerPosition.getRow() - targetPosition.getRow();
+        int colDifference = playerPosition.getCol() - targetPosition.getCol();
+
+        /*
+            NOTE:
+
+                Positive rowDifference => Exit is toward NORTH.
+                Negative rowDifference => Exit is toward SOUTH.
+
+                Positive colDifference => Exit is toward WEST.
+                Negative rowDifference => Exit is toward EAST.
+         */
+
+        Direction predominantEastWestDirection = Direction.EAST;
+        Direction predominantNorthSouthDirection = Direction.NORTH;
+
+        if (rowDifference >= 0) predominantNorthSouthDirection = Direction.NORTH;
+        else predominantNorthSouthDirection = Direction.SOUTH;
+
+        if (colDifference >= 0) predominantEastWestDirection = Direction.WEST;
+        else predominantEastWestDirection = Direction.EAST;
+
+        if (Math.max(Math.abs(rowDifference), Math.abs(colDifference)) == Math.abs(rowDifference)) {
+            return predominantNorthSouthDirection;
+        }
+        else
+            return predominantEastWestDirection;
+
     }
 
     public static int getGridCell(final Grid grid, final int row, final int col) throws IndexOutOfBoundsException {

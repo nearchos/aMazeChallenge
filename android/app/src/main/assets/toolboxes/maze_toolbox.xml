@@ -14,6 +14,7 @@
             <block type="maze_canmove_backward"></block>
             <block type="maze_look"></block>
             <block type="maze_get_direction"></block>
+            <block type="maze_compass"></block>
             <block type="maze_direction_north"></block>
             <block type="maze_direction_south"></block>
             <block type="maze_direction_east"></block>
