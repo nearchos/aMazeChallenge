@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonEditYourCode;
     private Button buttonTestLocally;
     private Button buttonPlayOnline;
-    private Button buttonSettings;
+    private Button buttonAbout;
     private Button buttonGenerator;
     private FloatingActionButton fab;
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         buttonTestLocally = findViewById(R.id.training);
         buttonPlayOnline = findViewById(R.id.play_online);
         buttonGenerator = findViewById(R.id.generator);
-        buttonSettings = findViewById(R.id.settings);
+        buttonAbout = findViewById(R.id.about);
         fab = findViewById(R.id.activity_main_sound);
     }
 
@@ -74,11 +74,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(org.inspirecenter.amazechallenge.R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        if (drawer.isDrawerOpen(GravityCompat.START)) drawer.closeDrawer(GravityCompat.START);
+        else super.onBackPressed();
     }
 
     public void learn(final View view) {
@@ -105,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, MazeDesignerActivity.class));
     }
 
-    public void settings(final View view) {
+    public void about(final View view) {
         startActivity(new Intent(this, AboutActivity.class));
     }
 

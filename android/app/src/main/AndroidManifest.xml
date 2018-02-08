@@ -87,6 +87,7 @@
         <activity
             android:name=".ui.AboutActivity"
             android:label="@string/About"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -107,13 +108,6 @@
             android:name=".ui.MazeDesignerActivity"
             android:parentActivityName=".ui.MainActivity"
             android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
-        </activity>
-        <activity android:name=".ui.SettingsActivity"
-            android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

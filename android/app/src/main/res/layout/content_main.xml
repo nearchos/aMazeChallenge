@@ -151,12 +151,12 @@
             android:layout_height="0dp" />
 
         <Button
-            android:id="@+id/settings"
-            android:text="@string/settings"
-            android:onClick="settings"
+            android:id="@+id/about"
+            android:text="@string/about"
+            android:onClick="about"
             android:textSize="18sp"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:drawableStart="@drawable/ic_settings_black_24dp"
+            android:drawableStart="@drawable/ic_info_black_24dp"
             android:drawableTint="@color/white"
             android:textColor="@color/white"
             android:background="@color/materialViolet"
