@@ -15,7 +15,7 @@ public class Game implements Serializable {
     public static final long ONE_SECOND = 1000L;
 
     @com.googlecode.objectify.annotation.Id
-    public Long id; // todo check if can convert to private -- i.e. if objectify allows it
+    public Long id;
 
     @com.googlecode.objectify.annotation.Index
     public Long challengeId; // todo check if can convert to private
@@ -25,7 +25,7 @@ public class Game implements Serializable {
     private List<String> waitingPlayers = new Vector<>();
     private Map<String,Player> allPlayerEmailsToPlayers = new HashMap<>();
     private Map<String,PlayerPositionAndDirection> activePlayerEmailsToPositionAndDirections = new HashMap<>();
-    private List<PickableItem> pickableItems = new Vector<>();
+    private List<Pickable> pickables = new Vector<>();
     private long lastExecutionTime = 0L;
     private long lastUpdated = 0L;
     private long counter = 0L;
@@ -168,24 +168,22 @@ public class Game implements Serializable {
 
     public int getNumOfBiasType(final PickableType.Bias biasType) {
         int count = 0;
-        for(final PickableItem pickableItem : pickableItems) {
-            if(pickableItem.getPickableType().getBias() == biasType) count++;
+        for(final Pickable pickable : pickables) {
+            if(pickable.getPickableType().getBias() == biasType) count++;
         }
         return count;
     }
 
-    public List<PickableItem> getPickableItems() {
-        return pickableItems;
+    public List<Pickable> getPickables() {
+        return pickables;
     }
 
-    public void addPickableItem(final PickableItem pickableItem) {
-        this.pickableItems.add(pickableItem);
+    public void addPickableItem(final Pickable pickable) {
+        this.pickables.add(pickable);
     }
 
-    public void removePickupItem(int i) { pickableItems.remove(i); }
-
-    public GameLightState getLightState() {
-        return new GameLightState(activePlayerEmailsToPositionAndDirections, queuedPlayers, lastUpdated, counter);
+    public void removePickupItem(int i) {
+        pickables.remove(i);
     }
 
     public GameFullState getFullState(final Grid grid) {
@@ -244,7 +242,7 @@ public class Game implements Serializable {
     }
 
     public void resetPickables() {
-        pickableItems = new Vector<>();
+        pickables.clear();
     }
 
     private AudioEventListener audioEventListener = null;

@@ -1,15 +1,23 @@
 package org.inspirecenter.amazechallenge.controller;
 
+import android.util.Log;
+
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
-import org.inspirecenter.amazechallenge.model.*;
+import org.inspirecenter.amazechallenge.model.Challenge;
+import org.inspirecenter.amazechallenge.model.Direction;
+import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.Grid;
+import org.inspirecenter.amazechallenge.model.Pickable;
+import org.inspirecenter.amazechallenge.model.PickableType;
+import org.inspirecenter.amazechallenge.model.Player;
+import org.inspirecenter.amazechallenge.model.PlayerPositionAndDirection;
+import org.inspirecenter.amazechallenge.model.Position;
 
-import java.net.NoRouteToHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Vector;
 
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LEFT_SIDE;
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LOWER_SIDE;
@@ -78,30 +86,30 @@ public class RuntimeController {
             case MOVE_FORWARD:
                 if (canMoveForward(grid, playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection())) {
                     position = movePlayerForward(playerPositionAndDirection);
-                    // handle pickableItems and rewards (i.e. add/substract health etc.)
-                    for(int i = 0; i < game.getPickableItems().size(); i++) {
-                        PickableItem pickableItem = game.getPickableItems().get(i);
-                        if(pickableItem.getPosition().equals(position)) {
+                    // handle pickables and rewards (i.e. add/substract health etc.)
+                    for(int i = 0; i < game.getPickables().size(); i++) {
+                        Pickable pickable = game.getPickables().get(i);
+                        if(pickable.getPosition().equals(position)) {
 
                             //Change stats:
 
-                            if (pickableItem.getPickableType() == PickableType.BOMB) {
-                                if (pickableItem.getState() == 1 || pickableItem.getState() == 2)
-                                    game.getPlayer(playerEmail).getHealth().changeBy(pickableItem.getPickableType().getHealthChange());
+                            if (pickable.getPickableType() == PickableType.BOMB) {
+                                if (pickable.getState() == 1 || pickable.getState() == 2)
+                                    game.getPlayer(playerEmail).getHealth().changeBy(pickable.getPickableType().getHealthChange());
                             }
-                            else game.getPlayer(playerEmail).getHealth().changeBy(pickableItem.getPickableType().getHealthChange());
+                            else game.getPlayer(playerEmail).getHealth().changeBy(pickable.getPickableType().getHealthChange());
 
-                            game.getPlayer(playerEmail).changePointsBy(pickableItem.getPickableType().getPointsChange());
+                            game.getPlayer(playerEmail).changePointsBy(pickable.getPickableType().getPointsChange());
 
                             //Apply effects:
-                            if (pickableItem.getPickableType() == PickableType.SPEEDHACK)
+                            if (pickable.getPickableType() == PickableType.SPEEDHACK)
                                 addPlayerDoubleTurns(playerEmail, PickableType.SPEEDHACK_TURNS_AMOUNT);
-                            else if (pickableItem.getPickableType() == PickableType.TRAP)
+                            else if (pickable.getPickableType() == PickableType.TRAP)
                                 addPlayerLostTurns(playerEmail, PickableType.TRAP_TURNS_AMOUNT);
 
                             // if audio event listener set, notify with event
-                            if(audioEventListener != null) audioEventListener.onAudioEvent(pickableItem);
-                            if (pickableItem.getPickableType() != PickableType.BOMB) game.removePickupItem(i);
+                            if(audioEventListener != null) audioEventListener.onAudioEvent(pickable);
+                            if (pickable.getPickableType() != PickableType.BOMB) game.removePickupItem(i);
                         }
                     }
                 }
@@ -189,7 +197,7 @@ public class RuntimeController {
         switch (direction) {
             case NORTH:
                 if (position.getRow() - 1 > 0) {
-                    for (PickableItem i : game.getPickableItems()) {
+                    for (Pickable i : game.getPickables()) {
                         if (i.getPosition().getRow() == position.getRow()-1 && i.getPosition().getCol() == position.getCol())
                             return i.getPickableType().getBias();
                     }
@@ -197,7 +205,7 @@ public class RuntimeController {
                 break;
             case SOUTH:
                 if (position.getRow() + 1 < grid.getHeight()) {
-                    for (PickableItem i : game.getPickableItems()) {
+                    for (Pickable i : game.getPickables()) {
                         if (i.getPosition().getRow() == position.getRow()+1 && i.getPosition().getCol() == position.getCol())
                             return i.getPickableType().getBias();
                     }
@@ -205,7 +213,7 @@ public class RuntimeController {
                 break;
             case EAST:
                 if (position.getCol() + 1 < grid.getWidth()) {
-                    for (PickableItem i : game.getPickableItems()) {
+                    for (Pickable i : game.getPickables()) {
                         if (i.getPosition().getCol() == position.getCol()+1 && i.getPosition().getRow() == position.getRow())
                             return i.getPickableType().getBias();
                     }
@@ -213,7 +221,7 @@ public class RuntimeController {
                 break;
             case WEST:
                 if (position.getCol() - 1 > 0) {
-                    for (PickableItem i : game.getPickableItems()) {
+                    for (Pickable i : game.getPickables()) {
                         if (i.getPosition().getCol() == position.getCol()-1 && i.getPosition().getRow() == position.getRow())
                             return i.getPickableType().getBias();
                     }
@@ -224,7 +232,6 @@ public class RuntimeController {
     }
 
     public static Direction compass(final Position targetPosition, final Position playerPosition) {
-        Direction direction = Direction.NORTH;
         int rowDifference = playerPosition.getRow() - targetPosition.getRow();
         int colDifference = playerPosition.getCol() - targetPosition.getCol();
 
@@ -238,8 +245,8 @@ public class RuntimeController {
                 Negative rowDifference => Exit is toward EAST.
          */
 
-        Direction predominantEastWestDirection = Direction.EAST;
-        Direction predominantNorthSouthDirection = Direction.NORTH;
+        Direction predominantEastWestDirection;
+        Direction predominantNorthSouthDirection;
 
         if (rowDifference >= 0) predominantNorthSouthDirection = Direction.NORTH;
         else predominantNorthSouthDirection = Direction.SOUTH;
@@ -249,10 +256,9 @@ public class RuntimeController {
 
         if (Math.max(Math.abs(rowDifference), Math.abs(colDifference)) == Math.abs(rowDifference)) {
             return predominantNorthSouthDirection;
-        }
-        else
+        } else {
             return predominantEastWestDirection;
-
+        }
     }
 
     public static int getGridCell(final Grid grid, final int row, final int col) throws IndexOutOfBoundsException {
@@ -298,55 +304,55 @@ public class RuntimeController {
 
     private static void generateItems(Game game, Challenge challenge, Grid grid) {
 
+        final Random random = new Random();
+
         //Generate rewards:
-        if (game.getNumOfBiasType(PickableType.Bias.REWARD) < challenge.getMax_rewards()) {
-            final Random random = new Random();
+        if (game.getNumOfBiasType(PickableType.Bias.REWARD) < challenge.getMaxRewards()) {
             int row = random.nextInt(grid.getHeight());
             int col = random.nextInt(grid.getWidth());
             final Position position = new Position(row, col);
 
-            PickableType type = PickableType.getRandomReward();
+            final PickableType type = PickableType.getRandomReward();
 
             boolean exists = false;
-            for (PickableItem i : game.getPickableItems()) {
-                if (i.getPosition().equals(position)) {
+            for (Pickable pickable : game.getPickables()) {
+                if (pickable.getPosition().equals(position)) {
                     exists = true;
                     break;
                 }
             }
 
-            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
-                game.addPickableItem(new PickableItem(position, type));
-
+            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position)) {
+                game.addPickableItem(new Pickable(position, type));
+            }
         }
 
         //Generate penalties:
-        if (game.getNumOfBiasType(PickableType.Bias.PENALTY) < challenge.getMax_penalties()) {
-            final Random random = new Random();
+        if (game.getNumOfBiasType(PickableType.Bias.PENALTY) < challenge.getMaxPenalties()) {
             int row = random.nextInt(grid.getHeight());
             int col = random.nextInt(grid.getWidth());
             final Position position = new Position(row, col);
 
-            PickableType type = PickableType.getRandomPenalty();
+            final PickableType type = PickableType.getRandomPenalty();
 
             boolean exists = false;
-            for (PickableItem i : game.getPickableItems()) {
-                if (i.getPosition().equals(position)) {
+            for (Pickable pickable : game.getPickables()) {
+                if (pickable.getPosition().equals(position)) {
                     exists = true;
                     break;
                 }
             }
 
-            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position))
-                game.addPickableItem(new PickableItem(position, type));
-
+            if (!exists && !grid.getTargetPosition().equals(position) && !grid.getStartingPosition().equals(position)) {
+                game.addPickableItem(new Pickable(position, type));
+            }
         }
     }
 
     public static void handlePickableState(Game game) {
-        for (int i = 0; i < game.getPickableItems().size(); i++) {
-            game.getPickableItems().get(i).reduceState();
-            if (game.getPickableItems().get(i).getState() <= 0) game.removePickupItem(i);
+        for (int i = 0; i < game.getPickables().size(); i++) {
+            game.getPickables().get(i).reduceState();
+            if (game.getPickables().get(i).getState() <= 0) game.removePickupItem(i);
         }
     }
 

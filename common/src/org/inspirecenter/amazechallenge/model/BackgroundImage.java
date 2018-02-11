@@ -4,24 +4,25 @@ public enum BackgroundImage {
 
     TEXTURE_GRASS("Grass", "texture_grass", BackgroundImageType.JPG),
     TEXTURE_METAL("Metal", "texture_metal", BackgroundImageType.JPG),
-    TEXTURE_LAVA("Lava", "texture_lava", BackgroundImageType.JPG)
-
-    ;
+    TEXTURE_LAVA("Lava", "texture_lava", BackgroundImageType.JPG);
 
     public enum BackgroundImageType {
         PNG("png"),
         GIF("gif"),
-        JPG("jpg"),
-        ;
+        JPG("jpg");
+
         String typeName;
         BackgroundImageType(String typeName) { this.typeName = typeName; }
+
         @Override
-        public String toString() { return typeName; }
+        public String toString() {
+            return typeName;
+        }
     }
 
-    String resourceName;
-    String name;
-    BackgroundImageType type;
+    private final String name;
+    private final String resourceName;
+    private final BackgroundImageType type;
 
     BackgroundImage(String name, String resourceName, BackgroundImageType type) {
         this.name = name;
@@ -29,20 +30,27 @@ public enum BackgroundImage {
         this.type = type;
     }
 
-    public String getResourceName() { return resourceName; }
+    public String getName() {
+        return name;
+    }
 
-    public String getName() { return name; }
+    public String getResourceName() {
+        return resourceName;
+    }
 
-    public BackgroundImageType getType() { return type; }
+    public BackgroundImageType getType() {
+        return type;
+    }
 
     @Override
-    public String toString() { return name; }
+    public String toString() {
+        return name + "." + type;
+    }
 
     public static BackgroundImage fromResourceText(String backgroundImageResourceName) {
-        for (BackgroundImage i : BackgroundImage.values()) {
-            if (i.getResourceName().equals(backgroundImageResourceName)) return i;
+        for (final BackgroundImage backgroundImage : BackgroundImage.values()) {
+            if (backgroundImage.getResourceName().equals(backgroundImageResourceName)) return backgroundImage;
         }
         throw new RuntimeException("Invalid BackgroundImage provided: " + backgroundImageResourceName);
     }
-
 }

@@ -276,7 +276,9 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }).create().show();
         }
         else {
-            final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
+            // todo choose algorithm
+            final String data = MazeGenerator.generate(MazeGenerator.Algorithm.MANY_SOLUTIONS, size, startingPosition, targetPosition);
+//            final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
             final Grid grid = new Grid(size, size, data, startingPosition, targetPosition);
             gameView.setBackgroundDrawable(backgroundImage);
             //TODO Implement background selection
@@ -460,7 +462,9 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private String toJSON() {
         final Position startingPosition = new Position(startPos_row, startPos_column);
         final Position targetPosition = new Position(targetPos_row, targetPos_column);
-        final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
+//        final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
+        // todo choose algorithm
+        final String data = MazeGenerator.generate(MazeGenerator.Algorithm.MANY_SOLUTIONS, size, startingPosition, targetPosition);
 
         return  "{\n" +
                 "    \"id\": 0,\n" +

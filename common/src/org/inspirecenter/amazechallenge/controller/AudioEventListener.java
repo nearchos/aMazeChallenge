@@ -1,9 +1,8 @@
 package org.inspirecenter.amazechallenge.controller;
 
-import org.inspirecenter.amazechallenge.model.PickableItem;
+import org.inspirecenter.amazechallenge.model.Pickable;
 
 public interface AudioEventListener {
 
-    public void onAudioEvent(final PickableItem pickableItem);
-
+    public void onAudioEvent(final Pickable pickable);
 }

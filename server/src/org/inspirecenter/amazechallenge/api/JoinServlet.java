@@ -3,6 +3,7 @@ package org.inspirecenter.amazechallenge.api;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.cloud.datastore.DatastoreException;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
@@ -14,8 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 import static org.inspirecenter.amazechallenge.api.Common.checkMagic;
@@ -24,6 +27,8 @@ import static org.inspirecenter.amazechallenge.api.Common.isValidEmailAddress;
 public class JoinServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
+
+    private static final Logger log = Logger.getLogger(JoinServlet.class.getName());
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -84,7 +89,6 @@ public class JoinServlet extends HttpServlet {
                             gameId = game == null ? 0L : game.getId();
                         }
 
-
                         // handle the addition of a new player in a transaction to ensure atomicity
                         final Game game = ofy().transact(() -> {
                             // add binding of user to game
@@ -115,8 +119,10 @@ public class JoinServlet extends HttpServlet {
                         }
                     }
                 }
-            } catch (NumberFormatException nfe) {
-                errors.add(nfe.getMessage());
+            } catch (NumberFormatException | DatastoreException e) {
+                errors.add(e.getMessage());
+                log.severe("amaze error: " + Arrays.toString(e.getStackTrace()));
+                log.severe("amaze error cause: " + Arrays.toString(e.getCause().getStackTrace()));
             }
         }
 

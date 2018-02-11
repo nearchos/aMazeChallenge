@@ -39,6 +39,20 @@ class BooleanGrid {
         return true;
     }
 
+    /**
+     * Returns true iff all cells are unset (i.e. false).
+     * @return true iff all cells are unset (i.e. false)
+     */
+    boolean isEmpty() {
+        for(int c = 0; c < size; c++) {
+            for(int r = 0; r < size; r++) {
+                if(grid[c][r]) return false;
+            }
+        }
+
+        return true;
+    }
+
     Position randomUnsetPosition() {
         if(isFull()) throw new RuntimeException("Grid is already full!");
 
@@ -47,6 +61,17 @@ class BooleanGrid {
             final int randomRow = random.nextInt(size);
             final int randomCol = random.nextInt(size);
             if(!grid[randomCol][randomRow]) return new Position(randomRow, randomCol);
+        }
+    }
+
+    Position randomSetPosition() {
+        if(isEmpty()) throw new RuntimeException("Grid is empty!");
+
+        final Random random = new Random();
+        while(true) {
+            final int randomRow = random.nextInt(size);
+            final int randomCol = random.nextInt(size);
+            if(grid[randomCol][randomRow]) return new Position(randomRow, randomCol);
         }
     }
 }

@@ -6,20 +6,20 @@ import java.io.Serializable;
  * npaspallis on 16/01/2018.
  */
 @com.googlecode.objectify.annotation.Entity
-public class PickableItem implements Serializable {
+public class Pickable implements Serializable {
 
     @com.googlecode.objectify.annotation.Id
-    Long id;
+    public Long id;
 
     private Position position;
     private PickableType pickableType;
     private int state;
 
-    public PickableItem() {
+    public Pickable() {
         super();
     }
 
-    public PickableItem(Position position, PickableType pickableType) {
+    public Pickable(Position position, PickableType pickableType) {
         this.position = position;
         this.pickableType = pickableType;
         state = pickableType.getDefaultState();

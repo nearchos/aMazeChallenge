@@ -60,6 +60,7 @@
         <activity
             android:name=".ui.GameActivity"
             android:label="@string/Game"
+            android:noHistory="true"
             android:parentActivityName=".ui.TrainingActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

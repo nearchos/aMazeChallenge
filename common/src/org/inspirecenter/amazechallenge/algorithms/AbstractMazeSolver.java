@@ -52,5 +52,4 @@ public abstract class AbstractMazeSolver implements MazeSolver {
     public Direction compass() {
         return RuntimeController.compass(getGrid().getTargetPosition(), getPosition());
     }
-
 }

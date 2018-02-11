@@ -142,16 +142,12 @@ public class RunEngineServlet extends HttpServlet {
                 game.queuePlayer(playerEmail);
             }
         }
-//System.out.println("**** after queueing: " + game); // todo
 
         // now check if we can upgrade any players from 'queued' to 'active'
         while(game.getNumberOfActivePlayers() < challenge.getMaxActivePlayers() && game.hasQueuedPlayers()) {
             // activate players as needed
             game.activateNextPlayer(grid);
         }
-
-// System.out.println("**** after activating: " + game);
-// System.out.println("ActivePlayers: " + game.getActivePlayers()); // todo delete
 
         // prepare active players
         final Map<String,MazeSolver> playerEmailToMazeSolvers = new HashMap<>();
@@ -167,7 +163,7 @@ public class RunEngineServlet extends HttpServlet {
 
         // todo ... revise to make multi-threaded and with deadlines?
         // todo check out: com.google.appengine.api.ThreadManager
-        RuntimeController.makeMove(grid, game, playerEmailToMazeSolvers);
+        RuntimeController.makeMove(challenge, game, playerEmailToMazeSolvers);
 
         // store maze solvers' state to memcache
         for(final String activePlayerEmail : activePlayers) {
@@ -176,7 +172,6 @@ public class RunEngineServlet extends HttpServlet {
         }
 
         // remove completed players (move from 'active' back to 'waiting')
-        // todo
         final Position targetPosition = challenge.getGrid().getTargetPosition();
         for(final String activePlayerEmail : activePlayers) {
             final Position playerPosition = game.getPosition(activePlayerEmail);

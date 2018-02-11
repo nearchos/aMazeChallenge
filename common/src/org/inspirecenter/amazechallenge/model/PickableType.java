@@ -26,15 +26,11 @@ public enum PickableType {
     COIN_20("coin20", REWARD, NONE, "Coin reward +20 points", 0, 20, 4),
     GIFTBOX("giftbox", REWARD, NONE, "Gift reward +50 points", 0, 50, 3),
 
-    BOMB("bomb", Bias.PENALTY, NONE, "Bomb penalty -50 health", 50, 0, 10), // customize bombs?
+    BOMB("bomb", PENALTY, NONE, "Bomb penalty -50 health", 50, 0, 10), // customize bombs?
 
     SPEEDHACK("doublemoves", REWARD, NONE, "Player gets to do 2 moves", 0, 0, Integer.MAX_VALUE),
     TRAP("trap", PENALTY, NONE, "Player loses 1 move", 0, 0, Integer.MAX_VALUE)
-
     ;
-
-    public enum Bias { REWARD, PENALTY, NONE };
-    public enum Category { FRUIT, SNACK, NONE };
 
     private String imageResourceName;
     private Bias bias;
@@ -75,7 +71,7 @@ public enum PickableType {
         return selected.firstElement();
     }
 
-    private PickableType(String imageResourceName, Bias bias, Category category, String description, int absoluteHealth, int absolutePoints, int defaultState) {
+    PickableType(String imageResourceName, Bias bias, Category category, String description, int absoluteHealth, int absolutePoints, int defaultState) {
         this.imageResourceName = imageResourceName;
         this.bias = bias;
         this.category = category;
@@ -109,4 +105,11 @@ public enum PickableType {
         return category;
     }
 
+    public enum Bias {
+        REWARD, PENALTY, NONE;
+    }
+
+    public enum Category {
+        FRUIT, SNACK, NONE;
+    }
 }

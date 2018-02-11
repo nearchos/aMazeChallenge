@@ -132,14 +132,17 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         protected void onPostExecute(final Reply reply) {
             super.onPostExecute(reply);
             progressBar.setVisibility(View.GONE);
-            // todo check if reply is null first
-            if(reply.isOk()) {
+            // check if reply is not null first
+            if(reply != null && reply instanceof ChallengesReply) {
                 final Collection<Challenge> challenges = ((ChallengesReply) reply).getChallenges();
+                challengeAdapter.clear();
                 challengeAdapter.addAll(challenges);
                 challengesRecyclerView.setVisibility(View.VISIBLE);
             } else {
                 // show message in snack-bar
-                final Vector<String> messages = ((ReplyWithErrors) reply).getErrors();
+                final Vector<String> messages = new Vector<>();
+                if(reply == null) messages.add("Server is down or connection is cancelled");
+                else messages.addAll(((ReplyWithErrors) reply).getErrors());
                 Snackbar.make(findViewById(R.id.activity_online_challenge), "Error(s): " + messages, Snackbar.LENGTH_SHORT).show();
                 // also log warning
                 Log.w(TAG, "Error messages: " + messages);

@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import org.inspirecenter.amazechallenge.R;
@@ -21,7 +22,7 @@ import org.inspirecenter.amazechallenge.model.BackgroundImage;
 import org.inspirecenter.amazechallenge.model.Game;
 import org.inspirecenter.amazechallenge.model.GameFullState;
 import org.inspirecenter.amazechallenge.model.Grid;
-import org.inspirecenter.amazechallenge.model.PickableItem;
+import org.inspirecenter.amazechallenge.model.Pickable;
 import org.inspirecenter.amazechallenge.model.PickableType;
 import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.Direction;
@@ -75,7 +76,7 @@ public class GameView extends View {
     public Map<String,Player> allPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
     public List<String> queuedPlayerEmails;
-    public List<PickableItem> pickableItems = new Vector<>();
+    public List<Pickable> pickables = new Vector<>();
 
     void setGrid(final Grid grid) {
         this.grid = grid;
@@ -87,7 +88,7 @@ public class GameView extends View {
             activePlayerPositionAndDirectionMap.put(activePlayerEmail, game.getPlayerPositionAndDirection(activePlayerEmail));
         }
         queuedPlayerEmails = game.getQueuedPlayers();
-        this.pickableItems = game.getPickableItems();
+        this.pickables = game.getPickables();
     }
 
     void setLineColor(String lineColor) {
@@ -165,10 +166,10 @@ public class GameView extends View {
         final Position targetPosition = grid.getTargetPosition();
         drawGridCell(targetPosition.getRow(), targetPosition.getCol(), tile_size, padding, 0x0, COLOR_BLACK, COLOR_LIGHT_GREEN, canvas);
 
-        // draw pickableItems and rewards
-        for(final PickableItem pickableItem : pickableItems)
-            drawPickupItem(pickableItem.getPosition(), getDrawableResourceId(pickableItem), tile_size, padding, canvas);
-
+        // draw pickables and rewards
+        for(final Pickable pickable : pickables) {
+            drawPickupItem(pickable.getPosition(), getDrawableResourceId(pickable), tile_size, padding, canvas);
+        }
 
         // draw active players
         for(final Map.Entry<String,PlayerPositionAndDirection> entry : activePlayerPositionAndDirectionMap.entrySet()) {
@@ -216,7 +217,6 @@ public class GameView extends View {
         if((shape & SHAPE_ONLY_UPPER_SIDE) != 0) { canvas.drawLine(topLeftX, topLeftY, topLeftX + tile_size, topLeftY, paint); }
         // draw lower line
         if((shape & SHAPE_ONLY_LOWER_SIDE) != 0) { canvas.drawLine(topLeftX, topLeftY + tile_size, topLeftX + tile_size, topLeftY + tile_size, paint); }
-
     }
 
     private void drawPlayer(final Player player, final Position position, final Direction direction, final int tile_size, final int padding, final Canvas canvas) {
@@ -312,7 +312,7 @@ public class GameView extends View {
         }
     }
 
-    private int getDrawableResourceId(final PickableItem item) {
+    private int getDrawableResourceId(final Pickable item) {
         if (item.getPickableType() == PickableType.BOMB) {
             if (item.getState() > 5) return R.drawable.bomb;
             else if (item.getState() > 1) return R.drawable.bomb_stage2;

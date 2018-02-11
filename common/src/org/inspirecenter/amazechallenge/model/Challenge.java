@@ -17,8 +17,7 @@ public class Challenge implements Serializable {
     public static final int DEFAULT_MAX_ACTIVE_PLAYERS = 10;
 
     @com.googlecode.objectify.annotation.Id
-    private Long id;
-    @com.googlecode.objectify.annotation.Index
+    public Long id;
     private String name;
     private int apiVersion; // used to determine if the client/player can 'support' this challenge
     private String description; // brief description of the challenge
@@ -31,8 +30,8 @@ public class Challenge implements Serializable {
     private long endTimestamp; // when the challenge ends being available, or zero if available forever (timestamp in UTC)
     private boolean hasQuestionnaire; // true when the challenge requires answering a questionnaire before/after the game
 
-    private int max_rewards = 0;
-    private int max_penalties = 0;
+    private int maxRewards = 0;
+    private int maxPenalties = 0;
 
     private Grid grid;
     private String lineColor;
@@ -51,7 +50,7 @@ public class Challenge implements Serializable {
     public Challenge(String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers,
                      int maxActivePlayers, long startTimestamp, long endTimestamp, boolean hasQuestionnaire,
-                     int max_rewards, int max_penalties,
+                     int maxRewards, int maxPenalties,
                      Grid grid, String lineColor, String difficulty, String createdBy, long createdOn,
                      String backgroundAudioName, String backgroundAudioFormat,
                      String backgroundImageName, BackgroundImage.BackgroundImageType backgroundImageType) {
@@ -68,8 +67,8 @@ public class Challenge implements Serializable {
         this.endTimestamp = endTimestamp;
         this.hasQuestionnaire = hasQuestionnaire;
 
-        this.max_rewards = max_rewards;
-        this.max_penalties = max_penalties;
+        this.maxRewards = maxRewards;
+        this.maxPenalties = maxPenalties;
 
         this.grid = grid;
         this.lineColor = lineColor;
@@ -86,13 +85,13 @@ public class Challenge implements Serializable {
 
     public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp,
-                     long endTimestamp, boolean hasQuestionnaire, int max_rewards, int max_penalties,
+                     long endTimestamp, boolean hasQuestionnaire, int maxRewards, int maxPenalties,
                      Grid grid, String lineColor, String difficulty, String createdBy,
                      long createdOn, String backgroundAudioName, String backgroundAudioFormat,
                      String backgroundImageName, BackgroundImage.BackgroundImageType backgroundImageType) {
         this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther,
                 DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp,
-                endTimestamp, hasQuestionnaire, max_rewards, max_penalties, grid, lineColor,
+                endTimestamp, hasQuestionnaire, maxRewards, maxPenalties, grid, lineColor,
                 difficulty, createdBy, createdOn, backgroundAudioName, backgroundAudioFormat,
                 backgroundImageName, backgroundImageType);
         this.id = id;
@@ -114,7 +113,9 @@ public class Challenge implements Serializable {
         return description;
     }
 
-    public ChallengeDifficulty getDifficulty() { return ChallengeDifficulty.getChallengeDifficulty(difficulty); }
+    public ChallengeDifficulty getDifficulty() {
+        return ChallengeDifficulty.getChallengeDifficulty(difficulty);
+    }
 
     public boolean canRepeat() {
         return canRepeat;
@@ -160,29 +161,45 @@ public class Challenge implements Serializable {
         return grid;
     }
 
-    public String getLineColor() { return lineColor; }
-
-    public BackgroundImage getBackgroundImage() { return BackgroundImage.fromResourceText(backgroundImageName); }
-
-    public BackgroundImage.BackgroundImageType getBackgroundImageType() { return backgroundImageType; }
-
-    public int getMax_rewards() {
-        return max_rewards;
+    public String getLineColor() {
+        return lineColor;
     }
 
-    public int getMax_penalties() {
-        return max_penalties;
+    public BackgroundImage getBackgroundImage() {
+        return BackgroundImage.fromResourceText(backgroundImageName);
     }
 
-    public long getCreatedOn() { return createdOn; }
+    public BackgroundImage.BackgroundImageType getBackgroundImageType() {
+        return backgroundImageType;
+    }
 
-    public String getCreatedBy() { return createdBy; }
+    public int getMaxRewards() {
+        return maxRewards;
+    }
 
-    public String getBackgroundAudioName() { return backgroundAudioName; }
+    public int getMaxPenalties() {
+        return maxPenalties;
+    }
 
-    public Audio.AudioFormat getBackgroundAudioFormat() { return backgroundAudioFormat; }
+    public long getCreatedOn() {
+        return createdOn;
+    }
 
-    public boolean getHasQuestionnaire() { return hasQuestionnaire; }
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public String getBackgroundAudioName() {
+        return backgroundAudioName;
+    }
+
+    public Audio.AudioFormat getBackgroundAudioFormat() {
+        return backgroundAudioFormat;
+    }
+
+    public boolean getHasQuestionnaire() {
+        return hasQuestionnaire;
+    }
 
     @Override
     public String toString() {
@@ -198,8 +215,8 @@ public class Challenge implements Serializable {
                 ", maxActivePlayers=" + maxActivePlayers +
                 ", startTimestamp=" + startTimestamp +
                 ", endTimestamp=" + endTimestamp +
-                ", max_rewards=" + max_rewards +
-                ", max_penalties=" + max_penalties +
+                ", maxRewards=" + maxRewards +
+                ", maxPenalties=" + maxPenalties +
                 ", grid=" + grid +
                 ", lineColor='" + lineColor + '\'' +
                 ", difficulty='" + difficulty + '\'' +

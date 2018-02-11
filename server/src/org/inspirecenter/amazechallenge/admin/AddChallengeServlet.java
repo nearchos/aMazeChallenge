@@ -1,8 +1,9 @@
 package org.inspirecenter.amazechallenge.admin;
 
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.ObjectifyService;
-import org.inspirecenter.amazechallenge.model.Challenge;
-import org.inspirecenter.amazechallenge.model.Grid;
+import org.inspirecenter.amazechallenge.model.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +15,8 @@ import java.util.logging.Logger;
 public class AddChallengeServlet extends HttpServlet {
 
     private Logger log = Logger.getAnonymousLogger();
+
+    public static final int API_VERSION = 1;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String error = "";
@@ -28,7 +31,11 @@ public class AddChallengeServlet extends HttpServlet {
         final String targetPositionX = request.getParameter("targetPositionX");
         final String targetPositionY = request.getParameter("targetPositionY");
 
-        if(name == null || name.trim().isEmpty()) {
+        if(!UserServiceFactory.getUserService().isUserLoggedIn()) {
+            error += "User must be logged in.";
+        } else if(!UserServiceFactory.getUserService().isUserAdmin()) {
+            error += "The logged in user must be an admin.";
+        } else if(name == null || name.trim().isEmpty()) {
             error += "Invalid or missing 'name' parameter. ";
         } else if(description == null || description.trim().isEmpty()) {
             error += "Invalid or missing 'description' parameter. ";
@@ -47,8 +54,23 @@ public class AddChallengeServlet extends HttpServlet {
                 final int tpX = Integer.parseInt(targetPositionX);
                 final int tpY = Integer.parseInt(targetPositionY);
                 final Grid grid = new Grid(width, height, gridAsHex, spX, spY, tpX, tpY);
+                final int apiVersion = API_VERSION;
                 // todo customize other fields
-                final Challenge challenge = new Challenge(name, 1, description, true, true, true, 0, 10, 0L, Long.MAX_VALUE, grid);
+                boolean hasQuestionnaire = false;
+                int maxRewards = 5;
+                int maxPenalties = 5;
+                String lineColor = AmazeColor.COLOR_BLUE.getName();
+                String difficulty = ChallengeDifficulty.EASY.name();
+                String createdBy = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+                long createdOn = System.currentTimeMillis();
+                String backgroundAudioName = "";
+                String backgroundAudioFormat = "";
+                String backgroundImageName = "texture_grass";
+                BackgroundImage.BackgroundImageType backgroundImageType = BackgroundImage.BackgroundImageType.JPG;
+
+                final Challenge challenge = new Challenge(name, apiVersion, description, true, true, true, 0, 10, 0L,
+                        Long.MAX_VALUE, hasQuestionnaire, maxRewards, maxPenalties, grid, lineColor, difficulty, createdBy, createdOn,
+                        backgroundAudioName, backgroundAudioFormat, backgroundImageName, backgroundImageType);
                 ObjectifyService.ofy().save().entity(challenge).now();
             } catch (NumberFormatException nfe) {
                 log.severe(request.getParameterMap() + " ... -> " + nfe.getMessage());

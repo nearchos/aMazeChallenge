@@ -1,7 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,7 +36,7 @@ import org.inspirecenter.amazechallenge.model.Audio;
 import org.inspirecenter.amazechallenge.model.BackgroundImage;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
-import org.inspirecenter.amazechallenge.model.PickableItem;
+import org.inspirecenter.amazechallenge.model.Pickable;
 import org.inspirecenter.amazechallenge.model.Player;
 
 import java.util.HashMap;
@@ -180,7 +179,6 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
 
         //Sound prefs:
         sound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(MainActivity.KEY_PREF_SOUND, true);
-
     }
 
     private Handler handler;
@@ -229,7 +227,6 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
                 backgroundAudio.start();
             }
         }
-
     }
 
     @Override
@@ -323,9 +320,9 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     }
 
     @Override
-    public void onAudioEvent(PickableItem pickableItem) {
+    public void onAudioEvent(Pickable pickable) {
 
-        switch (pickableItem.getPickableType()) {
+        switch (pickable.getPickableType()) {
             case APPLE:
             case BANANA:
             case STRAWBERRY:
@@ -352,7 +349,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
                 if (sound) audioEventsMap.get(Audio.EVENT_REWARD_PICKUP_1.toString()).start();
                 break;
             case BOMB:
-                if (pickableItem.getState() == 1  || pickableItem.getState() == 2)
+                if (pickable.getState() == 1  || pickable.getState() == 2)
                     if (sound) audioEventsMap.get(Audio.EVENT_BOMB.toString()).start();
                 break;
             case SPEEDHACK:

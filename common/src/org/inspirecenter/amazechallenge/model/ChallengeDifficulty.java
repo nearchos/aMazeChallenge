@@ -6,9 +6,7 @@ public enum ChallengeDifficulty {
     EASY("Easy"),
     MEDIUM("Medium"),
     HARD("Hard"),
-    VERY_HARD("Very Hard")
-
-    ;
+    VERY_HARD("Very Hard");
 
     private String difficultyName;
 
