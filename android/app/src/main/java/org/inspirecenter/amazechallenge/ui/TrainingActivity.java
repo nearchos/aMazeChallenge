@@ -1,6 +1,7 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,7 +40,7 @@ import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_ICON;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
 
-public class TrainingActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener, ChallengeAdapter.OnChallengeRemoveListener {
+public class TrainingActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener, ChallengeAdapter.OnChallengeLongSelectionListener {
 
     public static final String TAG = "aMaze";
     public static final String CHALLENGES_PATH = "challenges";
@@ -114,8 +115,9 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
     }
 
     @Override
-    public void onChallengeRemove(Challenge challenge) {
+    public void onChallengeLongSelect(Challenge challenge) {
         if (!challenge.getCreatedBy().equals("admin")) {
+
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle(getString(R.string.challenge_delete_title));
             dialog.setMessage(getString(R.string.challenge_delete_message));
@@ -136,7 +138,31 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
                     dialogInterface.dismiss();
                 }
             });
-            dialog.create().show();
+            Dialog deleteDialog = dialog.create();
+
+            //Show option between edit and delete:
+            AlertDialog.Builder optionDialog = new AlertDialog.Builder(this);
+            optionDialog.setMessage(getString(R.string.challenge_choose_option));
+            optionDialog.setNegativeButton(getString(R.string.Edit), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent(TrainingActivity.this, MazeDesignerActivity.class);
+                    intent.putExtra(MazeDesignerActivity.DESIGNER_MODE_KEY, MazeDesignerActivity.DesignerMode.EDIT);
+                    intent.putExtra(MazeDesignerActivity.DESIGNER_DATA_KEY, challenge);
+                    startActivity(intent);
+                }
+            });
+            optionDialog.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    deleteDialog.show();
+                    dialogInterface.dismiss();
+                }
+            });
+            optionDialog.create().show();
+
+
+
         }
     }
 

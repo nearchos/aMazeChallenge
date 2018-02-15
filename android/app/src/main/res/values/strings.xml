@@ -101,8 +101,11 @@
     <string name="challenge_delete_title">Delete challenge</string>
     <string name="challenge_delete_message">Are you sure you would like to delete this challenge? This action cannot be undone.</string>
     <string name="challenge_deleted">challenge was deleted.</string>
+    <string name="challenge_choose_option">Choose an option</string>
+    <string name="Edit">Edit</string>
     <string name="generator_background_audio">Background audio</string>
     <string name="select">Select</string>
+    <string name="Discard">Discard</string>
 
 
     <string name="instructions">Write your code below to get out of the grid:</string>
@@ -257,6 +260,15 @@
     <string name="answer_3_no">Not at all</string>
     <string name="answer_3_yes">A lot</string>
     <string name="submit">Submit</string>
+    <string name="maybe">Maybe</string>
+    <string name="question_4">Do you think programming is interesting?</string>
+    <string name="question_5">Would you prefer learning programming through games or normal classes?</string>
+    <string name="Games">Games</string>
+    <string name="Classes">Classes</string>
+    <string name="question_6">Do you believe that the competitiveness of this game has helped you become a better programmer?</string>
+    <string name="Not_sure">Not sure</string>
+    <string name="invalid_questionnaire_response">Please make sure you provide an answer to all questions.</string>
+    <string name="no_response">Please provide a response</string>
 
 
     <string-array name="rows_and_cols_selection">

@@ -66,8 +66,7 @@
                     android:layout_below="@id/instructions_body"
                     android:layout_marginTop="10dp"
                     android:layout_centerHorizontal="true"
-
-                    />
+                    android:id="@+id/skip_button" />
 
             </RelativeLayout>
 
@@ -144,15 +143,45 @@
                 android:id="@+id/question_2"
                 />
 
-            <Spinner
-                android:id="@+id/answer_2"
-                android:layout_width="wrap_content"
+
+            <RadioGroup
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/question_2"
-                android:layout_centerHorizontal="true"
-                android:entries="@array/question2_entries"
-                android:textAlignment="center"
-                android:layout_marginTop="10dp"/>
+                android:orientation="horizontal"
+                android:id="@+id/question_2_radiogroup"
+                android:layout_below="@id/question_2"
+                android:paddingTop="10dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                >
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/question_2_yes"
+                    android:text="@string/yes"
+                    />
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/question_2_no"
+                    android:text="@string/no"
+                    />
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/question_2_maybe"
+                    android:text="@string/maybe"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
+                    />
+
+            </RadioGroup>
 
         </RelativeLayout>
 
@@ -228,8 +257,165 @@
             android:layout_marginTop="20dp"
             >
 
-            <!--TODO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/question_4"
+                android:text="@string/question_4"
+                android:textColor="@android:color/black"
+                />
 
+            <RatingBar
+                android:id="@+id/answer_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/question_4"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:numStars="5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/answer_1_no"
+                android:layout_below="@id/answer_4"
+                android:layout_alignParentStart="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/answer_1_yes"
+                android:layout_below="@id/answer_4"
+                android:layout_alignParentEnd="true"
+                />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/divider_q4_5"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@id/question4_layout"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider_q4_5"
+            android:id="@+id/question5_layout"
+            android:layout_marginTop="20dp"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/question_5"
+                android:text="@string/question_5"
+                android:textColor="@android:color/black"
+                />
+
+            <SeekBar
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                style="@style/SeekBarWithoutSteps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/question_5"
+                android:id="@+id/answer_5"
+                android:max="4"
+                android:progress="2"
+                android:progressDrawable="@drawable/discrete_seekbar"
+                android:thumb="@drawable/discrete_seekbar_thumb"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Games"
+                android:id="@+id/question_5_answer_games"
+                android:layout_below="@id/answer_5"
+                android:layout_alignParentStart="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Classes"
+                android:id="@+id/question_5_answer_classes"
+                android:layout_below="@id/answer_5"
+                android:layout_alignParentEnd="true"
+                />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/divider_q5_6"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@id/question5_layout"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/question6_layout"
+            android:layout_below="@id/divider_q5_6">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/question_6"
+                android:text="@string/question_6"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="20dp"
+                />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/question_6_radiogroup"
+                android:layout_below="@id/question_6"
+                android:paddingTop="10dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                >
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/question_6_yes"
+                    android:text="@string/yes"
+                    />
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/question_6_no"
+                    android:text="@string/no"
+                    />
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/question_6_notsure"
+                    android:text="@string/Not_sure"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"
+                    />
+
+            </RadioGroup>
 
         </RelativeLayout>
 
@@ -238,13 +424,13 @@
             android:layout_height="wrap_content"
             android:text="@string/submit"
             android:layout_marginTop="30dp"
-            android:layout_below="@id/divider_q3_4"
+            android:layout_below="@id/question6_layout"
             android:background="@color/materialBlue"
             style="@style/Base.TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
             android:textColor="@color/white"
             android:layout_alignParentBottom="true"
+            android:id="@+id/submit_button"
             />
-
 
     </RelativeLayout>
 

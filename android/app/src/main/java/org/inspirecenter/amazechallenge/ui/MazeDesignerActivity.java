@@ -20,19 +20,30 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.generator.MazeGenerator;
 import org.inspirecenter.amazechallenge.model.Audio;
 import org.inspirecenter.amazechallenge.model.BackgroundImage;
+import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.ChallengeDifficulty;
 import org.inspirecenter.amazechallenge.model.Grid;
 import org.inspirecenter.amazechallenge.model.Position;
 import org.inspirecenter.amazechallenge.utils.FileManager;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class MazeDesignerActivity extends AppCompatActivity {
+
+    public static final String DESIGNER_MODE_KEY = "DESIGNER_MODE_KEY";
+    public static final String DESIGNER_DATA_KEY = "DESIGNER_DATA_KEY";
+
+    public enum DesignerMode {
+        EDIT,
+        CREATE
+    }
 
     public enum PickablesOption {
         LOW(0),
@@ -57,6 +68,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private static final int MAX_COLUMNS = 30;
     private final BackgroundImage DEFAULT_BACKGROUND_IMAGE = BackgroundImage.TEXTURE_GRASS;
 
+    DesignerMode mode = DesignerMode.CREATE;
+
     private GameView gameView;
 
     private Button selectColorButton;
@@ -70,6 +83,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private Spinner penaltiesSpinner;
     private Spinner rewardsSpinner;
     private Spinner backgroundAudioSpinner;
+    private Spinner algorithmSpinner;
     private EditText mazeNameEditText;
     private EditText mazeDescriptionEditText;
 
@@ -85,6 +99,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private PickablesOption rewardsOption = PickablesOption.LOW;
     private PickablesOption penaltiesOption = PickablesOption.LOW;
     private Audio backgroundAudio;
+    private MazeGenerator.Algorithm selectedAlgorithm = MazeGenerator.Algorithm.SINGLE_SOLUTION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +121,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         //Buttons:
         selectColorButton = findViewById(R.id.designer_wallcolor_button);
         selectImageButton = findViewById(R.id.designer_backgroundImage_button);
-        addToTrainingButton = findViewById(R.id.designer_add_to_training_button);
+        addToTrainingButton = findViewById(R.id.addToTrainingButton);
 
         selectColorButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +146,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         rewardsSpinner = findViewById(R.id.designer_rewards_spinner);
         penaltiesSpinner = findViewById(R.id.designer_penalties_spinner);
         backgroundAudioSpinner = findViewById(R.id.designer_audio_spinner);
+        algorithmSpinner = findViewById(R.id.designer_algorithm_spinner);
 
         //Maze Size Selection
         maze_size_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -223,15 +239,15 @@ public class MazeDesignerActivity extends AppCompatActivity {
         });
 
         //Audio Spinner Options:
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        final ArrayAdapter<String> audioAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         ArrayList<Audio> audioList = new ArrayList<>();
         for (Audio a : Audio.values()) {
             if (a.getAudioType() == Audio.AudioType.AMBIENT || a.getAudioType() == Audio.AudioType.NONE) {
                 audioList.add(a);
-                adapter.add(a.toString());
+                audioAdapter.add(a.toString());
             }
         }
-        backgroundAudioSpinner.setAdapter(adapter);
+        backgroundAudioSpinner.setAdapter(audioAdapter);
 
         //Audio Spinner Selection
         backgroundAudioSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -245,6 +261,94 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
             }
         });
+
+        //Algorithm Spinner Options:
+        final ArrayAdapter<String> algorithmAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        ArrayList<MazeGenerator.Algorithm> algorithmList = new ArrayList<>();
+        for (MazeGenerator.Algorithm a : MazeGenerator.Algorithm.values()) {
+            algorithmList.add(a);
+            algorithmAdapter.add(a.toString());
+        }
+        algorithmSpinner.setAdapter(algorithmAdapter);
+
+        //Algorithm Spinner Selection:
+        algorithmSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedAlgorithm = algorithmList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        //GET DATA FOR EXISTING MAZE:
+
+        mode = (DesignerMode) getIntent().getSerializableExtra(DESIGNER_MODE_KEY);
+        if (mode == DesignerMode.EDIT) {
+            Challenge challenge = (Challenge) getIntent().getSerializableExtra(DESIGNER_DATA_KEY);
+            selectedWallColor = Color.parseColor(challenge.getLineColor());
+            backgroundImage = challenge.getBackgroundImage();
+            backgroundAudio = Audio.fromString(challenge.getBackgroundAudioName());
+            size = challenge.getGrid().getHeight();
+            startPos_row = challenge.getGrid().getStartingPosition().getRow();
+            startPos_column = challenge.getGrid().getStartingPosition().getCol();
+            targetPos_row = challenge.getGrid().getTargetPosition().getRow();
+            targetPos_column = challenge.getGrid().getTargetPosition().getCol();
+            rewards = challenge.getMaxRewards();
+            penalties = challenge.getMaxPenalties();
+
+            mazeNameEditText.setText(challenge.getName());
+            mazeDescriptionEditText.setText(challenge.getDescription());
+            maze_size_Spinner.setSelection(challenge.getGrid().getHeight() - 5);
+            setSize(challenge.getGrid().getHeight());
+            startPos_Row_Spinner.setSelection(startPos_row);
+            startPos_Column_Spinner.setSelection(startPos_column);
+            targetPos_Row_Spinner.setSelection(targetPos_row);
+            targetPos_Column_Spinner.setSelection(targetPos_column);
+            System.out.println("r:" + targetPos_row + " c: " + targetPos_column);
+            backgroundAudioSpinner.setSelection(Audio.getIDfromString(backgroundAudio.getSoundResourceName()));
+            selectColorButton.setBackgroundColor(selectedWallColor);
+            if (ColorFragment.isBrightColor(selectedWallColor)) selectColorButton.setTextColor(Color.BLACK);
+            else selectColorButton.setTextColor(Color.WHITE);
+            gameView.setBackgroundDrawable(backgroundImage);
+            gameView.setLineColor(String.format("#%06X", (0xFFFFFF & selectedWallColor)));
+            gameView.setGrid(challenge.getGrid());
+            gameView.invalidate();
+
+            //Disabled fields (non-changeable):
+            algorithmSpinner.setEnabled(false);
+            penaltiesSpinner.setEnabled(false);
+            rewardsSpinner.setEnabled(false);
+
+            //Changed fields:
+            Button addToTrainingButton = findViewById(R.id.addToTrainingButton);
+            Button generateButton = findViewById(R.id.generateButton);
+            addToTrainingButton.setText(getString(R.string.Save));
+            generateButton.setText(getString(R.string.Discard));
+            addToTrainingButton.setBackgroundColor(getColor(R.color.materialBlue));
+            generateButton.setBackgroundColor(getColor(R.color.materialRed));
+
+            addToTrainingButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addToTraining(view);
+                }
+            });
+
+            generateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+
+
+        }
+
 
     }
 
@@ -276,12 +380,9 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }).create().show();
         }
         else {
-            // todo choose algorithm
-            final String data = MazeGenerator.generate(MazeGenerator.Algorithm.MANY_SOLUTIONS, size, startingPosition, targetPosition);
-//            final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
+            final String data = MazeGenerator.generate(selectedAlgorithm, size, startingPosition, targetPosition);
             final Grid grid = new Grid(size, size, data, startingPosition, targetPosition);
             gameView.setBackgroundDrawable(backgroundImage);
-            //TODO Implement background selection
             gameView.setGrid(grid);
             gameView.invalidate();
             addToTrainingButton.setEnabled(true);
@@ -394,11 +495,20 @@ public class MazeDesignerActivity extends AppCompatActivity {
         ArrayList<String> validItems = new ArrayList<>();
         for (int i = 0; i < size; i++) validItems.add(String.valueOf(i));
 
+        //Set range of possible values:
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, validItems);
         startPos_Row_Spinner.setAdapter(adapter);
         startPos_Column_Spinner.setAdapter(adapter);
         targetPos_Row_Spinner.setAdapter(adapter);
         targetPos_Column_Spinner.setAdapter(adapter);
+
+        if (mode != DesignerMode.EDIT) {
+            //Set default values to be on opposite sides:
+            startPos_Row_Spinner.setSelection(0);
+            startPos_Column_Spinner.setSelection(0);
+            targetPos_Row_Spinner.setSelection(targetPos_Row_Spinner.getAdapter().getCount() - 1);
+            targetPos_Column_Spinner.setSelection(targetPos_Column_Spinner.getAdapter().getCount() - 1);
+        }
     }
 
     private void setStartingPositionRow(int row) {

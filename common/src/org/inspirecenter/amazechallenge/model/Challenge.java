@@ -166,7 +166,7 @@ public class Challenge implements Serializable {
     }
 
     public BackgroundImage getBackgroundImage() {
-        return BackgroundImage.fromResourceText(backgroundImageName);
+        return BackgroundImage.fromString(backgroundImageName);
     }
 
     public BackgroundImage.BackgroundImageType getBackgroundImageType() {

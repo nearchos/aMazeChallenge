@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.inspirecenter.amazechallenge.R;
@@ -25,8 +24,8 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
         void onChallengeSelected(final Challenge challenge);
     }
 
-    interface OnChallengeRemoveListener {
-        void onChallengeRemove(final Challenge challenge);
+    interface OnChallengeLongSelectionListener {
+        void onChallengeLongSelect(final Challenge challenge);
     }
 
     private final Vector<Challenge> challenges;
@@ -43,7 +42,7 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
         final TextView challengeDifficultyTextView;
         Challenge challenge;
 
-        ViewHolder(final View view, final OnChallengeSelectedListener onChallengeSelectedListener, final OnChallengeRemoveListener onChallengeRemoveListener) {
+        ViewHolder(final View view, final OnChallengeSelectedListener onChallengeSelectedListener, final OnChallengeLongSelectionListener onChallengeLongSelectionListener) {
             super(view);
             this.challengeNameTextView = view.findViewById(R.id.item_challenge_name);
             this.challengeDescriptionTextView = view.findViewById(R.id.item_challenge_description);
@@ -57,7 +56,7 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    onChallengeRemoveListener.onChallengeRemove(challenge);
+                    onChallengeLongSelectionListener.onChallengeLongSelect(challenge);
                     return true;
                 }
             });
@@ -65,12 +64,12 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
     }
 
     private final OnChallengeSelectedListener onChallengeSelectedListener;
-    private final OnChallengeRemoveListener onChallengeRemoveListener;
+    private final OnChallengeLongSelectionListener onChallengeLongSelectionListener;
 
-    ChallengeAdapter(final OnChallengeSelectedListener onChallengeSelectedListener, OnChallengeRemoveListener onChallengeRemoveListener) {
+    ChallengeAdapter(final OnChallengeSelectedListener onChallengeSelectedListener, OnChallengeLongSelectionListener onChallengeLongSelectionListener) {
         this.challenges = new Vector<>();
         this.onChallengeSelectedListener = onChallengeSelectedListener;
-        this.onChallengeRemoveListener = onChallengeRemoveListener;
+        this.onChallengeLongSelectionListener = onChallengeLongSelectionListener;
     }
 
     void add(final Challenge challenge) {
@@ -106,7 +105,7 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
 
         // set the view's size, margins, paddings and layout parameters
 
-        return  new ViewHolder(view, onChallengeSelectedListener, onChallengeRemoveListener);
+        return  new ViewHolder(view, onChallengeSelectedListener, onChallengeLongSelectionListener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)

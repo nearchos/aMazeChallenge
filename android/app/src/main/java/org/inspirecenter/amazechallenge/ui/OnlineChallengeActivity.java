@@ -41,7 +41,7 @@ import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_NAME;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_SHAPE_CODE;
 
-public class OnlineChallengeActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener, ChallengeAdapter.OnChallengeRemoveListener {
+public class OnlineChallengeActivity extends AppCompatActivity implements ChallengeAdapter.OnChallengeSelectedListener, ChallengeAdapter.OnChallengeLongSelectionListener {
 
     public static final String TAG = "aMazeChallenge";
 
@@ -93,7 +93,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
     }
 
     @Override
-    public void onChallengeRemove(Challenge challenge) {
+    public void onChallengeLongSelect(Challenge challenge) {
         //Do nothing
     }
 

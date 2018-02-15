@@ -13,10 +13,21 @@ public class MazeGenerator {
     private static final int MAX_MAZE_SIZE = 30;
 
     public enum Algorithm {
-        SINGLE_SOLUTION,
-        MANY_SOLUTIONS,
-        SPARSE,
-        EMPTY
+        SINGLE_SOLUTION("Single Solution"),
+        MANY_SOLUTIONS("Many Solutions"),
+        SPARSE("Sparse"),
+        EMPTY("Empty");
+
+        private final String name;
+
+        Algorithm(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     public static String generate(Algorithm algorithm, int gridSize, final Position startingPosition, final Position targetPosition) {

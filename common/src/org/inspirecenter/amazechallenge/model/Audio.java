@@ -83,4 +83,18 @@ public enum Audio {
 
     public AudioType getAudioType() { return audioType; }
 
+    public static Audio fromString(String resourceName) {
+        for (final Audio a : Audio.values()) {
+            if (a.getSoundResourceName().equals(resourceName)) return a;
+        }
+        throw new RuntimeException("Invalid audio resource name provided.");
+    }
+
+    public static int getIDfromString(String resourceName) {
+        for (int i = 0; i < Audio.values().length; i++) {
+            if (Audio.values()[i].getSoundResourceName().equals(resourceName)) return i;
+        }
+        throw new RuntimeException("Invalid audio resource name provided.");
+    }
+
 }
