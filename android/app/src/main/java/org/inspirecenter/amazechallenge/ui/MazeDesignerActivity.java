@@ -152,7 +152,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
         maze_size_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setSize(i + 5);
+                final int size = i + 5;
+                setSize(size, new Position(0, size-1), new Position(size-1, 0));
             }
 
             @Override
@@ -304,12 +305,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
             mazeNameEditText.setText(challenge.getName());
             mazeDescriptionEditText.setText(challenge.getDescription());
             maze_size_Spinner.setSelection(challenge.getGrid().getHeight() - 5);
-            setSize(challenge.getGrid().getHeight());
-            startPos_Row_Spinner.setSelection(startPos_row);
-            startPos_Column_Spinner.setSelection(startPos_column);
-            targetPos_Row_Spinner.setSelection(targetPos_row);
-            targetPos_Column_Spinner.setSelection(targetPos_column);
-            System.out.println("r:" + targetPos_row + " c: " + targetPos_column);
+            setSize(challenge.getGrid().getHeight(), new Position(startPos_row, startPos_column), new Position(targetPos_row, targetPos_column));
             backgroundAudioSpinner.setSelection(Audio.getIDfromString(backgroundAudio.getSoundResourceName()));
             selectColorButton.setBackgroundColor(selectedWallColor);
             if (ColorFragment.isBrightColor(selectedWallColor)) selectColorButton.setTextColor(Color.BLACK);
@@ -490,7 +486,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         return backgroundImage;
     }
 
-    private void setSize(int size) {
+    private void setSize(int size, Position startPosition, Position targetPosition) {
         this.size = size;
         ArrayList<String> validItems = new ArrayList<>();
         for (int i = 0; i < size; i++) validItems.add(String.valueOf(i));
@@ -502,13 +498,10 @@ public class MazeDesignerActivity extends AppCompatActivity {
         targetPos_Row_Spinner.setAdapter(adapter);
         targetPos_Column_Spinner.setAdapter(adapter);
 
-        if (mode != DesignerMode.EDIT) {
-            //Set default values to be on opposite sides:
-            startPos_Row_Spinner.setSelection(0);
-            startPos_Column_Spinner.setSelection(0);
-            targetPos_Row_Spinner.setSelection(targetPos_Row_Spinner.getAdapter().getCount() - 1);
-            targetPos_Column_Spinner.setSelection(targetPos_Column_Spinner.getAdapter().getCount() - 1);
-        }
+        startPos_Row_Spinner.setSelection(startPosition.getRow());
+        startPos_Column_Spinner.setSelection(startPosition.getCol());
+        targetPos_Row_Spinner.setSelection(targetPosition.getRow());
+        targetPos_Column_Spinner.setSelection(targetPosition.getCol());
     }
 
     private void setStartingPositionRow(int row) {
@@ -592,8 +585,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"startTimestamp\": 0,\n" +            //Default for training
                 "    \"endTimestamp\": 0,\n" +              //Default for training
                 "    \"hasQuestionnaire\": true,\n" +       //Default for training
-                "    \"max_rewards\": " + rewards + ",\n" +
-                "    \"max_penalties\": " + penalties + ",\n" +
+                "    \"maxRewards\": " + rewards + ",\n" +
+                "    \"maxPenalties\": " + penalties + ",\n" +
                 "    \"grid\": {\n" +
                 "        \"width\": " + size + ",\n" +
                 "        \"height\": " + size + ",\n" +
