@@ -33,13 +33,22 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <org.inspirecenter.amazechallenge.ui.GIFView
-                android:id="@+id/activity_personalize_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:contentDescription="@string/User_image">
-            </org.inspirecenter.amazechallenge.ui.GIFView>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:orientation="horizontal">
+
+                <org.inspirecenter.amazechallenge.ui.GIFView
+                    android:id="@+id/activity_personalize_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:contentDescription="@string/User_image"
+                    android:layout_centerHorizontal="true"
+                    >
+                </org.inspirecenter.amazechallenge.ui.GIFView>
+
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/activity_personalize_button_select_color"

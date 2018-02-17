@@ -1,13 +1,12 @@
 package org.inspirecenter.amazechallenge.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Movie;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.LinearLayout;
 
 public class GIFView extends View {
 
@@ -59,11 +58,8 @@ public class GIFView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-//        float scaleX = (float) this.getWidth() / (float) movie.width();
-//        float scaleY = (float) this.getHeight() / (float) movie.height();
         int posX = (getWidth() - movie.width()) / 2;
         if (scaleToFitLowerResolutions) posX = (viewportWidth - movie.width()) /2;
-        //System.out.println("X:" + posX);
         int posY = 0;
         if (scaleToFitLowerResolutions) canvas.scale(SCALE_LOWRES_WIDTH, SCALE_LOWRES_HEIGHT);
         if (movie != null){
