@@ -14,8 +14,9 @@
     "startTimestamp": 0,
     "endTimestamp": 0,
     "hasQuestionnaire": true,
-    "maxRewards": 3,
-    "maxPenalties": 3,
+    "rewards": "high",
+    "penalties": "high",
+    "selectedAlgorithm": "single",
     "grid": {
         "width": 30,
         "height": 30,

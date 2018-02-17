@@ -20,7 +20,6 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.generator.MazeGenerator;
@@ -29,9 +28,9 @@ import org.inspirecenter.amazechallenge.model.BackgroundImage;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.ChallengeDifficulty;
 import org.inspirecenter.amazechallenge.model.Grid;
+import org.inspirecenter.amazechallenge.model.Pickable;
 import org.inspirecenter.amazechallenge.model.Position;
 import org.inspirecenter.amazechallenge.utils.FileManager;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -46,14 +45,23 @@ public class MazeDesignerActivity extends AppCompatActivity {
     }
 
     public enum PickablesOption {
-        LOW(0),
-        MEDIUM(1),
-        HIGH(2)
+        LOW(0, "low"),
+        MEDIUM(1, "medium"),
+        HIGH(2, "high")
         ;
 
-        int id;
-        PickablesOption(int id) { this.id = id; }
+        final int id;
+        final String textID;
+
+        PickablesOption(int id, String textID) {
+            this.id = id;
+            this.textID = textID;
+        }
+
         public int getID() { return id; }
+
+        public String getTextID() { return textID; }
+
         public static PickablesOption getOptionFromID(int id) {
             if (id == 0) return LOW;
             if (id == 1) return MEDIUM;
@@ -61,7 +69,14 @@ public class MazeDesignerActivity extends AppCompatActivity {
             throw new RuntimeException("Invalid PickablesOption id.");
         }
 
-    };
+        public static PickablesOption fromTextID(String textID) {
+            for (final PickablesOption o : values()) {
+                if (o.textID.equals(textID)) return o;
+            }
+            throw new RuntimeException("Invalid PickablesOption text ID -> " + textID);
+        }
+
+    }
 
     public static final String TAG = "amaze";
     private static final int MAX_ROWS = 30;
@@ -100,6 +115,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private PickablesOption penaltiesOption = PickablesOption.LOW;
     private Audio backgroundAudio;
     private MazeGenerator.Algorithm selectedAlgorithm = MazeGenerator.Algorithm.SINGLE_SOLUTION;
+    private String oldMazeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,9 +316,13 @@ public class MazeDesignerActivity extends AppCompatActivity {
             targetPos_row = challenge.getGrid().getTargetPosition().getRow();
             targetPos_column = challenge.getGrid().getTargetPosition().getCol();
             rewards = challenge.getMaxRewards();
+            rewardsOption = challenge.getRewardsOption();
             penalties = challenge.getMaxPenalties();
+            penaltiesOption = challenge.getPenaltiesOption();
+            selectedAlgorithm = challenge.getAlgorithm();
+            oldMazeName = challenge.getName();
 
-            mazeNameEditText.setText(challenge.getName());
+            mazeNameEditText.setText(oldMazeName);
             mazeDescriptionEditText.setText(challenge.getDescription());
             maze_size_Spinner.setSelection(challenge.getGrid().getHeight() - 5);
             setSize(challenge.getGrid().getHeight(), new Position(startPos_row, startPos_column), new Position(targetPos_row, targetPos_column));
@@ -317,8 +337,9 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
             //Disabled fields (non-changeable):
             algorithmSpinner.setEnabled(false);
-            penaltiesSpinner.setEnabled(false);
-            rewardsSpinner.setEnabled(false);
+            algorithmSpinner.setSelection(MazeGenerator.Algorithm.getPosition(selectedAlgorithm));
+            penaltiesSpinner.setSelection(penaltiesOption.getID());
+            rewardsSpinner.setSelection(rewardsOption.getID());
 
             //Changed fields:
             Button addToTrainingButton = findViewById(R.id.addToTrainingButton);
@@ -326,12 +347,15 @@ public class MazeDesignerActivity extends AppCompatActivity {
             addToTrainingButton.setText(getString(R.string.Save));
             generateButton.setText(getString(R.string.Discard));
             addToTrainingButton.setBackgroundColor(getColor(R.color.materialBlue));
+            addToTrainingButton.setEnabled(true);
             generateButton.setBackgroundColor(getColor(R.color.materialRed));
 
             addToTrainingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addToTraining(view);
+                    saveMaze();
+                    Toast.makeText(MazeDesignerActivity.this, getString(R.string.maze_saved), Toast.LENGTH_LONG).show();
+                    finish();
                 }
             });
 
@@ -385,6 +409,15 @@ public class MazeDesignerActivity extends AppCompatActivity {
         }
     }
 
+    public void saveMaze() {
+        String oldFileName = FileManager.SAVED_MAZES_FILENAME_PREFIX + oldMazeName + ".json";
+        String newFileName = FileManager.SAVED_MAZES_FILENAME_PREFIX + mazeNameEditText.getText().toString() + ".json";
+        if (FileManager.fileExists(this, oldFileName)) {
+            FileManager.deleteFile(this, oldFileName);
+            FileManager.writeToFile(this, newFileName, toJSON());
+        }
+    }
+
     public void addToTraining(View view) {
         String combinedFileName = FileManager.SAVED_MAZES_FILENAME_PREFIX + mazeNameEditText.getText().toString() + ".json";
         if (mazeNameEditText.getText().toString().isEmpty()) {
@@ -422,11 +455,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         }
         else {
             String json = toJSON();
-            FileManager.writeToFile(
-                    this,
-                    FileManager.SAVED_MAZES_FILENAME_PREFIX + mazeNameEditText.getText().toString() + ".json",
-                    json
-            );
+            FileManager.writeToFile(this, combinedFileName, json);
             Toast.makeText(this, mazeNameEditText.getText().toString() + " " + getString(R.string.challenge_added_training), Toast.LENGTH_LONG).show();
             finish();
         }
@@ -522,32 +551,32 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
     private void setRewards(PickablesOption option) {
         rewardsOption = option;
-        switch (option) {
-            case LOW:
-                rewards = size*size / 5;
-                break;
-            case MEDIUM:
-                rewards = size*size / 3;
-                break;
-            case HIGH:
-                rewards = size*size / 2;
-                break;
-        }
+//        switch (option) {
+//            case LOW:
+//                rewards = size*size / 5;
+//                break;
+//            case MEDIUM:
+//                rewards = size*size / 3;
+//                break;
+//            case HIGH:
+//                rewards = size*size / 2;
+//                break;
+//        }
     }
 
     private void setPenalties(PickablesOption option) {
         penaltiesOption = option;
-        switch (option) {
-            case LOW:
-                penalties = size*size / 5;
-                break;
-            case MEDIUM:
-                penalties = size*size / 3;
-                break;
-            case HIGH:
-                penalties = size*size / 2;
-                break;
-        }
+//        switch (option) {
+//            case LOW:
+//                penalties = size*size / 5;
+//                break;
+//            case MEDIUM:
+//                penalties = size*size / 3;
+//                break;
+//            case HIGH:
+//                penalties = size*size / 2;
+//                break;
+//        }
     }
 
     private ChallengeDifficulty calculateDifficulty(PickablesOption rewardsOption, PickablesOption penaltiesOption) {
@@ -585,8 +614,11 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"startTimestamp\": 0,\n" +            //Default for training
                 "    \"endTimestamp\": 0,\n" +              //Default for training
                 "    \"hasQuestionnaire\": true,\n" +       //Default for training
-                "    \"maxRewards\": " + rewards + ",\n" +
-                "    \"maxPenalties\": " + penalties + ",\n" +
+//                "    \"maxRewards\": " + rewards + ",\n" +
+//                "    \"maxPenalties\": " + penalties + ",\n" +
+                "    \"rewards\": " + rewardsOption.getTextID() + ",\n" +
+                "    \"penalties\": " + penaltiesOption.getTextID() + ",\n" +
+                "    \"selectedAlgorithm\": \"" + selectedAlgorithm.getID() + "\",\n" +
                 "    \"grid\": {\n" +
                 "        \"width\": " + size + ",\n" +
                 "        \"height\": " + size + ",\n" +

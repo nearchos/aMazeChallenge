@@ -102,6 +102,7 @@
     <string name="challenge_delete_message">Are you sure you would like to delete this challenge? This action cannot be undone.</string>
     <string name="challenge_deleted">challenge was deleted.</string>
     <string name="challenge_choose_option">Choose an option</string>
+    <string name="maze_saved">Maze saved.</string>
     <string name="Edit">Edit</string>
     <string name="generator_background_audio">Background audio</string>
     <string name="select">Select</string>
