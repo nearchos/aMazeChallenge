@@ -396,13 +396,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:text="@string/generator_numof_rewards"
                                 />
 
                             <Spinner
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:entries="@array/rewardsAndPenalties"
                                 android:textAlignment="center"
@@ -419,13 +420,14 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
                                 android:text="@string/generator_numof_penalties"
                                 />
 
                             <Spinner
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:entries="@array/rewardsAndPenalties"
                                 android:textAlignment="center"

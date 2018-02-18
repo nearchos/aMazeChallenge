@@ -3,6 +3,7 @@ package org.inspirecenter.amazechallenge.admin;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.ObjectifyService;
+import org.inspirecenter.amazechallenge.generator.MazeGenerator;
 import org.inspirecenter.amazechallenge.model.*;
 
 import javax.servlet.ServletException;
@@ -56,20 +57,21 @@ public class AddChallengeServlet extends HttpServlet {
                 final Grid grid = new Grid(width, height, gridAsHex, spX, spY, tpX, tpY);
                 final int apiVersion = API_VERSION;
                 // todo customize other fields
-                boolean hasQuestionnaire = false;
-                int maxRewards = 5;
-                int maxPenalties = 5;
-                String lineColor = AmazeColor.COLOR_BLUE.getName();
-                String difficulty = ChallengeDifficulty.EASY.name();
-                String createdBy = UserServiceFactory.getUserService().getCurrentUser().getEmail();
-                long createdOn = System.currentTimeMillis();
-                String backgroundAudioName = "";
-                String backgroundAudioFormat = "";
-                String backgroundImageName = "texture_grass";
-                BackgroundImage.BackgroundImageType backgroundImageType = BackgroundImage.BackgroundImageType.JPG;
+                final boolean hasQuestionnaire = false;
+                final String maxRewards = PickableIntensity.LOW.name();
+                final String maxPenalties = PickableIntensity.LOW.name();
+                final String algorithm = MazeGenerator.Algorithm.SINGLE_SOLUTION.getName();
+                final String lineColor = AmazeColor.COLOR_BLUE.getName();
+                final String difficulty = ChallengeDifficulty.EASY.name();
+                final String createdBy = UserServiceFactory.getUserService().getCurrentUser().getEmail();
+                final long createdOn = System.currentTimeMillis();
+                final String backgroundAudioName = "";
+                final String backgroundAudioFormat = "";
+                final String backgroundImageName = "texture_grass";
+                final BackgroundImage.BackgroundImageType backgroundImageType = BackgroundImage.BackgroundImageType.JPG;
 
                 final Challenge challenge = new Challenge(name, apiVersion, description, true, true, true, 0, 10, 0L,
-                        Long.MAX_VALUE, hasQuestionnaire, maxRewards, maxPenalties, grid, lineColor, difficulty, createdBy, createdOn,
+                        Long.MAX_VALUE, hasQuestionnaire, maxRewards, maxPenalties, algorithm, grid, lineColor, difficulty, createdBy, createdOn,
                         backgroundAudioName, backgroundAudioFormat, backgroundImageName, backgroundImageType);
                 ObjectifyService.ofy().save().entity(challenge).now();
             } catch (NumberFormatException nfe) {

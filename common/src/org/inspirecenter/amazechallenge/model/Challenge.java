@@ -1,7 +1,6 @@
 package org.inspirecenter.amazechallenge.model;
 
 import org.inspirecenter.amazechallenge.generator.MazeGenerator;
-import org.inspirecenter.amazechallenge.ui.MazeDesignerActivity;
 
 import java.io.Serializable;
 
@@ -178,17 +177,17 @@ public class Challenge implements Serializable {
         return backgroundImageType;
     }
 
-    public MazeDesignerActivity.PickablesOption getRewardsOption() {
-        return MazeDesignerActivity.PickablesOption.fromTextID(rewards);
+    public PickableIntensity getRewardsIntesity() {
+        return PickableIntensity.fromTextID(rewards);
     }
 
-    public MazeDesignerActivity.PickablesOption getPenaltiesOption() {
-        return MazeDesignerActivity.PickablesOption.fromTextID(penalties);
+    public PickableIntensity getPenaltiesIntensity() {
+        return PickableIntensity.fromTextID(penalties);
     }
 
     public int getMaxRewards() {
-        MazeDesignerActivity.PickablesOption option = MazeDesignerActivity.PickablesOption.fromTextID(rewards);
-        switch (option) {
+        PickableIntensity pickableIntensity = PickableIntensity.fromTextID(rewards);
+        switch (pickableIntensity) {
             case LOW:
                 return (getGrid().getHeight()) / 5;
             case MEDIUM:
@@ -201,8 +200,8 @@ public class Challenge implements Serializable {
     }
 
     public int getMaxPenalties() {
-        MazeDesignerActivity.PickablesOption option = MazeDesignerActivity.PickablesOption.fromTextID(penalties);
-        switch (option) {
+        final PickableIntensity pickableIntensity = PickableIntensity.fromTextID(penalties);
+        switch (pickableIntensity) {
             case LOW:
                 return (getGrid().getHeight()) / 5;
             case MEDIUM:

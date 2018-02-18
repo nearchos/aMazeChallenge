@@ -34,6 +34,10 @@ public class MazeGenerator {
 
         public String getID() { return id; }
 
+        public String getName() {
+            return name;
+        }
+
         public static Algorithm fromID(String id) {
             for (final Algorithm a : values()) {
                 if (a.id.equals(id)) return a;

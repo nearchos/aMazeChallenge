@@ -28,7 +28,7 @@ import org.inspirecenter.amazechallenge.model.BackgroundImage;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.ChallengeDifficulty;
 import org.inspirecenter.amazechallenge.model.Grid;
-import org.inspirecenter.amazechallenge.model.Pickable;
+import org.inspirecenter.amazechallenge.model.PickableIntensity;
 import org.inspirecenter.amazechallenge.model.Position;
 import org.inspirecenter.amazechallenge.utils.FileManager;
 
@@ -42,40 +42,6 @@ public class MazeDesignerActivity extends AppCompatActivity {
     public enum DesignerMode {
         EDIT,
         CREATE
-    }
-
-    public enum PickablesOption {
-        LOW(0, "low"),
-        MEDIUM(1, "medium"),
-        HIGH(2, "high")
-        ;
-
-        final int id;
-        final String textID;
-
-        PickablesOption(int id, String textID) {
-            this.id = id;
-            this.textID = textID;
-        }
-
-        public int getID() { return id; }
-
-        public String getTextID() { return textID; }
-
-        public static PickablesOption getOptionFromID(int id) {
-            if (id == 0) return LOW;
-            if (id == 1) return MEDIUM;
-            if (id == 2) return HIGH;
-            throw new RuntimeException("Invalid PickablesOption id.");
-        }
-
-        public static PickablesOption fromTextID(String textID) {
-            for (final PickablesOption o : values()) {
-                if (o.textID.equals(textID)) return o;
-            }
-            throw new RuntimeException("Invalid PickablesOption text ID -> " + textID);
-        }
-
     }
 
     public static final String TAG = "amaze";
@@ -111,8 +77,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private int targetPos_column = 0;
     private int penalties = size / 5; //Default low setting formula
     private int rewards = size / 5; //Default low setting formula
-    private PickablesOption rewardsOption = PickablesOption.LOW;
-    private PickablesOption penaltiesOption = PickablesOption.LOW;
+    private PickableIntensity rewardsIntensity = PickableIntensity.LOW;
+    private PickableIntensity penaltiesIntensity = PickableIntensity.LOW;
     private Audio backgroundAudio;
     private MazeGenerator.Algorithm selectedAlgorithm = MazeGenerator.Algorithm.SINGLE_SOLUTION;
     private String oldMazeName;
@@ -234,7 +200,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         rewardsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setRewards(PickablesOption.getOptionFromID(i));
+                setRewards(PickableIntensity.getOptionFromID(i));
             }
 
             @Override
@@ -246,7 +212,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         penaltiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setPenalties(PickablesOption.getOptionFromID(i));
+                setPenalties(PickableIntensity.getOptionFromID(i));
             }
 
             @Override
@@ -316,9 +282,9 @@ public class MazeDesignerActivity extends AppCompatActivity {
             targetPos_row = challenge.getGrid().getTargetPosition().getRow();
             targetPos_column = challenge.getGrid().getTargetPosition().getCol();
             rewards = challenge.getMaxRewards();
-            rewardsOption = challenge.getRewardsOption();
+            rewardsIntensity = challenge.getRewardsIntesity();
             penalties = challenge.getMaxPenalties();
-            penaltiesOption = challenge.getPenaltiesOption();
+            penaltiesIntensity = challenge.getPenaltiesIntensity();
             selectedAlgorithm = challenge.getAlgorithm();
             oldMazeName = challenge.getName();
 
@@ -338,8 +304,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
             //Disabled fields (non-changeable):
             algorithmSpinner.setEnabled(false);
             algorithmSpinner.setSelection(MazeGenerator.Algorithm.getPosition(selectedAlgorithm));
-            penaltiesSpinner.setSelection(penaltiesOption.getID());
-            rewardsSpinner.setSelection(rewardsOption.getID());
+            penaltiesSpinner.setSelection(penaltiesIntensity.getID());
+            rewardsSpinner.setSelection(rewardsIntensity.getID());
 
             //Changed fields:
             Button addToTrainingButton = findViewById(R.id.addToTrainingButton);
@@ -549,45 +515,23 @@ public class MazeDesignerActivity extends AppCompatActivity {
         targetPos_column = column;
     }
 
-    private void setRewards(PickablesOption option) {
-        rewardsOption = option;
-//        switch (option) {
-//            case LOW:
-//                rewards = size*size / 5;
-//                break;
-//            case MEDIUM:
-//                rewards = size*size / 3;
-//                break;
-//            case HIGH:
-//                rewards = size*size / 2;
-//                break;
-//        }
+    private void setRewards(PickableIntensity option) {
+        rewardsIntensity = option;
     }
 
-    private void setPenalties(PickablesOption option) {
-        penaltiesOption = option;
-//        switch (option) {
-//            case LOW:
-//                penalties = size*size / 5;
-//                break;
-//            case MEDIUM:
-//                penalties = size*size / 3;
-//                break;
-//            case HIGH:
-//                penalties = size*size / 2;
-//                break;
-//        }
+    private void setPenalties(PickableIntensity option) {
+        penaltiesIntensity = option;
     }
 
-    private ChallengeDifficulty calculateDifficulty(PickablesOption rewardsOption, PickablesOption penaltiesOption) {
-        if (rewardsOption == penaltiesOption) return ChallengeDifficulty.MEDIUM;
+    private ChallengeDifficulty calculateDifficulty(PickableIntensity rewardsIntensity, PickableIntensity penaltiesIntensity) {
+        if (rewardsIntensity == penaltiesIntensity) return ChallengeDifficulty.MEDIUM;
         else {
-            if (rewardsOption == PickablesOption.LOW && penaltiesOption == PickablesOption.HIGH) return ChallengeDifficulty.VERY_HARD;
-            else if (rewardsOption == PickablesOption.HIGH && penaltiesOption == PickablesOption.LOW) return ChallengeDifficulty.VERY_EASY;
-            else if (rewardsOption == PickablesOption.MEDIUM && penaltiesOption == PickablesOption.LOW) return ChallengeDifficulty.EASY;
-            else if (rewardsOption == PickablesOption.LOW && penaltiesOption == PickablesOption.MEDIUM) return ChallengeDifficulty.HARD;
-            else if (rewardsOption == PickablesOption.MEDIUM && penaltiesOption == PickablesOption.HIGH) return ChallengeDifficulty.HARD;
-            else /*if (rewardsOption == PickablesOption.HIGH && penaltiesOption == PickablesOption.MEDIUM)*/ return ChallengeDifficulty.EASY;
+            if (rewardsIntensity == PickableIntensity.LOW && penaltiesIntensity == PickableIntensity.HIGH) return ChallengeDifficulty.VERY_HARD;
+            else if (rewardsIntensity == PickableIntensity.HIGH && penaltiesIntensity == PickableIntensity.LOW) return ChallengeDifficulty.VERY_EASY;
+            else if (rewardsIntensity == PickableIntensity.MEDIUM && penaltiesIntensity == PickableIntensity.LOW) return ChallengeDifficulty.EASY;
+            else if (rewardsIntensity == PickableIntensity.LOW && penaltiesIntensity == PickableIntensity.MEDIUM) return ChallengeDifficulty.HARD;
+            else if (rewardsIntensity == PickableIntensity.MEDIUM && penaltiesIntensity == PickableIntensity.HIGH) return ChallengeDifficulty.HARD;
+            else /*if (rewardsIntensity == PickableIntensity.HIGH && penaltiesIntensity == PickableIntensity.MEDIUM)*/ return ChallengeDifficulty.EASY;
         }
     }
 
@@ -603,7 +547,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"apiVersion\": 1,\n" +
                 "    \"name\": \"" + mazeNameEditText.getText().toString() + "\",\n" +
                 "    \"description\": \"" + mazeDescriptionEditText.getText().toString() + "\",\n" +
-                "    \"difficulty\": \"" + calculateDifficulty(rewardsOption, penaltiesOption).toString() + "\",\n" +
+                "    \"difficulty\": \"" + calculateDifficulty(rewardsIntensity, penaltiesIntensity).toString() + "\",\n" +
                 "    \"createdOn\":" + System.currentTimeMillis() + ",\n" +
                 "    \"createdBy\": \"player\"," +
                 "    \"canRepeat\": true,\n" +
@@ -614,10 +558,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"startTimestamp\": 0,\n" +            //Default for training
                 "    \"endTimestamp\": 0,\n" +              //Default for training
                 "    \"hasQuestionnaire\": true,\n" +       //Default for training
-//                "    \"maxRewards\": " + rewards + ",\n" +
-//                "    \"maxPenalties\": " + penalties + ",\n" +
-                "    \"rewards\": " + rewardsOption.getTextID() + ",\n" +
-                "    \"penalties\": " + penaltiesOption.getTextID() + ",\n" +
+                "    \"rewards\": " + rewardsIntensity.getTextID() + ",\n" +
+                "    \"penalties\": " + penaltiesIntensity.getTextID() + ",\n" +
                 "    \"selectedAlgorithm\": \"" + selectedAlgorithm.getID() + "\",\n" +
                 "    \"grid\": {\n" +
                 "        \"width\": " + size + ",\n" +
@@ -664,6 +606,4 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
         return builder.create();
     }
-
-
 }

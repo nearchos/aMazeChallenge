@@ -1,7 +1,5 @@
 package org.inspirecenter.amazechallenge.controller;
 
-import android.util.Log;
-
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.PlayerMove;
 import org.inspirecenter.amazechallenge.model.Challenge;
