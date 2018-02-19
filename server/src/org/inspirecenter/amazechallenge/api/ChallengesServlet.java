@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -22,7 +23,6 @@ public class ChallengesServlet extends HttpServlet {
         final List<Challenge> allChallenges = ofy()
                 .load()
                 .type(Challenge.class)
-                .order("name")
                 .list();
 
         final String reply = gson.toJson(new ChallengesReply(allChallenges));

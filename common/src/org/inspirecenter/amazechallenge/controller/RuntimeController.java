@@ -402,5 +402,4 @@ public class RuntimeController {
         lostTurnsMap = new HashMap<>();
         doubleTurnsMap = new HashMap<>();
     }
-
 }

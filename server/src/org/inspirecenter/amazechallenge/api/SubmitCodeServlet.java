@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -23,6 +24,8 @@ public class SubmitCodeServlet extends HttpServlet {
     private static final String KEY_MAZE_SOLVER_CODE = "challenge-%1-player-%2";
 
     private final Gson gson = new Gson();
+
+    private Logger log = Logger.getLogger(getClass().getName());
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final String magic = request.getParameter("magic");

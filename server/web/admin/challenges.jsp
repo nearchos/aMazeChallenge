@@ -28,7 +28,6 @@
         final List<Challenge> allChallenges = ObjectifyService.ofy()
                 .load()
                 .type(Challenge.class)
-                .order("name")
                 .list();
 
         for(final Challenge challenge : allChallenges) {

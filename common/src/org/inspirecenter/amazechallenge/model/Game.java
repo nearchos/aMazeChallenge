@@ -12,8 +12,6 @@ import java.util.*;
 @com.googlecode.objectify.annotation.Entity
 public class Game implements Serializable {
 
-    public static final long ONE_SECOND = 1000L;
-
     @com.googlecode.objectify.annotation.Id
     public Long id;
 

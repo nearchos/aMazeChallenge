@@ -121,7 +121,7 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
         switch(challenge.getDifficulty()) {
             case VERY_EASY:
                 holder.challengeDifficultyTextView.setText(R.string.very_easy);
-                holder.challengeDifficultyTextView.setTextColor(Color.parseColor("#299e29"));
+                holder.challengeDifficultyTextView.setTextColor(Color.parseColor("#299e29")); // todo parameterize colors
                 break;
             case EASY:
                 holder.challengeDifficultyTextView.setText(R.string.easy);
@@ -139,7 +139,6 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
                 holder.challengeDifficultyTextView.setText(R.string.very_hard);
                 holder.challengeDifficultyTextView.setTextColor(Color.parseColor("#9e295f"));
                 break;
-
         }
     }
 
@@ -148,5 +147,4 @@ class ChallengeAdapter extends RecyclerView.Adapter<ChallengeAdapter.ViewHolder>
     public int getItemCount() {
         return challenges.size();
     }
-
 }

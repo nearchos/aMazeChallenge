@@ -3,7 +3,7 @@
     "apiVersion": 1,
     "name": "Moon Landing",
     "description": "The eagle has landed!",
-    "difficulty": "Medium",
+    "difficulty": "MEDIUM",
     "createdOn": 0,
     "createdBy": "admin",
     "canRepeat": true,
@@ -14,9 +14,9 @@
     "startTimestamp": 0,
     "endTimestamp": 0,
     "hasQuestionnaire": true,
-    "rewards": "medium",
-    "penalties": "medium",
-    "selectedAlgorithm": "single",
+    "rewards": "MEDIUM",
+    "penalties": "MEDIUM",
+    "selectedAlgorithm": "SINGLE_SOLUTION",
     "grid": {
         "width": 20,
         "height": 20,
@@ -31,8 +31,6 @@
         }
     },
     "lineColor": "#00FFFF",
-    "backgroundImageName": "texture_metal",
-    "backgroundImageType": "jpg",
-    "backgroundAudioName": "",
-    "backgroundAudioFormat": ""
+    "backgroundImage": "TEXTURE_METAL",
+    "backgroundAudio": "AUDIO_NONE"
 }

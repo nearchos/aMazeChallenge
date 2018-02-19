@@ -3,7 +3,7 @@ package org.inspirecenter.amazechallenge.model;
 public enum Audio {
 
     //None
-    AUDIO_NONE("None","",AudioFormat.NO_FORMAT, AudioType.NONE),
+    AUDIO_NONE("None","",AudioFormat.UNDEFINED_FORMAT, AudioType.NONE),
 
     //Ambient
     AMBIENT_ALPINE_FOREST("Alpine-Forest", "alpine_forest", AudioFormat.MP3, AudioType.AMBIENT),
@@ -37,28 +37,9 @@ public enum Audio {
 
     ;
 
-    public enum AudioFormat {
-        WAV("wav"),
-        MP3("mp3"),
-        MP4("mp4"),
-        OGG("ogg"),
+    public enum AudioFormat { WAV, MP3, MP4, OGG, UNDEFINED_FORMAT }
 
-        NO_FORMAT("")
-        ;
-
-        private String name;
-        AudioFormat(String name) { this.name = name; }
-        public static AudioFormat fromText(String text) {
-            for (AudioFormat f : AudioFormat.values()) {
-                if (f.name.equals(text)) return f;
-            }
-            throw new RuntimeException("Parsed audio format of type: " + text + " is not an accepted audio format.");
-        }
-        @Override
-        public String toString() { return name; }
-    }
-
-    public enum AudioType {AMBIENT, EVENT, NONE }
+    public enum AudioType { AMBIENT, EVENT, NONE }
 
     private AudioFormat audioFormat;
     private AudioType audioType;
@@ -72,6 +53,10 @@ public enum Audio {
         this.audioType = audioType;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return name;
@@ -83,18 +68,10 @@ public enum Audio {
 
     public AudioType getAudioType() { return audioType; }
 
-    public static Audio fromString(String resourceName) {
-        for (final Audio a : Audio.values()) {
-            if (a.getSoundResourceName().equals(resourceName)) return a;
-        }
-        throw new RuntimeException("Invalid audio resource name provided.");
-    }
-
-    public static int getIDfromString(String resourceName) {
+    public static int getIdFromString(String resourceName) {
         for (int i = 0; i < Audio.values().length; i++) {
             if (Audio.values()[i].getSoundResourceName().equals(resourceName)) return i;
         }
         throw new RuntimeException("Invalid audio resource name provided.");
     }
-
 }

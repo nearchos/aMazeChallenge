@@ -1,7 +1,5 @@
 package org.inspirecenter.amazechallenge.model;
 
-import org.inspirecenter.amazechallenge.generator.MazeGenerator;
-
 import java.io.Serializable;
 
 /**
@@ -15,12 +13,15 @@ import java.io.Serializable;
 @com.googlecode.objectify.annotation.Entity
 public class Challenge implements Serializable {
 
-    public static final int DEFAULT_MIN_ACTIVE_PLAYERS = 1;
-    public static final int DEFAULT_MAX_ACTIVE_PLAYERS = 10;
+    private static final int DEFAULT_MIN_ACTIVE_PLAYERS = 1;
+    private static final int DEFAULT_MAX_ACTIVE_PLAYERS = 10;
 
     @com.googlecode.objectify.annotation.Id
     public Long id;
+
+    @com.googlecode.objectify.annotation.Index
     private String name;
+
     private int apiVersion; // used to determine if the client/player can 'support' this challenge
     private String description; // brief description of the challenge
     private boolean canRepeat; // whether a player can play again and again
@@ -31,20 +32,18 @@ public class Challenge implements Serializable {
     private long startTimestamp; // when the challenge starts being available, or zero if available from the beginning of time (timestamp in UTC)
     private long endTimestamp; // when the challenge ends being available, or zero if available forever (timestamp in UTC)
     private boolean hasQuestionnaire; // true when the challenge requires answering a questionnaire before/after the game
-    private String selectedAlgorithm;
+    private Algorithm algorithm;
 
-    private String rewards;
-    private String penalties;
+    private PickableIntensity rewards;
+    private PickableIntensity penalties;
 
     private Grid grid;
     private String lineColor;
-    private String difficulty;
+    private ChallengeDifficulty difficulty;
     private String createdBy;
     private long createdOn;
-    private String backgroundAudioName;
-    private Audio.AudioFormat backgroundAudioFormat;
-    private String backgroundImageName;
-    private BackgroundImage.BackgroundImageType backgroundImageType;
+    private Audio backgroundAudio;
+    private BackgroundImage backgroundImage;
 
     public Challenge() {
         super();
@@ -53,10 +52,9 @@ public class Challenge implements Serializable {
     public Challenge(String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, int minActivePlayers,
                      int maxActivePlayers, long startTimestamp, long endTimestamp, boolean hasQuestionnaire,
-                     String rewards, String penalties, String selectedAlgorithm,
-                     Grid grid, String lineColor, String difficulty, String createdBy, long createdOn,
-                     String backgroundAudioName, String backgroundAudioFormat,
-                     String backgroundImageName, BackgroundImage.BackgroundImageType backgroundImageType) {
+                     PickableIntensity rewards, PickableIntensity penalties, Algorithm algorithm,
+                     Grid grid, String lineColor, ChallengeDifficulty difficulty, String createdBy, long createdOn,
+                     Audio backgroundAudio, BackgroundImage backgroundImage) {
         this();
         this.name = name;
         this.apiVersion = apiVersion;
@@ -69,7 +67,7 @@ public class Challenge implements Serializable {
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
         this.hasQuestionnaire = hasQuestionnaire;
-        this.selectedAlgorithm = selectedAlgorithm;
+        this.algorithm = algorithm;
 
         this.grid = grid;
         this.lineColor = lineColor;
@@ -80,24 +78,22 @@ public class Challenge implements Serializable {
         this.rewards = rewards;
         this.penalties = penalties;
 
-        this.backgroundAudioFormat = Audio.AudioFormat.fromText(backgroundAudioFormat);
-        this.backgroundAudioName = backgroundAudioName;
+        this.backgroundAudio = backgroundAudio;
 
-        this.backgroundImageName = backgroundImageName;
-        this.backgroundImageType = backgroundImageType;
+        this.backgroundImage = backgroundImage;
     }
 
     public Challenge(long id, String name, int apiVersion, String description, boolean canRepeat,
                      boolean canJoinAfterStart, boolean canStepOnEachOther, long startTimestamp,
-                     long endTimestamp, boolean hasQuestionnaire, String rewards, String penalties,  String selectedAlgorithm,
-                     Grid grid, String lineColor, String difficulty, String createdBy,
-                     long createdOn, String backgroundAudioName, String backgroundAudioFormat,
-                     String backgroundImageName, BackgroundImage.BackgroundImageType backgroundImageType) {
+                     long endTimestamp, boolean hasQuestionnaire, PickableIntensity rewards,
+                     PickableIntensity penalties, Algorithm algorithm,
+                     Grid grid, String lineColor, ChallengeDifficulty difficulty, String createdBy,
+                     long createdOn, Audio backgroundAudio, Audio.AudioFormat backgroundAudioFormat,
+                     BackgroundImage backgroundImage, BackgroundImage.BackgroundImageType backgroundImageType) {
         this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther,
                 DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp,
-                endTimestamp, hasQuestionnaire, rewards, penalties, selectedAlgorithm, grid, lineColor,
-                difficulty, createdBy, createdOn, backgroundAudioName, backgroundAudioFormat,
-                backgroundImageName, backgroundImageType);
+                endTimestamp, hasQuestionnaire, rewards, penalties, algorithm, grid, lineColor,
+                difficulty, createdBy, createdOn, backgroundAudio, backgroundImage);
         this.id = id;
     }
 
@@ -118,7 +114,7 @@ public class Challenge implements Serializable {
     }
 
     public ChallengeDifficulty getDifficulty() {
-        return ChallengeDifficulty.getChallengeDifficulty(difficulty);
+        return difficulty;
     }
 
     public boolean canRepeat() {
@@ -170,24 +166,19 @@ public class Challenge implements Serializable {
     }
 
     public BackgroundImage getBackgroundImage() {
-        return BackgroundImage.fromString(backgroundImageName);
+        return backgroundImage;
     }
 
-    public BackgroundImage.BackgroundImageType getBackgroundImageType() {
-        return backgroundImageType;
-    }
-
-    public PickableIntensity getRewardsIntesity() {
-        return PickableIntensity.fromTextID(rewards);
+    public PickableIntensity getRewardsIntensity() {
+        return rewards;
     }
 
     public PickableIntensity getPenaltiesIntensity() {
-        return PickableIntensity.fromTextID(penalties);
+        return penalties;
     }
 
     public int getMaxRewards() {
-        PickableIntensity pickableIntensity = PickableIntensity.fromTextID(rewards);
-        switch (pickableIntensity) {
+        switch (rewards) {
             case LOW:
                 return (getGrid().getHeight()) / 5;
             case MEDIUM:
@@ -200,8 +191,7 @@ public class Challenge implements Serializable {
     }
 
     public int getMaxPenalties() {
-        final PickableIntensity pickableIntensity = PickableIntensity.fromTextID(penalties);
-        switch (pickableIntensity) {
+        switch (penalties) {
             case LOW:
                 return (getGrid().getHeight()) / 5;
             case MEDIUM:
@@ -221,19 +211,17 @@ public class Challenge implements Serializable {
         return createdBy;
     }
 
-    public String getBackgroundAudioName() {
-        return backgroundAudioName;
-    }
-
-    public Audio.AudioFormat getBackgroundAudioFormat() {
-        return backgroundAudioFormat;
+    public Audio getBackgroundAudio() {
+        return backgroundAudio;
     }
 
     public boolean getHasQuestionnaire() {
         return hasQuestionnaire;
     }
 
-    public MazeGenerator.Algorithm getAlgorithm() { return MazeGenerator.Algorithm.fromID(selectedAlgorithm); }
+    public Algorithm getAlgorithm() {
+        return algorithm;
+    }
 
     @Override
     public String toString() {
@@ -256,10 +244,8 @@ public class Challenge implements Serializable {
                 ", difficulty='" + difficulty + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdOn=" + createdOn +
-                ", backgroundAudioName='" + backgroundAudioName + '\'' +
-                ", backgroundAudioFormat=" + backgroundAudioFormat +
-                ", backgroundImageName='" + backgroundImageName + '\'' +
-                ", backgroundImageType=" + backgroundImageType +
+                ", backgroundAudio='" + backgroundAudio + '\'' +
+                ", backgroundImage='" + backgroundImage + '\'' +
                 '}';
     }
 }

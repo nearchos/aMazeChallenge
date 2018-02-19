@@ -166,13 +166,13 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         });
 
         //Create audio map:
-        for (final Audio a : Audio.values()) {
-            if (a.getAudioType() == Audio.AudioType.EVENT) {
-                if (a.getAudioFormat() != Audio.AudioFormat.NO_FORMAT && !a.getSoundResourceName().equals(Audio.AUDIO_NONE.getSoundResourceName())) {
-                    int r = getResources().getIdentifier(a.getSoundResourceName(), "raw", getPackageName());
-                    MediaPlayer t = MediaPlayer.create(this, r);
-                    t.setVolume(DEFAULT_EVENTS_VOLUME, DEFAULT_EVENTS_VOLUME);
-                    audioEventsMap.put(a.toString(), t);
+        for (final Audio audio : Audio.values()) {
+            if (audio.getAudioType() == Audio.AudioType.EVENT) {
+                if (audio.getAudioFormat() != Audio.AudioFormat.UNDEFINED_FORMAT && !audio.getSoundResourceName().equals(Audio.AUDIO_NONE.getSoundResourceName())) {
+                    final int identifier = getResources().getIdentifier(audio.getSoundResourceName(), "raw", getPackageName());
+                    final MediaPlayer mediaPlayer = MediaPlayer.create(this, identifier);
+                    mediaPlayer.setVolume(DEFAULT_EVENTS_VOLUME, DEFAULT_EVENTS_VOLUME);
+                    audioEventsMap.put(audio.toString(), mediaPlayer);
                 }
             }
         }
@@ -203,10 +203,9 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
-        final String playerEmail = player.getEmail();
-        playerEmailToMazeSolvers.put(player.getEmail(), new InterpretedMazeSolver(challenge, game, playerEmail, code));
+        playerEmailToMazeSolvers.put(player.getEmail(), new InterpretedMazeSolver(challenge, game, player.getEmail(), code));
         game.addPlayer(player);
-        game.queuePlayer(playerEmail);
+        game.queuePlayer(player.getEmail());
         game.activateNextPlayer(challenge.getGrid());
 
         handler = new Handler();
@@ -216,11 +215,11 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         timer.schedule(new MazeRunner(), 0L, PERIOD_OPTIONS[0]);
 
         //Play background audio:
-        Audio.AudioFormat audioFormat = challenge.getBackgroundAudioFormat();
-        String audioResource = challenge.getBackgroundAudioName();
+        final Audio audioResource = challenge.getBackgroundAudio();
+        final Audio.AudioFormat audioFormat = audioResource.getAudioFormat();
         System.out.println("Sound is: " + sound);
-        if (audioFormat != Audio.AudioFormat.NO_FORMAT && !audioResource.equals(Audio.AUDIO_NONE.getSoundResourceName())) {
-            backgroundAudio = MediaPlayer.create(this, getResources().getIdentifier(audioResource, "raw", getPackageName()));
+        if (audioFormat != Audio.AudioFormat.UNDEFINED_FORMAT && !audioResource.getName().equals(Audio.AUDIO_NONE.getSoundResourceName())) {
+            backgroundAudio = MediaPlayer.create(this, getResources().getIdentifier(audioResource.getName(), "raw", getPackageName()));
             if (backgroundAudio != null && sound) {
                 backgroundAudio.setLooping(true);
                 backgroundAudio.setVolume(DEFAULT_AMBIENT_VOLUME, DEFAULT_AMBIENT_VOLUME);

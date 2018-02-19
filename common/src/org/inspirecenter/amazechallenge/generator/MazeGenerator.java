@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.generator;
 
+import org.inspirecenter.amazechallenge.model.Algorithm;
 import org.inspirecenter.amazechallenge.model.Position;
 
 import java.util.Collections;
@@ -11,48 +12,6 @@ public class MazeGenerator {
 
     private static final int MIN_MAZE_SIZE = 5;
     private static final int MAX_MAZE_SIZE = 30;
-
-    public enum Algorithm {
-
-        SINGLE_SOLUTION("single", "Single Solution"),
-        MANY_SOLUTIONS("many", "Many Solutions"),
-        SPARSE("sparse", "Sparse"),
-        EMPTY("empty", "Empty");
-
-        private final String name;
-        private final String id;
-
-        Algorithm(String id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-
-        public String getID() { return id; }
-
-        public String getName() {
-            return name;
-        }
-
-        public static Algorithm fromID(String id) {
-            for (final Algorithm a : values()) {
-                if (a.id.equals(id)) return a;
-            }
-            throw new RuntimeException("The algorithm id found \"" + id + "\" is not a valid algorithm.");
-        }
-
-        public static int getPosition(Algorithm algorithm) {
-            for (int i = 0; i < values().length; i++) {
-                if (algorithm.getID().equals(values()[i].getID())) return i;
-            }
-            throw new RuntimeException("The algorithm id found \"" + algorithm.id + "\" is not a valid algorithm.");
-        }
-
-    }
 
     public static String generate(Algorithm algorithm, int gridSize, final Position startingPosition, final Position targetPosition) {
 

@@ -1,9 +1,7 @@
 package org.inspirecenter.amazechallenge.admin;
 
-import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.ObjectifyService;
-import org.inspirecenter.amazechallenge.generator.MazeGenerator;
 import org.inspirecenter.amazechallenge.model.*;
 
 import javax.servlet.ServletException;
@@ -58,21 +56,19 @@ public class AddChallengeServlet extends HttpServlet {
                 final int apiVersion = API_VERSION;
                 // todo customize other fields
                 final boolean hasQuestionnaire = false;
-                final String maxRewards = PickableIntensity.LOW.name();
-                final String maxPenalties = PickableIntensity.LOW.name();
-                final String algorithm = MazeGenerator.Algorithm.SINGLE_SOLUTION.getName();
+                final PickableIntensity maxRewards = PickableIntensity.LOW;
+                final PickableIntensity maxPenalties = PickableIntensity.LOW;
+                final Algorithm algorithm = Algorithm.SINGLE_SOLUTION;
                 final String lineColor = AmazeColor.COLOR_BLUE.getName();
-                final String difficulty = ChallengeDifficulty.EASY.name();
+                final ChallengeDifficulty difficulty = ChallengeDifficulty.EASY;
                 final String createdBy = UserServiceFactory.getUserService().getCurrentUser().getEmail();
                 final long createdOn = System.currentTimeMillis();
-                final String backgroundAudioName = "";
-                final String backgroundAudioFormat = "";
-                final String backgroundImageName = "texture_grass";
-                final BackgroundImage.BackgroundImageType backgroundImageType = BackgroundImage.BackgroundImageType.JPG;
+                final Audio backgroundAudio = Audio.AUDIO_NONE;
+                final BackgroundImage backgroundImage = BackgroundImage.TEXTURE_GRASS;
 
                 final Challenge challenge = new Challenge(name, apiVersion, description, true, true, true, 0, 10, 0L,
                         Long.MAX_VALUE, hasQuestionnaire, maxRewards, maxPenalties, algorithm, grid, lineColor, difficulty, createdBy, createdOn,
-                        backgroundAudioName, backgroundAudioFormat, backgroundImageName, backgroundImageType);
+                        backgroundAudio, backgroundImage);
                 ObjectifyService.ofy().save().entity(challenge).now();
             } catch (NumberFormatException nfe) {
                 log.severe(request.getParameterMap() + " ... -> " + nfe.getMessage());

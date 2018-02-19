@@ -15,11 +15,9 @@ public class Grid implements Serializable {
     public static final int SHAPE_ONLY_LEFT_SIDE  = 0x4; // |
     public static final int SHAPE_ONLY_RIGHT_SIDE = 0x8; //  |
 
-    public Long id;
-
     private int width;
     private int height;
-    private String data; // all the cells, from top-left, rightwards and then next line, etc. until bottom-right
+    private String data; // all the cells, from top-left, rightwards and then next line, etc. until bottom-right (in hex)
     private Position startingPosition;
     private Position targetPosition;
     private Direction startingDirection = DEFAULT_STARTING_DIRECTION;
@@ -39,10 +37,6 @@ public class Grid implements Serializable {
 
     public Grid(int width, int height, String gridAsHex, int startingPositionX, int startingPositionY, int targetPositionX, int targetPositionY) {
         this(width, height, gridAsHex, new Position(startingPositionY, startingPositionX), new Position(targetPositionY, targetPositionX));
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public int getWidth() {

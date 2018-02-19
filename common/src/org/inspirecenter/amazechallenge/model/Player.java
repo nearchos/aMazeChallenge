@@ -16,9 +16,9 @@ public class Player implements Serializable {
     private AmazeColor color;
     private AmazeIcon icon;
     private Shape shape;
-    private Health health;
-    private boolean isActive = false;
-    private int points = 0;
+    private Health health; // todo must be part of game, not player
+    private boolean isActive = false; // todo must be part of game, not player
+    private int points = 0; // todo must be part of game, not player
 
     public Player() {
         super();
@@ -114,5 +114,4 @@ public class Player implements Serializable {
     public void resetPoints() {
         points = 0;
     }
-
 }

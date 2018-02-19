@@ -23,6 +23,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.generator.MazeGenerator;
+import org.inspirecenter.amazechallenge.model.Algorithm;
 import org.inspirecenter.amazechallenge.model.Audio;
 import org.inspirecenter.amazechallenge.model.BackgroundImage;
 import org.inspirecenter.amazechallenge.model.Challenge;
@@ -80,7 +81,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private PickableIntensity rewardsIntensity = PickableIntensity.LOW;
     private PickableIntensity penaltiesIntensity = PickableIntensity.LOW;
     private Audio backgroundAudio;
-    private MazeGenerator.Algorithm selectedAlgorithm = MazeGenerator.Algorithm.SINGLE_SOLUTION;
+    private Algorithm selectedAlgorithm = Algorithm.SINGLE_SOLUTION;
     private String oldMazeName;
 
     @Override
@@ -247,10 +248,10 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
         //Algorithm Spinner Options:
         final ArrayAdapter<String> algorithmAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        ArrayList<MazeGenerator.Algorithm> algorithmList = new ArrayList<>();
-        for (MazeGenerator.Algorithm a : MazeGenerator.Algorithm.values()) {
-            algorithmList.add(a);
-            algorithmAdapter.add(a.toString());
+        ArrayList<Algorithm> algorithmList = new ArrayList<>();
+        for (Algorithm algorithm : Algorithm.values()) {
+            algorithmList.add(algorithm);
+            algorithmAdapter.add(algorithm.toString());
         }
         algorithmSpinner.setAdapter(algorithmAdapter);
 
@@ -275,14 +276,14 @@ public class MazeDesignerActivity extends AppCompatActivity {
             Challenge challenge = (Challenge) getIntent().getSerializableExtra(DESIGNER_DATA_KEY);
             selectedWallColor = Color.parseColor(challenge.getLineColor());
             backgroundImage = challenge.getBackgroundImage();
-            backgroundAudio = Audio.fromString(challenge.getBackgroundAudioName());
+            backgroundAudio = challenge.getBackgroundAudio();
             size = challenge.getGrid().getHeight();
             startPos_row = challenge.getGrid().getStartingPosition().getRow();
             startPos_column = challenge.getGrid().getStartingPosition().getCol();
             targetPos_row = challenge.getGrid().getTargetPosition().getRow();
             targetPos_column = challenge.getGrid().getTargetPosition().getCol();
             rewards = challenge.getMaxRewards();
-            rewardsIntensity = challenge.getRewardsIntesity();
+            rewardsIntensity = challenge.getRewardsIntensity();
             penalties = challenge.getMaxPenalties();
             penaltiesIntensity = challenge.getPenaltiesIntensity();
             selectedAlgorithm = challenge.getAlgorithm();
@@ -292,7 +293,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
             mazeDescriptionEditText.setText(challenge.getDescription());
             maze_size_Spinner.setSelection(challenge.getGrid().getHeight() - 5);
             setSize(challenge.getGrid().getHeight(), new Position(startPos_row, startPos_column), new Position(targetPos_row, targetPos_column));
-            backgroundAudioSpinner.setSelection(Audio.getIDfromString(backgroundAudio.getSoundResourceName()));
+            backgroundAudioSpinner.setSelection(Audio.getIdFromString(backgroundAudio.getSoundResourceName()));
             selectColorButton.setBackgroundColor(selectedWallColor);
             if (ColorFragment.isBrightColor(selectedWallColor)) selectColorButton.setTextColor(Color.BLACK);
             else selectColorButton.setTextColor(Color.WHITE);
@@ -303,7 +304,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
 
             //Disabled fields (non-changeable):
             algorithmSpinner.setEnabled(false);
-            algorithmSpinner.setSelection(MazeGenerator.Algorithm.getPosition(selectedAlgorithm));
+            algorithmSpinner.setSelection(Algorithm.getPosition(selectedAlgorithm));
             penaltiesSpinner.setSelection(penaltiesIntensity.getID());
             rewardsSpinner.setSelection(rewardsIntensity.getID());
 
@@ -540,7 +541,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         final Position targetPosition = new Position(targetPos_row, targetPos_column);
 //        final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
         // todo choose algorithm
-        final String data = MazeGenerator.generate(MazeGenerator.Algorithm.MANY_SOLUTIONS, size, startingPosition, targetPosition);
+        final String data = MazeGenerator.generate(Algorithm.MANY_SOLUTIONS, size, startingPosition, targetPosition);
 
         return  "{\n" +
                 "    \"id\": 0,\n" +
@@ -560,7 +561,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"hasQuestionnaire\": true,\n" +       //Default for training
                 "    \"rewards\": " + rewardsIntensity.getTextID() + ",\n" +
                 "    \"penalties\": " + penaltiesIntensity.getTextID() + ",\n" +
-                "    \"selectedAlgorithm\": \"" + selectedAlgorithm.getID() + "\",\n" +
+                "    \"selectedAlgorithm\": \"" + selectedAlgorithm + "\",\n" +
                 "    \"grid\": {\n" +
                 "        \"width\": " + size + ",\n" +
                 "        \"height\": " + size + ",\n" +
@@ -578,7 +579,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"backgroundImageName\": \"" + backgroundImage.getResourceName() + "\",\n" +
                 "    \"backgroundImageType\": \"" + backgroundImage.getType().toString() + "\",\n" +
                 "    \"backgroundAudioName\": \"" + backgroundAudio.getSoundResourceName() + "\",\n" +
-                "    \"backgroundAudioFormat\": \"" + backgroundAudio.getAudioFormat().toString() + "\"" +
+                "    \"backgroundAudioFormat\": \"" + backgroundAudio.getAudioFormat() + "\"" +
                 "}";
     }
 

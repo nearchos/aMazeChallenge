@@ -3,7 +3,7 @@
     "apiVersion": 1,
     "name": "Park Adventure",
     "description": "A walk in the park!",
-    "difficulty": "Easy",
+    "difficulty": "EASY",
     "createdOn": 0,
     "createdBy": "admin",
     "canRepeat": true,
@@ -14,9 +14,9 @@
     "startTimestamp": 0,
     "endTimestamp": 0,
     "hasQuestionnaire": true,
-    "rewards": "low",
-    "penalties": "low",
-    "selectedAlgorithm": "single",
+    "rewards": "LOW",
+    "penalties": "LOW",
+    "selectedAlgorithm": "SINGLE_SOLUTION",
     "grid": {
         "width": 10,
         "height": 10,
@@ -31,8 +31,6 @@
         }
     },
     "lineColor": "#FFFF00",
-    "backgroundImageName": "texture_grass",
-    "backgroundImageType": "jpg",
-    "backgroundAudioName": "",
-    "backgroundAudioFormat": ""
+    "backgroundImage": "TEXTURE_GRASS",
+    "backgroundAudio": "AUDIO_NONE"
 }
