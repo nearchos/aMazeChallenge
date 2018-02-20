@@ -255,7 +255,7 @@
     <string name="questionnaire">Questionnaire</string>
     <string name="questionnaire_instructions_body">Please answer questions honestly. Do not provide any more information than what is required. If you are not sure what a question is asking, please speak to someone who can help. You may choose to skip this questionnaire but your feedback would be highly appreciated.</string>
     <string name="questionnaire_instructions_title"><u>Questionnaire Instructions:</u></string>
-    <string name="question_1">Did you have fun playing aMaze Challenge?</string>
+    <string name="question_1">How was your experience playing aMaze Challenge?</string>
     <string name="answer_1_no">Not at all</string>
     <string name="answer_1_yes">Absolutely!</string>
     <string name="Skip">Skip</string>
@@ -266,10 +266,10 @@
     <string name="submit">Submit</string>
     <string name="maybe">Maybe</string>
     <string name="question_4">Do you think programming is interesting?</string>
-    <string name="question_5">Would you prefer learning programming through games or normal classes?</string>
+    <string name="question_5">Do you believe that videogames (such as this) can help you learn programming more effectively?</string>
     <string name="Games">Games</string>
     <string name="Classes">Classes</string>
-    <string name="question_6">Do you believe that the competitiveness of this game has helped you become a better programmer?</string>
+    <string name="question_6">Is competition good or bad in these educational games?</string>
     <string name="Not_sure">Not sure</string>
     <string name="invalid_questionnaire_response">Please make sure you provide an answer to all questions.</string>
     <string name="no_response">Please provide a response</string>
