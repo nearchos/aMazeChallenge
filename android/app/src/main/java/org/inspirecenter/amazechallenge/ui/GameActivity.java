@@ -27,6 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.blockly.model.Block;
+
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
@@ -203,6 +205,20 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
+        if (code.isEmpty()) {
+            AlertDialog.Builder noCodeDialog = new AlertDialog.Builder(this, R.style.ErrorDialogStyle);
+            noCodeDialog.setTitle(R.string.no_code_title);
+            noCodeDialog.setMessage(R.string.no_code_message);
+            noCodeDialog.setPositiveButton(R.string.no_code_action, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    startService(new Intent(GameActivity.this, BlocklyActivity.class));
+                    finish();
+                }
+            });
+            noCodeDialog.setCancelable(false);
+            noCodeDialog.create().show();
+        }
         playerEmailToMazeSolvers.put(player.getEmail(), new InterpretedMazeSolver(challenge, game, player.getEmail(), code));
         game.addPlayer(player);
         game.queuePlayer(player.getEmail());
@@ -329,34 +345,44 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             case WATERMELON:
             case GRAPES:
             case ORANGE:
-                if (sound) {
-                    MediaPlayer p = audioEventsMap.get(Audio.EVENT_REWARD_EATING.toString());
-                    p.setVolume(1.5f, 1.5f);
-                    p.start();
-                }
+                if (sound) audioEventsMap.get(Audio.EVENT_FOOD.toString()).start();
                 break;
             case COIN_5:
-                if (sound) audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_COIN5.toString()).start();
                 break;
             case COIN_10:
-                if (sound) audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_COIN10.toString()).start();
                 break;
             case COIN_20:
-                if (sound) audioEventsMap.get(Audio.EVENT_GENERIC_PICKUP_2.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_COIN20.toString()).start();
                 break;
             case GIFTBOX:
-                if (sound) audioEventsMap.get(Audio.EVENT_REWARD_PICKUP_1.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_GIFTBOX.toString()).start();
                 break;
             case BOMB:
                 if (pickable.getState() == 1  || pickable.getState() == 2)
                     if (sound) audioEventsMap.get(Audio.EVENT_BOMB.toString()).start();
                 break;
             case SPEEDHACK:
-                if (sound) audioEventsMap.get(Audio.EVENT_REWARD_PICKUP_2.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_SPEEDHACK.toString()).start();
                 break;
             case TRAP:
-                if (sound) audioEventsMap.get(Audio.EVENT_PENALTY_PICKUP_1.toString()).start();
+                if (sound) audioEventsMap.get(Audio.EVENT_TRAP.toString()).start();
                 break;
+        }
+    }
+
+    @Override
+    public void onGameEndAudioEvent(boolean win) {
+        if (win) {
+            MediaPlayer winAudio = MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_WIN.getSoundResourceName(), "raw", getPackageName()));
+            winAudio.start();
+            winAudio.release();
+        }
+        else {
+            MediaPlayer loseAudio = MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_LOSE.getSoundResourceName(), "raw", getPackageName()));
+            loseAudio.start();
+            loseAudio.release();
         }
     }
 

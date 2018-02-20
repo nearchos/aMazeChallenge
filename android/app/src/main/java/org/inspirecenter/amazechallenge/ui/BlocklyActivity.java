@@ -102,10 +102,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
     public void done(final View view) {
         submitCode();
-
     }
 
     private void submitCode() {
+
         //Save the code first, but don't display message:
         try { mBlocklyActivityHelper.saveWorkspaceToAppDir(AUTOSAVE_FILENAME); }
         catch (FileNotFoundException | BlocklySerializerException e) { e.printStackTrace(); }

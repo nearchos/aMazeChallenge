@@ -200,14 +200,6 @@ public class Game implements Serializable {
         activePlayerEmailsToPositionAndDirections.put(playerEmail, playerPositionAndDirection);
     }
 
-    public void increasePlayerPoints(final String playerEmail, final int value) {
-        allPlayerEmailsToPlayers.get(playerEmail).addPoints(value);
-    }
-
-    public void decreasePlayerPoints(final String playerEmail, final int value) {
-        allPlayerEmailsToPlayers.get(playerEmail).substractPoints(value);
-    }
-
     /**
      * Returns the {@link Player}'s {@link Position} in the {@link Game}'s {@link Grid}.
      *

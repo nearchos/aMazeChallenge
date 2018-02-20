@@ -28,8 +28,8 @@ public enum PickableType {
 
     BOMB("bomb", PENALTY, NONE, "Bomb penalty -50 health", 50, 0, 10), // customize bombs?
 
-    SPEEDHACK("doublemoves", REWARD, NONE, "Player gets to do 2 moves", 0, 0, Integer.MAX_VALUE),
-    TRAP("trap", PENALTY, NONE, "Player loses 1 move", 0, 0, Integer.MAX_VALUE)
+    SPEEDHACK("doublemoves", REWARD, NONE, "Player gets to do 2 moves", 0, 0, 15),
+    TRAP("trap", PENALTY, NONE, "Player loses 1 move", 0, 0, 15)
     ;
 
     private String imageResourceName;

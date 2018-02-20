@@ -107,6 +107,9 @@
     <string name="generator_background_audio">Background audio</string>
     <string name="select">Select</string>
     <string name="Discard">Discard</string>
+    <string name="no_code_title">No code</string>
+    <string name="no_code_message">Your code is empty. Please make sure you write code before you attempt to play a maze.</string>
+    <string name="no_code_action">Write code</string>
 
 
     <string name="instructions">Write your code below to get out of the grid:</string>

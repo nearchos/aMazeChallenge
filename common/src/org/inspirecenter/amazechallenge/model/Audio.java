@@ -22,18 +22,17 @@ public enum Audio {
     AMBIENT_UNDERWATER("Underwater", "underwater", AudioFormat.MP3, AudioType.AMBIENT),
 
     //Events
-    EVENT_BOMB("Bomb", "bomb", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_PENALTY_PICKUP_1("Penalty-Pickup-1", "penalty_pickup_1", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_PENALTY_PICKUP_2("Penalty-Pickup-2", "penalty_pickup_2", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_PENALTY_PICKUP_3("Penalty-Pickup-3", "penalty_pickup_3", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_REWARD_PICKUP_1("Reward-Pickup-1", "reward_pickup_1", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_REWARD_PICKUP_2("Reward-Pickup-2", "reward_pickup_2", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_REWARD_PICKUP_3("Reward-Pickup-3", "reward_pickup_3", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_REWARD_PICKUP_4("Reward-Pickup-4", "reward_pickup_4", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_REWARD_PICKUP_5("Reward-Pickup-5", "reward_pickup_5", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_GENERIC_PICKUP_1("Generic-Pickup-1", "generic_pickup_1", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_GENERIC_PICKUP_2("Generic-Pickup-2", "generic_pickup_2", AudioFormat.MP3, AudioType.EVENT),
-    EVENT_REWARD_EATING("Eating-reward", "eating", AudioFormat.MP3, AudioType.EVENT),
+    EVENT_WIN("Win", "win", AudioFormat.WAV, AudioType.EVENT),
+    EVENT_LOSE("Lose", "lose", AudioFormat.WAV, AudioType.EVENT),
+    EVENT_FOOD("Food", "food", AudioFormat.WAV, AudioType.EVENT),
+    EVENT_COIN5("Coin5", "coin5", AudioFormat.WAV, AudioType.EVENT),
+    EVENT_COIN10("Coin10", "coin10", AudioFormat.WAV, AudioType.EVENT),
+    EVENT_COIN20("Coin20", "coin20", AudioFormat.WAV, AudioType.EVENT),
+    EVENT_GIFTBOX("Giftbox", "giftbox", AudioFormat.WAV, AudioType.EVENT),
+    EVENT_SPEEDHACK("Speedhack", "speedhack", AudioFormat.WAV, AudioType.EVENT),
+    EVENT_BOMB("Bomb", "bomb", AudioFormat.WAV, AudioType.EVENT),
+    EVENT_TRAP("Trap", "trap", AudioFormat.WAV, AudioType.EVENT),
+
 
     ;
 

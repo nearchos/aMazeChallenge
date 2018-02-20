@@ -62,6 +62,7 @@ public class RuntimeController {
                 game.setPlayerPositionAndDirection(playerEmail, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
                 game.resetPlayer(playerEmail);
                 resetTurnEffects();
+                game.getAudioEventListener().onGameEndAudioEvent(false);
             }
 
             generateItems(game, challenge, grid);
@@ -128,6 +129,7 @@ public class RuntimeController {
         for (final String playerEmail : game.getActivePlayers()) {
             final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirection(playerEmail);
             if (targetPosition.equals(playerPositionAndDirection.getPosition())) {
+                if (grid.getTargetPosition().equals(playerPositionAndDirection.getPosition())) game.getAudioEventListener().onGameEndAudioEvent(true); //TODO Remove, make for each player individually.
                 someoneHasReachedTheTargetPosition = true;
                 resetTurnEffects();
             }
