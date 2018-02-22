@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">aMazeChallenge</string>
     <string name="application_motto">{MISSING}</string>
     <string name="Game">Παιχνίδι</string>
     <string name="Select_challenge">Επιλογή Σταδίου</string>
@@ -184,4 +183,5 @@
     <string name="Not_sure">Δεν είμαι σίγουρος</string>
     <string name="invalid_questionnaire_response">Παρακαλώ απαντήστε όλες τις ερωτήσεις.</string>
     <string name="no_response">Παρακαλώ δώστε απάντηση</string>
+    <string name="pick_language">Επιλέξτε γλώσσα</string>
 </resources>
