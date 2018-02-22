@@ -1,10 +1,15 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,8 +17,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.model.Language;
+import org.mozilla.javascript.tools.jsc.Main;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -113,4 +123,32 @@ public class MainActivity extends AppCompatActivity {
         if (sound) fab.setImageDrawable(getDrawable(R.drawable.ic_volume_up_black_24dp));
         else fab.setImageDrawable(getDrawable(R.drawable.ic_volume_off_black_24dp));
     }
+
+    public void language(View view) {
+
+        CharSequence[] langs = new CharSequence[Language.values().length];
+        for (int i = 0; i < Language.values().length; i++) {
+            langs[i] = Language.values()[i].toString();
+        }
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.pick_language);
+        builder.setItems(langs, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Locale myLocale = new Locale(Language.values()[which].getLocale());
+                Resources res = getResources();
+                DisplayMetrics dm = res.getDisplayMetrics();
+                Configuration conf = res.getConfiguration();
+                conf.locale = myLocale;
+                res.updateConfiguration(conf, dm);
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.show();
+    }
+
 }
