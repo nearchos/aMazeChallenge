@@ -202,7 +202,6 @@
     <string name="invalid_questionnaire_response">Please make sure you provide an answer to all questions.</string>
     <string name="no_response">Please provide a response</string>
 
-
     <string-array name="rows_and_cols_selection">
         <item>5 (Tiny)</item>
         <item>6</item>
@@ -243,7 +242,7 @@
         <item>No</item>
         <item>I would rather not say</item>
     </string-array>
-    <string name="question_4">What is your opinion about programming?</string>
 
+    <string name="question_4">What is your opinion about programming?</string>
 
 </resources>

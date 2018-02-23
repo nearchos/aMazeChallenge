@@ -9,7 +9,6 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import org.inspirecenter.amazechallenge.model.*;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +29,7 @@ public class JoinServlet extends HttpServlet {
 
     private static final Logger log = Logger.getLogger(JoinServlet.class.getName());
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         final String magic = request.getParameter("magic");
         final String name = request.getParameter("name");
@@ -79,22 +78,20 @@ public class JoinServlet extends HttpServlet {
                         final Shape playerShape = Shape.getShapeByCode(shapeCode);
 
                         final long gameId;
-                        final boolean alreadyContainsPlayer;
 
-                        {
-                            Game game = ofy()
-                                    .load()
-                                    .type(Game.class)
-                                    .filter("challengeId", challengeId)
-                                    .first()
-                                    .now();
-                            gameId = game == null ? 0L : game.getId();
+                        Game game = ofy()
+                                .load()
+                                .type(Game.class)
+                                .filter("challengeId", challengeId)
+                                .first()
+                                .now();
+                        gameId = game == null ? 0L : game.getId();
 
-                            alreadyContainsPlayer = game != null && game.containsPlayerById(id);
-                        }
+                        final boolean alreadyContainsPlayer = game != null && game.containsPlayerById(id);
+
                         if(!alreadyContainsPlayer) {
                             // handle the addition of a new player in a transaction to ensure atomicity
-                            final Game game = ofy().transact(() -> {
+                            game = ofy().transact(() -> {
                                 // add binding of user to game
                                 final Game tGame = gameId == 0 ?
                                         new Game(challengeId) :
@@ -108,7 +105,7 @@ public class JoinServlet extends HttpServlet {
                                 return tGame;
                             });
 
-                            if(game.getLastExecutionTime() == 0L) { // kick start the run-engine servlet // todo might need a different condition, like numOfPlayers==1 (i.e. this was the first player added)
+                            if(!game.isIdle()) { // kick start the run-engine servlet
                                 final long waitMillis = Math.max(0L, 1000L - game.getLastExecutionTime());
                                 // trigger processing of game state
                                 final Queue queue = QueueFactory.getDefaultQueue();

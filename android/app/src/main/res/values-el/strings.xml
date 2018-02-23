@@ -182,4 +182,46 @@
     <string name="invalid_questionnaire_response">Παρακαλώ απαντήστε όλες τις ερωτήσεις.</string>
     <string name="no_response">Παρακαλώ δώστε απάντηση</string>
     <string name="pick_language">Επιλέξτε γλώσσα</string>
+
+    <string-array name="rows_and_cols_selection">
+        <item>5 (Πολύ μικρό)</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10 (Μικρό)</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15 (Μεσαίο)</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20 (Μεγάλο)</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25 (Πολύ μεγάλο)</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30 (Τεράστιο)</item>
+    </string-array>
+
+    <string-array name="rewardsAndPenalties">
+        <item>Χαμηλό</item>
+        <item>Μεσαίο</item>
+        <item>Ψηλό</item>
+    </string-array>
+
+    <string-array name="question2_entries">
+        <item>Ναί</item>
+        <item>Όχι</item>
+        <item>Θα προτιμούσα να μην πω</item>
+    </string-array>
+
 </resources>
