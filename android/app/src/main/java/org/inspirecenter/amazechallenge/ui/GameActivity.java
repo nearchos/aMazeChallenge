@@ -188,7 +188,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     private int periodIndex = DEFAULT_PERIOD_INDEX;
     private long period = PERIOD_OPTIONS[periodIndex];
 
-    private Map<String,MazeSolver> playerEmailToMazeSolvers = new HashMap<>();
+    private Map<String,MazeSolver> playerIdToMazeSolvers = new HashMap<>();
 
     @Override
     protected void onResume() {
@@ -219,9 +219,9 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             noCodeDialog.setCancelable(false);
             noCodeDialog.create().show();
         }
-        playerEmailToMazeSolvers.put(player.getEmail(), new InterpretedMazeSolver(challenge, game, player.getEmail(), code));
+        playerIdToMazeSolvers.put(player.getId(), new InterpretedMazeSolver(challenge, game, player.getId(), code));
         game.addPlayer(player);
-        game.queuePlayer(player.getEmail());
+        game.queuePlayerById(player.getId());
         game.activateNextPlayer(challenge.getGrid());
 
         handler = new Handler();
@@ -252,8 +252,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     }
 
     private void makeNextMove() {
-        if (!game.getActivePlayers().isEmpty()) {
-            RuntimeController.makeMove(challenge, game, playerEmailToMazeSolvers);
+        if (!game.getActivePlayerIDs().isEmpty()) {
+            RuntimeController.makeMove(challenge, game, playerIdToMazeSolvers);
             gameView.update(game);
             gameView.invalidate();
             updateHealthTextView();
@@ -309,10 +309,10 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
-        final String playerEmail = player.getEmail();
-        playerEmailToMazeSolvers.put(player.getEmail(), new InterpretedMazeSolver(challenge, game, playerEmail, code));
+        final String playerId = player.getId();
+        playerIdToMazeSolvers.put(player.getId(), new InterpretedMazeSolver(challenge, game, playerId, code));
         game.addPlayer(player);
-        game.queuePlayer(playerEmail);
+        game.queuePlayerById(playerId);
         game.activateNextPlayer(challenge.getGrid());
         updateHealthTextView();
         updatePointsTextView();

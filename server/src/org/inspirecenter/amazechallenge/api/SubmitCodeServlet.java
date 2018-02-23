@@ -29,8 +29,8 @@ public class SubmitCodeServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final String magic = request.getParameter("magic");
-        final String playerEmail = request.getParameter("email");
-        final String challengeIdAsString = request.getParameter("id");
+        final String playerId = request.getParameter("id");
+        final String challengeIdAsString = request.getParameter("challenge");
 
         final BufferedReader bufferedReader = request.getReader();
         final StringBuilder stringBuilder = new StringBuilder();
@@ -46,8 +46,8 @@ public class SubmitCodeServlet extends HttpServlet {
             errors.add("Missing or empty 'magic' parameter");
         } else if(!Common.checkMagic(magic)) {
             errors.add("Invalid 'magic' parameter");
-        } else if(playerEmail == null || playerEmail.isEmpty()) {
-            errors.add("Missing or empty 'email' parameter");
+        } else if(playerId == null || playerId.isEmpty()) {
+            errors.add("Missing or empty 'id' parameter");
         } else if(challengeIdAsString == null || challengeIdAsString.isEmpty()) {
             errors.add("Missing or empty challenge 'id'");
         } else if(code.isEmpty()) {
@@ -69,14 +69,15 @@ public class SubmitCodeServlet extends HttpServlet {
                     if(game == null) {
                         errors.add("Invalid game for selected challengeId: " + challengeId);
                     } else {
-                        if(!game.containsPlayer(playerEmail)) {
-                            errors.add("Player not found in specified challenge for 'email': " + playerEmail);
+                        if(!game.containsPlayerById(playerId)) {
+                            errors.add("Player not found in specified challenge for 'id': " + playerId);
                         } else {
-                            game.resetPlayer(playerEmail);
+                            game.resetPlayerById(playerId);
 
                             // store maze solver code in data-store
                             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
-                            memcacheService.put(getKey(challengeId, playerEmail), code);
+log("Submit code. Adding binding in memcache to key: " + getKey(challengeId, playerId));
+                            memcacheService.put(getKey(challengeId, playerId), code);
                         }
                     }
                 }
@@ -96,7 +97,7 @@ public class SubmitCodeServlet extends HttpServlet {
         printWriter.println(reply);
     }
 
-    public static String getKey(final long challengeId, final String playerEmail) {
-        return KEY_MAZE_SOLVER_CODE.replace("%1", Long.toString(challengeId)).replace("%2", playerEmail);
+    public static String getKey(final long challengeId, final String playerId) {
+        return KEY_MAZE_SOLVER_CODE.replace("%1", Long.toString(challengeId)).replace("%2", playerId);
     }
 }

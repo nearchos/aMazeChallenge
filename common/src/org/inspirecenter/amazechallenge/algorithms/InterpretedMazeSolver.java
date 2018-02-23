@@ -22,8 +22,8 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
         this.game = game;
     }
 
-    public InterpretedMazeSolver(final Challenge challenge, final Game game, final String playerEmail, final String code) {
-        super(challenge, game, playerEmail);
+    public InterpretedMazeSolver(final Challenge challenge, final Game game, final String playerId, final String code) {
+        super(challenge, game, playerId);
         init(code);
     }
 
@@ -34,12 +34,12 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
 
     @Override
     Direction getDirection() {
-        return game.getDirection(playerEmail);
+        return game.getDirectionByID(playerID);
     }
 
     @Override
     Position getPosition() {
-        return game.getPosition(playerEmail);
+        return game.getPositionById(playerID);
     }
 
     private void init(final String unprocessedCode) {

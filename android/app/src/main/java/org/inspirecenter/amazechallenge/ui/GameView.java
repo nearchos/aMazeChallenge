@@ -72,9 +72,9 @@ public class GameView extends View {
     private Grid grid = null;
     private int lineColor = Color.BLACK;
     private BitmapDrawable backgroundDrawable;
-    public Map<String,Player> allPlayers;
-    public Map<String,PlayerPositionAndDirection> activePlayerPositionAndDirectionMap = new HashMap<>();
-    public List<String> queuedPlayerEmails;
+    public Map<String,Player> allIDsToPlayers;
+    public Map<String,PlayerPositionAndDirection> activePlayerIdToPositionAndDirectionMap = new HashMap<>();
+    public List<String> queuedPlayerIDs;
     public List<Pickable> pickables = new Vector<>();
 
     void setGrid(final Grid grid) {
@@ -82,11 +82,11 @@ public class GameView extends View {
     }
 
     void update(final Game game) {
-        this.allPlayers = game.getAllPlayerEmailsToPlayers();
-        for(final String activePlayerEmail : game.getActivePlayers()) {
-            activePlayerPositionAndDirectionMap.put(activePlayerEmail, game.getPlayerPositionAndDirection(activePlayerEmail));
+        this.allIDsToPlayers = game.getAllPlayerIDsToPlayers();
+        for(final String activePlayerId : game.getActivePlayerIDs()) {
+            activePlayerIdToPositionAndDirectionMap.put(activePlayerId, game.getPlayerPositionAndDirectionById(activePlayerId));
         }
-        queuedPlayerEmails = game.getQueuedPlayers();
+        queuedPlayerIDs = game.getQueuedPlayerIDs();
         this.pickables = game.getPickables();
     }
 
@@ -110,9 +110,9 @@ public class GameView extends View {
 
     void update(final GameFullState gameFullState) {
         this.grid = gameFullState.getGrid();
-        allPlayers = gameFullState.getAllPlayers();
-        activePlayerPositionAndDirectionMap = gameFullState.getActivePlayerPositionsAndDirections();
-        queuedPlayerEmails = gameFullState.getQueuedPlayerEmails();
+        allIDsToPlayers = gameFullState.getAllIDsToPlayers();
+        activePlayerIdToPositionAndDirectionMap = gameFullState.getActiveIDsToPlayerPositionsAndDirections();
+        queuedPlayerIDs = gameFullState.getQueuedPlayerIDs();
         invalidate();
     }
 
@@ -171,10 +171,10 @@ public class GameView extends View {
         }
 
         // draw active players
-        for(final Map.Entry<String,PlayerPositionAndDirection> entry : activePlayerPositionAndDirectionMap.entrySet()) {
-            final String activePlayerEmail = entry.getKey();
+        for(final Map.Entry<String,PlayerPositionAndDirection> entry : activePlayerIdToPositionAndDirectionMap.entrySet()) {
+            final String activePlayerId = entry.getKey();
             final PlayerPositionAndDirection playerPositionAndDirection = entry.getValue();
-            drawPlayer(allPlayers.get(activePlayerEmail), playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection(), tile_size, padding, canvas);
+            drawPlayer(allIDsToPlayers.get(activePlayerId), playerPositionAndDirection.getPosition(), playerPositionAndDirection.getDirection(), tile_size, padding, canvas);
         }
     }
 

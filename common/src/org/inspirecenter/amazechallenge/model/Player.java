@@ -10,8 +10,9 @@ import java.io.Serializable;
 public class Player implements Serializable {
 
     @com.googlecode.objectify.annotation.Id
-    private String email;
+    private String id;
 
+    private String email;
     private String name;
     private AmazeColor color;
     private AmazeIcon icon;
@@ -24,14 +25,19 @@ public class Player implements Serializable {
         super();
     }
 
-    public Player(final String email, final String name, final AmazeColor color, final AmazeIcon icon, final Shape shape) {
+    public Player(final String id, final String email, final String name, final AmazeColor color, final AmazeIcon icon, final Shape shape) {
         this();
+        this.id = id;
         this.email = email;
         this.name = name;
         this.color = color;
         this.icon = icon;
         this.shape = shape;
         health = new Health();
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getEmail() {
@@ -56,7 +62,7 @@ public class Player implements Serializable {
 
     public Health getHealth() { return health; }
 
-    public void setHealth(Health health) { this.health = health; }
+    public void setHealth(Health health) { this.health = health; } // todo move to Game
 
     public void increaseHealth(int amount) {
         if (amount < 0) throw new RuntimeException("Cannot increase health by negative amount.");
@@ -79,7 +85,8 @@ public class Player implements Serializable {
     @Override
     public String toString() {
         return "Player{" +
-                "email='" + email + '\'' +
+                "id='" + id + '\'' +
+                ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", color=" + color +
                 ", icon=" + icon +
@@ -94,7 +101,7 @@ public class Player implements Serializable {
 
     public boolean isActive() { return isActive; }
 
-    public int getPoints() { return points; }
+    public int getPoints() { return points; } // todo move to Game
 
     public void changePointsBy(int amount) {
         if (points + amount < 0) points = 0;

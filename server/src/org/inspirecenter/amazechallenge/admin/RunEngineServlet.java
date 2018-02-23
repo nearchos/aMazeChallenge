@@ -49,8 +49,8 @@ public class RunEngineServlet extends HttpServlet {
         final Vector<String> errors = new Vector<>();
 
         final String magic = request.getParameter("magic");
-        final String challengeIdAsString = request.getParameter("challenge-id");
-        final String gameIdAsString = request.getParameter("game-id"); // todo is this necessary? or could we simply query ofy by challengeId?
+        final String challengeIdAsString = request.getParameter("challenge");
+        final String gameIdAsString = request.getParameter("game"); // todo is this necessary? or could we simply query ofy by challengeId?
 
         GameFullState gameFullState = null;
 
@@ -73,14 +73,24 @@ public class RunEngineServlet extends HttpServlet {
 
                     final Game initialGame = ofy().load().key(Key.create(Game.class, gameId)).now();
 
-                    // update game state
-                    final Game updatedGame = implementGameLogic(challenge, initialGame);
+                    if(initialGame == null) {
+                        log.severe("Initial Game not set so quitting the RunEngineServlet");
+                        return null;
+                    } else {
+                        // update game state
+                        final Game updatedGame = implementGameLogic(challenge, initialGame);
 
-                    // store new game in data store
-                    ofy().save().entity(updatedGame).now();
+                        // store new game in data store
+                        ofy().save().entity(updatedGame).now();
 
-                    return updatedGame;
+                        return updatedGame;
+                    }
                 });
+
+                if(game == null) {
+                    log.severe("Game could not be updated so quitting the RunEngineServlet");
+                    return; // skip scheduling the next run
+                }
 
                 gameFullState = game.getFullState(challenge.getGrid());
 
@@ -94,7 +104,7 @@ public class RunEngineServlet extends HttpServlet {
                 // log.info("Scheduling next run...");
 
                 // check if active or queued players players, then repeat
-                if(challenge.isActive() && game.hasAnyPlayers()) {
+                if(challenge.isActive() && game.hasActiveOrQueuedPlayers()) {
 
                     // schedule next run
                     final Queue queue = QueueFactory.getDefaultQueue();
@@ -135,11 +145,11 @@ public class RunEngineServlet extends HttpServlet {
         final Grid grid = challenge.getGrid();
 
         // check if we can add upgrade any players from 'waiting' to 'queued'
-        final List<String> waitingPlayers = game.getWaitingPlayers();
-        for(final String playerEmail : waitingPlayers) {
-            final String code = (String) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), playerEmail));
+        final List<String> waitingPlayerIDs = game.getWaitingPlayerIDs();
+        for(final String waitingPlayerId : waitingPlayerIDs) {
+            final String code = (String) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), waitingPlayerId));
             if(code != null) {
-                game.queuePlayer(playerEmail);
+                game.queuePlayerById(waitingPlayerId);
             }
         }
 
@@ -150,34 +160,34 @@ public class RunEngineServlet extends HttpServlet {
         }
 
         // prepare active players
-        final Map<String,MazeSolver> playerEmailToMazeSolvers = new HashMap<>();
-        final List<String> activePlayers = game.getActivePlayers();
-        for(final String activePlayerEmail : activePlayers) {
-            final String code = (String) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), activePlayerEmail));
-            final MazeSolver mazeSolver = new InterpretedMazeSolver(challenge, game, activePlayerEmail, code); // todo
+        final Map<String,MazeSolver> playerIDsToMazeSolvers = new HashMap<>();
+        final List<String> activePlayerIDs = game.getActivePlayerIDs();
+        for(final String activePlayerId : activePlayerIDs) {
+            final String code = (String) memcacheService.get(SubmitCodeServlet.getKey(challenge.getId(), activePlayerId));
+            final MazeSolver mazeSolver = new InterpretedMazeSolver(challenge, game, activePlayerId, code); // todo
             mazeSolver.init(challenge, game);
-            final byte [] state = (byte[]) memcacheService.get(getMazeSolverStateKey(game.getId(), activePlayerEmail));
+            final byte [] state = (byte[]) memcacheService.get(getMazeSolverStateKey(game.getId(), activePlayerId));
             mazeSolver.setState(state);
-            playerEmailToMazeSolvers.put(activePlayerEmail, mazeSolver);
+            playerIDsToMazeSolvers.put(activePlayerId, mazeSolver);
         }
 
         // todo ... revise to make multi-threaded and with deadlines?
         // todo check out: com.google.appengine.api.ThreadManager
-        RuntimeController.makeMove(challenge, game, playerEmailToMazeSolvers);
+        RuntimeController.makeMove(challenge, game, playerIDsToMazeSolvers);
 
         // store maze solvers' state to memcache
-        for(final String activePlayerEmail : activePlayers) {
-            final MazeSolver mazeSolver = playerEmailToMazeSolvers.get(activePlayerEmail);
+        for(final String activePlayerEmail : activePlayerIDs) {
+            final MazeSolver mazeSolver = playerIDsToMazeSolvers.get(activePlayerEmail);
             memcacheService.put(getMazeSolverStateKey(game.getId(), activePlayerEmail), mazeSolver.getState());
         }
 
         // remove completed players (move from 'active' back to 'waiting')
         final Position targetPosition = challenge.getGrid().getTargetPosition();
-        for(final String activePlayerEmail : activePlayers) {
-            final Position playerPosition = game.getPosition(activePlayerEmail);
+        for(final String activePlayerId : activePlayerIDs) {
+            final Position playerPosition = game.getPositionById(activePlayerId);
             if(playerPosition.equals(targetPosition)) {
-                memcacheService.delete(getMazeSolverStateKey(game.getId(), activePlayerEmail));
-                game.resetPlayer(activePlayerEmail);
+                memcacheService.delete(getMazeSolverStateKey(game.getId(), activePlayerId));
+                game.resetPlayerById(activePlayerId);
             }
         }
 

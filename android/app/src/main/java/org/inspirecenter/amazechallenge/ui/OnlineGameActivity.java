@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.google.gson.Gson;
 
+import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.api.ReplyWithGameFullState;
 import org.inspirecenter.amazechallenge.model.Challenge;
@@ -67,7 +68,7 @@ public class OnlineGameActivity extends AppCompatActivity {
 
         handler = new Handler();
 
-        timer.schedule(new OnlineMazeRunner(), 0L, ONE_SECOND);
+        timer.schedule(new OnlineMazeRunner(), 0L, 500L);//todo ONE_SECOND);
     }
 
     @Override
@@ -115,7 +116,9 @@ public class OnlineGameActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(final Void... ignore) {
             try {
-                final URL apiURL = new URL(apiUrlBase + "/submit-code?magic=" + magic + "&email=" + email + "&id=" + challenge.getId());
+                final URL apiURL = new URL(apiUrlBase + "/submit-code?magic=" + magic
+                        + "&challenge=" + challenge.getId()
+                        + "&id=" + Installation.id(OnlineGameActivity.this));
                 Log.d(TAG, "apiURL: " + apiURL.toString());
                 final HttpURLConnection httpURLConnection = (HttpURLConnection) apiURL.openConnection();
                 httpURLConnection.setDoInput(true); // Allow Inputs
@@ -169,7 +172,7 @@ public class OnlineGameActivity extends AppCompatActivity {
             try {
                 final String apiUrlBase = getString(R.string.api_url);
                 final String magic = getString(R.string.magic);
-                final URL apiURL = new URL(apiUrlBase + "/game-state?magic=" + magic + "&email=" + email + "&id=" + challengeId);
+                final URL apiURL = new URL(apiUrlBase + "/game-state?magic=" + magic + "&email=" + email + "&challenge=" + challengeId);
                 Log.d(TAG, "apiURL: " + apiURL.toString());
                 final HttpURLConnection httpURLConnection = (HttpURLConnection) apiURL.openConnection();
                 httpURLConnection.setDoInput(true); // Allow Inputs
@@ -202,6 +205,7 @@ public class OnlineGameActivity extends AppCompatActivity {
             Log.d(TAG, "reply: " + reply);
             final ReplyWithGameFullState replyWithFullGameState = new Gson().fromJson(reply, ReplyWithGameFullState.class);
             final GameFullState gameFullState = replyWithFullGameState.getGameFullState();
+            Log.d(TAG, "gameFullState: " + gameFullState); // todo delete
             if(gameFullState != null) gameView.update(gameFullState);
         }
     }

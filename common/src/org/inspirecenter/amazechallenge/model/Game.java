@@ -16,13 +16,13 @@ public class Game implements Serializable {
     public Long id;
 
     @com.googlecode.objectify.annotation.Index
-    public Long challengeId; // todo check if can convert to private
+    Long challengeId;
 
     private List<String> activePlayers = new Vector<>();
     private List<String> queuedPlayers = new Vector<>();
     private List<String> waitingPlayers = new Vector<>();
-    private Map<String,Player> allPlayerEmailsToPlayers = new HashMap<>();
-    private Map<String,PlayerPositionAndDirection> activePlayerEmailsToPositionAndDirections = new HashMap<>();
+    private Map<String,Player> allPlayerIDsToPlayers = new HashMap<>();
+    private Map<String,PlayerPositionAndDirection> activePlayerIDsToPositionAndDirections = new HashMap<>();
     private List<Pickable> pickables = new Vector<>();
     private long lastExecutionTime = 0L;
     private long lastUpdated = 0L;
@@ -45,12 +45,12 @@ public class Game implements Serializable {
         return challengeId;
     }
 
-    public Map<String, Player> getAllPlayerEmailsToPlayers() {
-        return new HashMap<>(allPlayerEmailsToPlayers);
+    public Map<String, Player> getAllPlayerIDsToPlayers() {
+        return new HashMap<>(allPlayerIDsToPlayers);
     }
 
-    public boolean containsPlayer(final String playerEmail) {
-        return allPlayerEmailsToPlayers.containsKey(playerEmail);
+    public boolean containsPlayerById(final String playerId) {
+        return allPlayerIDsToPlayers.containsKey(playerId);
     }
 
     public long getCounter() {
@@ -81,27 +81,27 @@ public class Game implements Serializable {
      * @return true iff the specified player email existed in either the 'active' or 'queued' list (the 'waiting' list is not checked)
      */
     public boolean addPlayer(final Player player) {
-        final String playerEmail = player.getEmail();
-        allPlayerEmailsToPlayers.put(playerEmail, player);
-        return resetPlayer(playerEmail);
+        final String playerId = player.getId();
+        allPlayerIDsToPlayers.put(playerId, player);
+        return resetPlayerById(playerId);
     }
 
-    public boolean resetPlayer(final String playerEmail) {
+    public boolean resetPlayerById(final String playerId) {
         boolean existed = false;
-        if(activePlayers.remove(playerEmail)) existed = true;
-        if(queuedPlayers.remove(playerEmail)) existed = true;
-        waitingPlayers.add(playerEmail);
+        if(activePlayers.remove(playerId)) existed = true;
+        if(queuedPlayers.remove(playerId)) existed = true;
+        waitingPlayers.add(playerId);
         //New
-        Player player = getPlayer(playerEmail);
+        final Player player = getPlayerById(playerId);
         player.setInactive();
         player.resetPoints();
         return existed;
     }
 
-    public boolean queuePlayer(final String playerEmail) {
-        if(waitingPlayers.contains(playerEmail)) {
-            waitingPlayers.remove(playerEmail);
-            queuedPlayers.add(playerEmail); // adds to the end of the 'queue'
+    public boolean queuePlayerById(final String playerId) {
+        if(waitingPlayers.contains(playerId)) {
+            waitingPlayers.remove(playerId);
+            queuedPlayers.add(playerId); // adds to the end of the 'queue'
             return true;
         } else {
             return false;
@@ -110,10 +110,10 @@ public class Game implements Serializable {
 
     public boolean activateNextPlayer(final Grid grid) {
         if(!queuedPlayers.isEmpty()) {
-            final String nextPlayerEmail = queuedPlayers.remove(0); // get first in line from 'queued'
-            activePlayers.add(nextPlayerEmail);
-            activePlayerEmailsToPositionAndDirections.put(nextPlayerEmail, new PlayerPositionAndDirection(grid.getStartingPosition(), grid.getStartingDirection()));
-            Player player = getPlayer(nextPlayerEmail);
+            final String nextPlayerId = queuedPlayers.remove(0); // get first in line from 'queued'
+            activePlayers.add(nextPlayerId);
+            activePlayerIDsToPositionAndDirections.put(nextPlayerId, new PlayerPositionAndDirection(grid.getStartingPosition(), grid.getStartingDirection()));
+            final Player player = getPlayerById(nextPlayerId);
             player.setActive();
             player.setHealth(new Health());
             return true;
@@ -122,8 +122,8 @@ public class Game implements Serializable {
         }
     }
 
-    public Player getPlayer(final String playerEmail) {
-        return allPlayerEmailsToPlayers.get(playerEmail);
+    public Player getPlayerById(final String playerId) {
+        return allPlayerIDsToPlayers.get(playerId);
     }
 
     public boolean hasActivePlayers() {
@@ -143,18 +143,18 @@ public class Game implements Serializable {
     }
 
     public Collection<Player> getAllPlayers() {
-        return allPlayerEmailsToPlayers.values();
+        return allPlayerIDsToPlayers.values();
     }
 
-    public List<String> getActivePlayers() {
+    public List<String> getActivePlayerIDs() {
         return new Vector<>(activePlayers);
     }
 
-    public List<String> getQueuedPlayers() {
+    public List<String> getQueuedPlayerIDs() {
         return new Vector<>(queuedPlayers);
     }
 
-    public List<String> getWaitingPlayers() { return new Vector<>(waitingPlayers); }
+    public List<String> getWaitingPlayerIDs() { return new Vector<>(waitingPlayers); }
 
     public boolean hasActiveOrQueuedPlayers() {
         return hasActivePlayers() || hasQueuedPlayers();
@@ -185,40 +185,40 @@ public class Game implements Serializable {
     }
 
     public GameFullState getFullState(final Grid grid) {
-        return new GameFullState(activePlayerEmailsToPositionAndDirections, queuedPlayers, allPlayerEmailsToPlayers, grid, lastUpdated, counter);
+        return new GameFullState(activePlayerIDsToPositionAndDirections, queuedPlayers, allPlayerIDsToPlayers, grid, lastUpdated, counter);
     }
 
-    public Map<String,PlayerPositionAndDirection> getPlayerPositionAndDirections() {
-        return new HashMap<>(activePlayerEmailsToPositionAndDirections);
+    public Map<String,PlayerPositionAndDirection> getPlayerIDsToPositionAndDirections() {
+        return new HashMap<>(activePlayerIDsToPositionAndDirections);
     }
 
-    public PlayerPositionAndDirection getPlayerPositionAndDirection(final String playerEmail) {
-        return activePlayerEmailsToPositionAndDirections.get(playerEmail);
+    public PlayerPositionAndDirection getPlayerPositionAndDirectionById(final String playerId) {
+        return activePlayerIDsToPositionAndDirections.get(playerId);
     }
 
-    public void setPlayerPositionAndDirection(final String playerEmail, final PlayerPositionAndDirection playerPositionAndDirection) {
-        activePlayerEmailsToPositionAndDirections.put(playerEmail, playerPositionAndDirection);
+    public void setPlayerPositionAndDirectionById(final String playerId, final PlayerPositionAndDirection playerPositionAndDirection) {
+        activePlayerIDsToPositionAndDirections.put(playerId, playerPositionAndDirection);
     }
 
     /**
      * Returns the {@link Player}'s {@link Position} in the {@link Game}'s {@link Grid}.
      *
-     * @param playerEmail the email of the {@link Player} to be checked
+     * @param playerId the ID of the {@link Player} to be checked
      * @return the {@link Player}'s {@link Position}
      */
-    public Position getPosition(final String playerEmail) {
-        return activePlayerEmailsToPositionAndDirections.get(playerEmail).getPosition();
+    public Position getPositionById(final String playerId) {
+        return activePlayerIDsToPositionAndDirections.get(playerId).getPosition();
     }
 
     /**
      * Returns the {@link Player}'s {@link Direction}, i.e. {@link Direction#NORTH},
      * {@link Direction#SOUTH}, {@link Direction#EAST}, {@link Direction#WEST}.
      *
-     * @param playerEmail the email of the {@link Player} to be checked
+     * @param playerID the email of the {@link Player} to be checked
      * @return the {@link Player}'s {@link Direction}
      */
-    public Direction getDirection(final String playerEmail) {
-        return activePlayerEmailsToPositionAndDirections.get(playerEmail).getDirection();
+    public Direction getDirectionByID(final String playerID) {
+        return activePlayerIDsToPositionAndDirections.get(playerID).getDirection();
     }
 
     @Override

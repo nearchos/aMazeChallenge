@@ -12,40 +12,40 @@ import java.util.Vector;
  */
 public class GameLightState implements Serializable {
 
-    private Map<String,PlayerPositionAndDirection> activePlayerPositionsAndDirections = new HashMap<>();
-    private List<String> queuedPlayerEmails = new Vector<>();
-    private List<String> waitingPlayerEmails = new Vector<>();
+    private Map<String,PlayerPositionAndDirection> activeIDsToPlayerPositionsAndDirections = new HashMap<>();
+    private List<String> queuedPlayerIDs = new Vector<>();
+    private List<String> waitingPlayerIDs = new Vector<>();
     private long lastUpdated = 0;
     private long counter = 0;
 
-    GameLightState(final Map<String,PlayerPositionAndDirection> playerEmailsToPositionsAndDirections,
-                   final List<String> queuedPlayerEmails,
+    GameLightState(final Map<String,PlayerPositionAndDirection> playerIDsToPositionsAndDirections,
+                   final List<String> queuedPlayerIDs,
                    final long lastUpdated,
                    final long counter) {
         super();
 
-        activePlayerPositionsAndDirections.putAll(playerEmailsToPositionsAndDirections);
+        activeIDsToPlayerPositionsAndDirections.putAll(playerIDsToPositionsAndDirections);
 
-        this.queuedPlayerEmails.addAll(queuedPlayerEmails);
+        this.queuedPlayerIDs.addAll(queuedPlayerIDs);
 
         this.lastUpdated = lastUpdated;
         this.counter = counter;
     }
 
-    public Map<String, PlayerPositionAndDirection> getActivePlayerPositionsAndDirections() {
-        return activePlayerPositionsAndDirections;
+    public Map<String, PlayerPositionAndDirection> getActiveIDsToPlayerPositionsAndDirections() {
+        return activeIDsToPlayerPositionsAndDirections;
     }
 
-    public List<String> getActivePlayerEmails() {
-        return new Vector<>(activePlayerPositionsAndDirections.keySet());
+    public List<String> getActivePlayerIDs() {
+        return new Vector<>(activeIDsToPlayerPositionsAndDirections.keySet());
     }
 
-    public List<String> getQueuedPlayerEmails() {
-        return queuedPlayerEmails;
+    public List<String> getQueuedPlayerIDs() {
+        return queuedPlayerIDs;
     }
 
-    public List<String> getWaitingPlayerEmails() {
-        return waitingPlayerEmails;
+    public List<String> getWaitingPlayerIDs() {
+        return waitingPlayerIDs;
     }
 
     public long getLastUpdated() {

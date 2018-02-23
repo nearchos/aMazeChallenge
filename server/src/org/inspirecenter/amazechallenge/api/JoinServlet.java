@@ -34,11 +34,12 @@ public class JoinServlet extends HttpServlet {
 
         final String magic = request.getParameter("magic");
         final String name = request.getParameter("name");
+        final String id = request.getParameter("id"); // device installation id
         final String email = request.getParameter("email");
         final String colorName = request.getParameter("color");
         final String iconName = request.getParameter("icon");
         final String shapeCode = request.getParameter("shape");
-        final String challengeIdAsString = request.getParameter("id");
+        final String challengeIdAsString = request.getParameter("challenge");
 
         final Vector<String> errors = new Vector<>();
 
@@ -62,7 +63,7 @@ public class JoinServlet extends HttpServlet {
             errors.add("Missing or empty challenge 'id'");
         } else {
             try {
-                final long challengeId = Long.parseLong(challengeIdAsString);
+                final Long challengeId = Long.parseLong(challengeIdAsString);
                 final Challenge challenge = ObjectifyService.ofy().load().type(Challenge.class).id(challengeId).now();
                 if(challenge == null) {
                     errors.add("Invalid or unknown challenge for id: " + challengeId);
@@ -78,6 +79,7 @@ public class JoinServlet extends HttpServlet {
                         final Shape playerShape = Shape.getShapeByCode(shapeCode);
 
                         final long gameId;
+                        final boolean alreadyContainsPlayer;
 
                         {
                             Game game = ofy()
@@ -86,36 +88,41 @@ public class JoinServlet extends HttpServlet {
                                     .filter("challengeId=", challengeId)
                                     .first()
                                     .now();
+log("loaded game for challengeId: " + challengeId + " -> " + game);
                             gameId = game == null ? 0L : game.getId();
+
+                            alreadyContainsPlayer = game != null && game.containsPlayerById(id);
                         }
+log("alreadyContainsPlayer: " + id + " -> " + alreadyContainsPlayer);
+                        if(!alreadyContainsPlayer) {
+                            // handle the addition of a new player in a transaction to ensure atomicity
+                            final Game game = ofy().transact(() -> {
+                                // add binding of user to game
+                                final Game tGame = gameId == 0 ?
+                                        new Game(challengeId) :
+                                        ofy().load().key(Key.create(Game.class, gameId)).now();
 
-                        // handle the addition of a new player in a transaction to ensure atomicity
-                        final Game game = ofy().transact(() -> {
-                            // add binding of user to game
-                            final Game tGame = gameId == 0 ?
-                                    new Game(challengeId) :
-                                    ofy().load().key(Key.create(Game.class, gameId)).now();
+                                // modify
+                                tGame.addPlayer(new Player(id, email, name, playerColor, playerIcon, playerShape));
 
-                            // modify
-                            tGame.addPlayer(new Player(email, name, playerColor, playerIcon, playerShape));
+                                // save
+                                ofy().save().entity(tGame).now();
+                                return tGame;
+                            });
 
-                            // save
-                            ofy().save().entity(tGame).now();
-                            return tGame;
-                        });
-
-                        if(game.getLastExecutionTime() == 0L) { // kick start the run-engine servlet // todo might need a different condition, like numOfPlayers==1 (i.e. this was the first player added)
-                            final long waitMillis = Math.max(0L, 1000L - game.getLastExecutionTime());
-                            // trigger processing of game state
-                            final Queue queue = QueueFactory.getDefaultQueue();
-                            TaskOptions taskOptions = TaskOptions.Builder
-                                    .withUrl("/admin/run-engine")
-                                    .param("magic", magic)
-                                    .param("challenge-id", Long.toString(challengeId))
-                                    .param("game-id", Long.toString(game.getId()))
-                                    .countdownMillis(waitMillis) // wait 1 second before the call (or less if the execution takes >0 ms)
-                                    .method(TaskOptions.Method.GET);
-                            queue.add(taskOptions);
+                            if(game.getLastExecutionTime() == 0L) { // kick start the run-engine servlet // todo might need a different condition, like numOfPlayers==1 (i.e. this was the first player added)
+                                final long waitMillis = Math.max(0L, 1000L - game.getLastExecutionTime());
+                                // trigger processing of game state
+                                final Queue queue = QueueFactory.getDefaultQueue();
+                                TaskOptions taskOptions = TaskOptions.Builder
+                                        .withUrl("/admin/run-engine")
+                                        .param("magic", magic)
+                                        .param("challenge", Long.toString(challengeId))
+                                        .param("game", Long.toString(game.getId()))
+                                        .countdownMillis(waitMillis) // wait 1 second before the call (or less if the execution takes >0 ms)
+                                        .method(TaskOptions.Method.GET);
+                                queue.add(taskOptions);
+                            }
                         }
                     }
                 }

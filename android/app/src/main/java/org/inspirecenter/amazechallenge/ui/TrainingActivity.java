@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.AmazeIcon;
 import org.inspirecenter.amazechallenge.model.Challenge;
@@ -101,7 +102,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         final String userIconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
         final AmazeIcon userAmazeIcon = AmazeIcon.getByName(userIconName);
         final Shape shape = Shape.TRIANGLE; // todo enable user selection
-        final Player player = new Player(email, name, userAmazeColor, userAmazeIcon, shape);
+        final Player player = new Player(Installation.id(this), email, name, userAmazeColor, userAmazeIcon, shape);
 
         final Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra(GameActivity.SELECTED_CHALLENGE_KEY, challenge);

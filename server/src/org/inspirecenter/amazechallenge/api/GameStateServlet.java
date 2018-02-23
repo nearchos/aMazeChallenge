@@ -23,7 +23,7 @@ public class GameStateServlet extends HttpServlet {
 
         final String magic = request.getParameter("magic");
         final String email = request.getParameter("email");
-        final String challengeIdAsString = request.getParameter("id");
+        final String challengeIdAsString = request.getParameter("challenge");
 
         final Vector<String> errors = new Vector<>();
 

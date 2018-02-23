@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.api.ChallengesReply;
 import org.inspirecenter.amazechallenge.api.Reply;
@@ -179,7 +180,10 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
             try {
                 final String apiUrlBase = getString(R.string.api_url);
                 final String magic = getString(R.string.magic);
-                final URL apiURL = new URL(apiUrlBase + "/join?magic=" + magic + "&name=" + name + "&email=" + email + "&color=" + colorName + "&icon=" + iconName + "&shape=" + shapeCode + "&id=" + challenge.getId());
+                final URL apiURL = new URL(apiUrlBase + "/join?magic=" + magic + "&name=" + name
+                        + "&email=" + email + "&color=" + colorName + "&icon=" + iconName
+                        + "&shape=" + shapeCode + "&challenge=" + challenge.getId()
+                        + "&id=" + Installation.id(OnlineChallengeActivity.this));
                 Log.d(TAG, "apiURL: " + apiURL.toString());
                 final InputStream inputStream = apiURL.openStream();
                 return convertStreamToString(inputStream);

@@ -7,32 +7,32 @@ import java.util.Set;
 
 public class GameFullState extends GameLightState {
 
-    private Map<String,Player> playerEmailsToPlayers = new HashMap<>();
+    private Map<String,Player> playerIDsToPlayers = new HashMap<>();
     private Grid grid;
 
     public GameFullState(
-            final Map<String,PlayerPositionAndDirection> playerEmailsToPositionAndDirections,
-            final List<String> queuedPlayerEmails,
-            final Map<String,Player> playerEmailsToPlayers,
+            final Map<String,PlayerPositionAndDirection> playerIDsToPositionAndDirections,
+            final List<String> queuedPlayerIds,
+            final Map<String,Player> playerIDsToPlayers,
             final Grid grid,
             final long lastUpdated,
             final long counter) {
-        super(playerEmailsToPositionAndDirections, queuedPlayerEmails, lastUpdated, counter);
+        super(playerIDsToPositionAndDirections, queuedPlayerIds, lastUpdated, counter);
 
-        this.playerEmailsToPlayers = new HashMap<>(playerEmailsToPlayers);
+        this.playerIDsToPlayers = new HashMap<>(playerIDsToPlayers);
         this.grid = grid;
     }
 
-    public Set<String> getAllPlayerEmails() {
-        return playerEmailsToPlayers.keySet();
+    public Set<String> getAllPlayerIDs() {
+        return playerIDsToPlayers.keySet();
     }
 
-    public Player getPlayer(final String playerEmail) {
-        return playerEmailsToPlayers.get(playerEmail);
+    public Player getPlayerById(final String playerId) {
+        return playerIDsToPlayers.get(playerId);
     }
 
-    public Map<String,Player> getAllPlayers() {
-        return new HashMap<>(playerEmailsToPlayers);
+    public Map<String,Player> getAllIDsToPlayers() {
+        return new HashMap<>(playerIDsToPlayers);
     }
 
     public Grid getGrid() {

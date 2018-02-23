@@ -11,12 +11,12 @@ public abstract class AbstractMazeSolver implements MazeSolver {
 
     protected transient Challenge challenge;
     protected transient Game game;
-    final String playerEmail;
+    final String playerID;
 
-    AbstractMazeSolver(final Challenge challenge, final Game game, final String playerEmail) {
+    AbstractMazeSolver(final Challenge challenge, final Game game, final String playerID) { // todo check accessor
         super();
         init(challenge, game);
-        this.playerEmail = playerEmail;
+        this.playerID = playerID;
     }
 
     @Override

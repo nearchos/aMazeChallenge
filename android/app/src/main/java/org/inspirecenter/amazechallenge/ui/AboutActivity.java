@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import org.inspirecenter.amazechallenge.BuildConfig;
+import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
 
 import java.util.List;
@@ -46,16 +47,13 @@ public class AboutActivity extends AppCompatActivity {
 
             {
                 final Preference applicationVersionPreference = findPreference("applicationVersion");
-                applicationVersionPreference.setSummary(BuildConfig.VERSION_NAME);
+                applicationVersionPreference.setSummary(BuildConfig.VERSION_NAME + " [" + Installation.id(getContext()) + "]");
             }
             {
                 final Preference rateUsPreference = findPreference("rateUs");
-                rateUsPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://market.android.com/details?id=" + BuildConfig.APPLICATION_ID)));
-                        return false;
-                    }
+                rateUsPreference.setOnPreferenceClickListener(preference -> {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://market.android.com/details?id=" + BuildConfig.APPLICATION_ID)));
+                    return false;
                 });
             }
             {
