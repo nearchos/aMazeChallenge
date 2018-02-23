@@ -42,9 +42,9 @@
     <string name="Developed_by">Developed by</string>
     <string name="SharingInstructions">Get the aMazeChallenge app and learn to code by playing! Get it free from Google Play now: https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge</string>
     <string name="NoAppsAvailable">No apps available for sharing</string>
-    <string name="inspire_url">http://inspirecenter.org</string>
+    <string name="inspire_url" translatable="false">http://inspirecenter.org</string>
     <string name="Guest">Guest</string>
-    <string name="Guest_email">guest@example.com</string>
+    <string name="Guest_email" translatable="false">guest@example.com</string>
     <string name="Done">Done</string>
     <string name="Clear">Clear</string>
     <string name="Clear_code">Clear code</string>

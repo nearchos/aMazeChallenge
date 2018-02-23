@@ -39,14 +39,12 @@
     <string name="Developed_by">Αναπτύχθηκε απο</string>
     <string name="SharingInstructions">Πάρτε το aMazeChallenge app και μάθετε να προγραμματίζετε παίζοντας! Κατεβάστε τώρα δωρεάν απο: https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge</string>
     <string name="NoAppsAvailable">Καμία εφαρμογή για κοινοποίηση</string>
-    <string name="inspire_url">http://inspirecenter.org</string>
     <string name="Guest">Επισκέπτης</string>
-    <string name="Guest_email">guest@example.com</string>
     <string name="Done">Τέλος</string>
     <string name="Clear">Εκκαθάριση</string>
     <string name="Clear_code">Εκκαθάριση κώδικα</string>
-    <string name="Are_you_sure_you_want_to_erase_the_code">Είστε σίγουρος οτι θέλετε να γίνει εκκαθάριση κώδικα; Δεν μπορεί να γίνει επαναφορα!</string>
-    <string name="Are_you_sure_you_want_to_reset">Είστε σίγουρος οτι θέλετε να γίνει επαναφορά παιχνιδιού;</string>
+    <string name="Are_you_sure_you_want_to_erase_the_code">Είστε σίγουροι οτι θέλετε να γίνει εκκαθάριση κώδικα; Δεν μπορεί να γίνει επαναφορα!</string>
+    <string name="Are_you_sure_you_want_to_reset">Είστε σίγουροι οτι θέλετε να γίνει επαναφορά παιχνιδιού;</string>
     <string name="Save_code">Αποθήκευση κώδικα</string>
     <string name="Save_code_name">Εισάγετε όνομα για τον κώδικά σας:</string>
     <string name="save_code_error_empty">Το όνομα του κώδικα σας δεν μπορεί να έιναι άδειο.</string>

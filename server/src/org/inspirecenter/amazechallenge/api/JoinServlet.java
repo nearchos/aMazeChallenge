@@ -85,15 +85,13 @@ public class JoinServlet extends HttpServlet {
                             Game game = ofy()
                                     .load()
                                     .type(Game.class)
-                                    .filter("challengeId=", challengeId)
+                                    .filter("challengeId", challengeId)
                                     .first()
                                     .now();
-log("loaded game for challengeId: " + challengeId + " -> " + game);
                             gameId = game == null ? 0L : game.getId();
 
                             alreadyContainsPlayer = game != null && game.containsPlayerById(id);
                         }
-log("alreadyContainsPlayer: " + id + " -> " + alreadyContainsPlayer);
                         if(!alreadyContainsPlayer) {
                             // handle the addition of a new player in a transaction to ensure atomicity
                             final Game game = ofy().transact(() -> {

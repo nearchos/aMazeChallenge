@@ -68,7 +68,7 @@ public class OnlineGameActivity extends AppCompatActivity {
 
         handler = new Handler();
 
-        timer.schedule(new OnlineMazeRunner(), 0L, 500L);//todo ONE_SECOND);
+        timer.schedule(new OnlineMazeRunner(), 0L, ONE_SECOND);
     }
 
     @Override
@@ -206,7 +206,12 @@ public class OnlineGameActivity extends AppCompatActivity {
             final ReplyWithGameFullState replyWithFullGameState = new Gson().fromJson(reply, ReplyWithGameFullState.class);
             final GameFullState gameFullState = replyWithFullGameState.getGameFullState();
             Log.d(TAG, "gameFullState: " + gameFullState); // todo delete
-            if(gameFullState != null) gameView.update(gameFullState);
+            if(gameFullState != null) {
+                gameView.update(gameFullState);
+                final boolean active = gameFullState.getActivePlayerIDs().contains(Installation.id(OnlineGameActivity.this));
+                final boolean queued = gameFullState.getQueuedPlayerIDs().contains(Installation.id(OnlineGameActivity.this));
+                // todo save to preferences and check if sounds needs to be played
+            }
         }
     }
 
