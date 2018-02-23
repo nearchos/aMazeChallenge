@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">aMazeChallenge</string>
+    <string name="app_name" translatable="false">aMazeChallenge</string>
     <string name="application_motto">There is always a way when you can code!</string>
 
     <string name="Game">Game</string>
@@ -97,7 +97,7 @@
     <string name="challenge_exists_message">The maze you tried to add already exists. Please use another name.</string>
     <string name="challenge_name_title">Invalid name</string>
     <string name="challenge_name_message">The maze name you entered is invalid. Please make sure you use only letters and numbers.</string>
-    <string name="challenge_added_training">added to training!</string>
+    <string name="challenge_added_training">Αdded to training!</string>
     <string name="challenge_delete_title">Delete challenge</string>
     <string name="challenge_delete_message">Are you sure you would like to delete this challenge? This action cannot be undone.</string>
     <string name="challenge_deleted">challenge was deleted.</string>
@@ -167,82 +167,11 @@
     <string name="personalizationslider_instructions_icon">Select your avatar:</string>
     <string name="personalizationslider_instructions_color">Select your color:</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
-
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="multi_select_list_preference_default_value" />
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="pick_language">Pick a language</string>
 
     <!-- CODE ERROR MESSAGES -->
 
@@ -265,11 +194,10 @@
     <string name="answer_3_yes">A lot</string>
     <string name="submit">Submit</string>
     <string name="maybe">Maybe</string>
-    <string name="question_4">Do you think programming is interesting?</string>
     <string name="question_5">Do you believe that videogames (such as this) can help you learn programming more effectively?</string>
     <string name="Games">Games</string>
     <string name="Classes">Classes</string>
-    <string name="question_6">Is competition good or bad in these educational games?</string>
+    <string name="question_6">Do you think competition is good or bad in such games?</string>
     <string name="Not_sure">Not sure</string>
     <string name="invalid_questionnaire_response">Please make sure you provide an answer to all questions.</string>
     <string name="no_response">Please provide a response</string>
@@ -315,6 +243,7 @@
         <item>No</item>
         <item>I would rather not say</item>
     </string-array>
+    <string name="question_4">What is your opinion about programming?</string>
 
 
 </resources>
