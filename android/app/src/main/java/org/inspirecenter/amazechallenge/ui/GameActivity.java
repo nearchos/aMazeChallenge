@@ -210,7 +210,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             noCodeDialog.setPositiveButton(R.string.no_code_action, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    startService(new Intent(GameActivity.this, BlocklyActivity.class));
+                    startActivity(new Intent(GameActivity.this, BlocklyActivity.class));
                     finish();
                 }
             });

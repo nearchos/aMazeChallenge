@@ -1,6 +1,7 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
 import org.inspirecenter.amazechallenge.utils.ErrorFinderManager;
 import org.inspirecenter.amazechallenge.utils.FileManager;
+import org.mozilla.javascript.tools.jsc.Main;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -81,7 +83,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     sharedPreferences.edit().putString (KEY_ALGORITHM_ACTIVITY_CODE, generatedCode).apply();
                     if(generatedCode != null && !generatedCode.isEmpty()) sharedPreferences.edit().putBoolean(MainActivity.KEY_PREF_EDITED_CODE, true).apply();
                     //finish();
-                    startActivity(new Intent(BlocklyActivity.this, MainActivity.class));
+                    startActivity(new Intent(BlocklyActivity.this, TrainingActivity.class));
                 }
             };//end mCodeGeneratorCallback
 
@@ -101,10 +103,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     }//end onCreateContentView()
 
     public void done(final View view) {
-        submitCode();
+        submitCode(TrainingActivity.class);
     }
 
-    private void submitCode() {
+    private void submitCode(Class <? extends Activity> nextActivityClass) {
 
         //Save the code first, but don't display message:
         try { mBlocklyActivityHelper.saveWorkspaceToAppDir(AUTOSAVE_FILENAME); }
@@ -126,6 +128,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getColor(R.color.snackbarGreen));
                 compilingSnackbar.show();
                 onRunCode();
+                Intent intentBack = new Intent(BlocklyActivity.this, nextActivityClass);
+                startActivity(intentBack);
             }//end if has blocks and no error occured
             else {
                 Intent intentBack = new Intent(BlocklyActivity.this, MainActivity.class);
@@ -290,7 +294,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                submitCode();
+                submitCode(MainActivity.class);
                 return true;
 
             case R.id.action_save:
@@ -382,7 +386,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
     @Override
     public void onBackPressed() {
-        submitCode();
+        submitCode(MainActivity.class);
     }
 
     public void runCode() { onRunCode(); }
