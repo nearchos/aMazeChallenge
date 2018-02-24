@@ -189,17 +189,16 @@
     <string name="answer_1_yes">Absolutely!</string>
     <string name="Skip">Skip</string>
     <string name="question_2">Would you share this experience with your friends?</string>
-    <string name="question_3">How much do you believe this experience helped you in learning more about programming?</string>
+    <string name="question_3">How much do you believe this experience helped you learn more about programming?</string>
     <string name="answer_3_no">Not at all</string>
     <string name="answer_3_yes">A lot</string>
     <string name="submit">Submit</string>
     <string name="maybe">Maybe</string>
-    <string name="question_5">Do you believe that videogames (such as this) can help you learn programming more effectively?</string>
-    <string name="Games">Games</string>
-    <string name="Classes">Classes</string>
-    <string name="question_6">Do you think competition is good or bad in such games?</string>
+    <string name="question_5">How helpful do you believe educational games can be for teaching programming?</string>
+    <string name="question_6">Do you believe competition is good or bad in such games?</string>
     <string name="Not_sure">Not sure</string>
     <string name="invalid_questionnaire_response">Please make sure you provide an answer to all questions.</string>
+    <string name="invalid_question1">Please provide a rating for question 1.</string>
     <string name="no_response">Please provide a response</string>
 
     <string-array name="rows_and_cols_selection">
@@ -244,5 +243,27 @@
     </string-array>
 
     <string name="question_4">What is your opinion about programming?</string>
+    <string name="Awesome">Awesome</string>
+    <string name="Terrible">Terrible</string>
+    <string name="Very_Helpful">Very helpful</string>
+    <string name="Somewhat_Helpful">Somewhat helpful</string>
+    <string name="Not_Helpful">Not helpful</string>
+    <string name="Very_Interesting">Very Interesting</string>
+    <string name="Interesting">Interesting</string>
+    <string name="Not_So_Interesting">Not so interesting</string>
+    <string name="Not_Interesting_At_All">Not interesting at all</string>
+    <string name="question_7">How do you rate your programming skills compared to before playing this game?</string>
+    <string name="significantly_improved">Significantly improved</string>
+    <string name="slightly_improved">Slightly improved</string>
+    <string name="the_same">The same</string>
+    <string name="Reduced">Reduced</string>
+    <string name="severely_reduced">Severely reduced</string>
+    <string name="question_8">How likely are you to play this game again in the future?</string>
+    <string name="i_would_like_to_play_again">I would like to play again</string>
+    <string name="i_do_not_want_to_play_again">I do not want to play again</string>
+    <string name="write_your_response">Write your response...</string>
+    <string name="question_9">What did you enjoy most in this game?</string>
+    <string name="question_10">Is there anything else you would like to add? (Use this answer to provide any negative feedback, issues you faced or any additional comments)</string>
+
 
 </resources>

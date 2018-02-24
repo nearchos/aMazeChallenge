@@ -2,11 +2,11 @@ package org.inspirecenter.amazechallenge.model.questionnaire;
 
 public enum LikertResponse {
 
-    STRONGLY_AGREE("Strongly Agree"),
-    AGREE("Agree"),
-    NEITHER_AGREE_OR_DISAGREE("Neither agree or disagree"),
-    DISAGREE("Disagree"),
-    STRONGLY_DISAGREE("Strongly Disagree")
+    VERY_POSITIVE("Very Positive"),
+    POSITIVE("Positive"),
+    NEUTRAL("Neutral"),
+    NEGATIVE("Negative"),
+    VERY_NEGATIVE("Very Negative")
 
     ;
 
