@@ -42,22 +42,4 @@ public enum BackgroundImage {
         return type;
     }
 
-    @Override
-    public String toString() {
-        return name + "." + type;
-    }
-
-    public static BackgroundImage fromString(String backgroundImageResourceName) {
-        for (final BackgroundImage backgroundImage : BackgroundImage.values()) {
-            if (backgroundImage.getResourceName().equals(backgroundImageResourceName)) return backgroundImage;
-        }
-        throw new RuntimeException("Invalid BackgroundImage provided: " + backgroundImageResourceName);
-    }
-
-    public static int getIDFromString(String backgroundImageResourceName) {
-        for (int i = 0; i < BackgroundImage.values().length; i++) {
-            if (BackgroundImage.values()[i].getResourceName().equals(backgroundImageResourceName)) return i;
-        }
-        throw new RuntimeException("Invalid BackgroundImage provided: " + backgroundImageResourceName);
-    }
 }

@@ -56,11 +56,6 @@ public enum Audio {
         return name;
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
-
     public String getSoundResourceName() { return soundResourceName; }
 
     public AudioFormat getAudioFormat() { return audioFormat; }

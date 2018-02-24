@@ -1,5 +1,7 @@
 package org.inspirecenter.amazechallenge.model;
 
+import android.provider.MediaStore;
+
 import java.io.Serializable;
 
 /**
@@ -88,8 +90,8 @@ public class Challenge implements Serializable {
                      long endTimestamp, boolean hasQuestionnaire, PickableIntensity rewards,
                      PickableIntensity penalties, Algorithm algorithm,
                      Grid grid, String lineColor, ChallengeDifficulty difficulty, String createdBy,
-                     long createdOn, Audio backgroundAudio, Audio.AudioFormat backgroundAudioFormat,
-                     BackgroundImage backgroundImage, BackgroundImage.BackgroundImageType backgroundImageType) {
+                     long createdOn,
+                     Audio backgroundAudio, BackgroundImage backgroundImage) {
         this(name, apiVersion, description, canRepeat, canJoinAfterStart, canStepOnEachOther,
                 DEFAULT_MIN_ACTIVE_PLAYERS, DEFAULT_MAX_ACTIVE_PLAYERS, startTimestamp,
                 endTimestamp, hasQuestionnaire, rewards, penalties, algorithm, grid, lineColor,

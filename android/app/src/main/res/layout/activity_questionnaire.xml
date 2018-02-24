@@ -58,9 +58,8 @@
                     />
 
                 <Button
-                    android:textSize="10sp"
                     android:layout_width="40dp"
-                    android:layout_height="15dp"
+                    android:layout_height="20dp"
                     android:text="@string/Skip"
                     android:background="@color/materialRed"
                     android:textColor="@color/white"

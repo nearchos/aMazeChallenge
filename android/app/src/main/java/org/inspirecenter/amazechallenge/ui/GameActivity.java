@@ -232,9 +232,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
 
         //Play background audio:
         final Audio audioResource = challenge.getBackgroundAudio();
-        final Audio.AudioFormat audioFormat = audioResource.getAudioFormat();
         System.out.println("Sound is: " + sound);
-        if (audioFormat != Audio.AudioFormat.UNDEFINED_FORMAT && !audioResource.getName().equals(Audio.AUDIO_NONE.getSoundResourceName())) {
+        if (audioResource.getAudioFormat() != Audio.AudioFormat.UNDEFINED_FORMAT && !audioResource.getName().equals(Audio.AUDIO_NONE.getSoundResourceName())) {
             backgroundAudio = MediaPlayer.create(this, getResources().getIdentifier(audioResource.getName(), "raw", getPackageName()));
             if (backgroundAudio != null && sound) {
                 backgroundAudio.setLooping(true);

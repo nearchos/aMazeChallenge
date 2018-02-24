@@ -559,8 +559,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"startTimestamp\": 0,\n" +            //Default for training
                 "    \"endTimestamp\": 0,\n" +              //Default for training
                 "    \"hasQuestionnaire\": true,\n" +       //Default for training
-                "    \"rewards\": " + rewardsIntensity.getTextID() + ",\n" +
-                "    \"penalties\": " + penaltiesIntensity.getTextID() + ",\n" +
+                "    \"rewards\": \"" + rewardsIntensity + "\",\n" +
+                "    \"penalties\": \"" + penaltiesIntensity + "\",\n" +
                 "    \"selectedAlgorithm\": \"" + selectedAlgorithm + "\",\n" +
                 "    \"grid\": {\n" +
                 "        \"width\": " + size + ",\n" +
@@ -576,10 +576,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "        }\n" +
                 "    },\n" +
                 "    \"lineColor\": \"#" + Integer.toHexString(selectedWallColor) + "\",\n" +
-                "    \"backgroundImageName\": \"" + backgroundImage.getResourceName() + "\",\n" +
-                "    \"backgroundImageType\": \"" + backgroundImage.getType().toString() + "\",\n" +
-                "    \"backgroundAudioName\": \"" + backgroundAudio.getSoundResourceName() + "\",\n" +
-                "    \"backgroundAudioFormat\": \"" + backgroundAudio.getAudioFormat() + "\"" +
+                "    \"backgroundImage\": \"" + backgroundImage + "\",\n" +
+                "    \"backgroundAudio\": \"" + backgroundAudio + "\"\n" +
                 "}";
     }
 
