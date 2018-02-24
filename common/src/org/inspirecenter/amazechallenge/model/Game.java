@@ -27,7 +27,6 @@ public class Game implements Serializable {
     private long lastExecutionTime = 0L;
     private long lastUpdated = 0L;
     private long counter = 0L;
-    private int idleRounds = 0;
 
     public Game() {
         super();
@@ -94,7 +93,6 @@ public class Game implements Serializable {
         waitingPlayers.add(playerId);
         //New
         final Player player = getPlayerById(playerId);
-        player.setInactive();
         player.resetPoints();
         return existed;
     }
@@ -115,7 +113,6 @@ public class Game implements Serializable {
             activePlayers.add(nextPlayerId);
             activePlayerIDsToPositionAndDirections.put(nextPlayerId, new PlayerPositionAndDirection(grid.getStartingPosition(), grid.getStartingDirection()));
             final Player player = getPlayerById(nextPlayerId);
-            player.setActive();
             player.setHealth(new Health());
             return true;
         } else {
@@ -171,16 +168,6 @@ public class Game implements Serializable {
             if(pickable.getPickableType().getBias() == biasType) count++;
         }
         return count;
-    }
-
-    public boolean isIdle() {
-        if(hasActiveOrQueuedPlayers()) {
-            idleRounds = 0;
-            return false;
-        } else {
-            idleRounds++;
-            return idleRounds > 30; // declare idle after 30 'empty' cycles
-        }
     }
 
     public List<Pickable> getPickables() {

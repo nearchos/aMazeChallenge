@@ -1,7 +1,5 @@
 package org.inspirecenter.amazechallenge.model;
 
-import android.provider.MediaStore;
-
 import java.io.Serializable;
 
 /**

@@ -22,7 +22,9 @@
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,10 +32,22 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.HelpActivity"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
+        </activity>
+        <activity
             android:name=".ui.PersonalizeActivity"
             android:label="@string/Personalize"
             android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
@@ -52,7 +66,9 @@
             android:label="@string/Training"
             android:noHistory="true"
             android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
@@ -71,7 +87,9 @@
             android:name=".ui.OnlineChallengeActivity"
             android:label="@string/Play_online"
             android:noHistory="true"
-            android:parentActivityName=".ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
@@ -89,7 +107,9 @@
             android:name=".ui.AboutActivity"
             android:label="@string/About"
             android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
@@ -103,13 +123,12 @@
                 android:value="org.inspirecenter.amazechallenge.ui.PersonalizeActivity" />
         </activity>
         <activity
-            android:name=".ui.HelpActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ui.MazeDesignerActivity"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />

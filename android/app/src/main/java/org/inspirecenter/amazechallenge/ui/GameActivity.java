@@ -27,8 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.google.blockly.model.Block;
-
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
@@ -315,7 +313,6 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         game.activateNextPlayer(challenge.getGrid());
         updateHealthTextView();
         updatePointsTextView();
-        player.setActive();
         game.resetPickables();
         gameView.update(game);
         gameView.invalidate();

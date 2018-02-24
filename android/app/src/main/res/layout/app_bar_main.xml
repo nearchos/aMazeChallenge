@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context="org.inspirecenter.amazechallenge.ui.MainActivity">
 
-
-
     <include layout="@layout/content_main" />
 
 </android.support.design.widget.CoordinatorLayout>

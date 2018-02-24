@@ -2,6 +2,9 @@ package org.inspirecenter.amazechallenge.api;
 
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
 import org.inspirecenter.amazechallenge.model.Challenge;
@@ -63,8 +66,9 @@ public class SubmitCodeServlet extends HttpServlet {
                     final Game game = ofy()
                             .load()
                             .type(Game.class)
-                            .filter("challengeId = ", challengeId)
-                            .first().now();
+                            .filter("challengeId", challengeId)
+                            .first()
+                            .now();
 
                     if(game == null) {
                         errors.add("Invalid game for selected challengeId: " + challengeId);
@@ -72,12 +76,28 @@ public class SubmitCodeServlet extends HttpServlet {
                         if(!game.containsPlayerById(playerId)) {
                             errors.add("Player not found in specified challenge for 'id': " + playerId);
                         } else {
-                            game.resetPlayerById(playerId);
-
                             // store maze solver code in data-store
                             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
-log("Submit code. Adding binding in memcache to key: " + getKey(challengeId, playerId));
+log("Submit code. Adding binding in memcache to key: " + getKey(challengeId, playerId));//todo
                             memcacheService.put(getKey(challengeId, playerId), code);
+
+                            game.resetPlayerById(playerId);
+
+                            final boolean hasActiveOrQueuedPlayers = game.hasActiveOrQueuedPlayers(); // if yes, another thread is already handling this
+                            final boolean mustScheduleTask = !hasActiveOrQueuedPlayers && challenge.isActive();
+                            if(mustScheduleTask) { // kick start the run-engine servlet
+                                final long waitMillis = Math.max(0L, 1000L - game.getLastExecutionTime());
+                                // trigger processing of game state
+                                final Queue queue = QueueFactory.getDefaultQueue();
+                                TaskOptions taskOptions = TaskOptions.Builder
+                                        .withUrl("/admin/run-engine")
+                                        .param("magic", magic)
+                                        .param("challenge", Long.toString(challengeId))
+                                        .param("game", Long.toString(game.getId()))
+                                        .countdownMillis(waitMillis) // wait 1 second before the call (or less if the execution takes >0 ms)
+                                        .method(TaskOptions.Method.GET);
+                                queue.add(taskOptions);
+                            }
                         }
                     }
                 }

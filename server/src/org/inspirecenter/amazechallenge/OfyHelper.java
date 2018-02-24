@@ -3,6 +3,7 @@ package org.inspirecenter.amazechallenge;
 import com.googlecode.objectify.ObjectifyService;
 import org.inspirecenter.amazechallenge.data.*;
 import org.inspirecenter.amazechallenge.model.*;
+import org.inspirecenter.amazechallenge.model.questionnaire.QuestionnaireEntry;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -21,6 +22,7 @@ public class OfyHelper implements ServletContextListener {
         ObjectifyService.register(Player.class);
         ObjectifyService.register(Position.class);
         ObjectifyService.register(Pickable.class);
+        ObjectifyService.register(QuestionnaireEntry.class);
     }
 
     public void contextDestroyed(ServletContextEvent event) {

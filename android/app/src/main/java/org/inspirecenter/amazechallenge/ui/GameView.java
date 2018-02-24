@@ -59,7 +59,6 @@ public class GameView extends View {
     public GameView(final Context context) {
         super(context);
         this.context = context;
-        //backgroundDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), DEFAULT_MAZE_BACKGROUND.getResourceID()));
         backgroundDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(BackgroundImage.TEXTURE_GRASS.getResourceName(), "drawable", context.getPackageName())));
     }
 
@@ -154,7 +153,6 @@ public class GameView extends View {
         for(int row = 0; row < grid.getWidth(); row++) {
             for(int col = 0; col < grid.getHeight(); col++) {
                 final int shape = RuntimeController.getGridCell(grid, row, col);
-//                Log.d("aMaze", "row: " + row + ", col: " + col + " -> shape: " + shape);
                 drawGridCell(row, col, tile_size, padding, shape, lineColor, canvas);
             }
         }
@@ -219,7 +217,9 @@ public class GameView extends View {
     }
 
     private void drawPlayer(final Player player, final Position position, final Direction direction, final int tile_size, final int padding, final Canvas canvas) {
-        if (player.isActive()) drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
+        if (activePlayerIdToPositionAndDirectionMap.containsKey(player.getId())) {
+            drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
+        }
     }
 
     private void drawPickupItem(final Position position, final int imageResourceID, final int tile_size, final int padding, final Canvas canvas) {

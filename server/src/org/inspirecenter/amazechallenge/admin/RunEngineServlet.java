@@ -42,6 +42,8 @@ public class RunEngineServlet extends HttpServlet {
     // update values in memcache
     private final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
 
+    private int idleCounter = 0;
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // log.info("Running 'RunEngineServlet'");
@@ -50,7 +52,7 @@ public class RunEngineServlet extends HttpServlet {
 
         final String magic = request.getParameter("magic");
         final String challengeIdAsString = request.getParameter("challenge");
-        final String gameIdAsString = request.getParameter("game"); // todo is this necessary? or could we simply query ofy by challengeId?
+        final String gameIdAsString = request.getParameter("game");
 
         GameFullState gameFullState = null;
 
@@ -104,15 +106,18 @@ public class RunEngineServlet extends HttpServlet {
                 // log.info("Scheduling next run...");
 
                 // check if active or queued players players, then repeat
-                if(challenge.isActive() && game.hasActiveOrQueuedPlayers()) {
-
+                final boolean hasActiveOrQueuedPlayers = game.hasActiveOrQueuedPlayers(); // if yes, another thread is already handling this
+                if(hasActiveOrQueuedPlayers) idleCounter = 0;
+                final boolean isIdle = idleCounter++ > 30;
+                final boolean mustScheduleTask = challenge.isActive() && (hasActiveOrQueuedPlayers || !isIdle);
+                if(mustScheduleTask) {
                     // schedule next run
                     final Queue queue = QueueFactory.getDefaultQueue();
                     TaskOptions taskOptions = TaskOptions.Builder
                             .withUrl("/admin/run-engine")
                             .param("magic", magic)
-                            .param("challenge-id", Long.toString(challengeId))
-                            .param("game-id", Long.toString(gameId))
+                            .param("challenge", Long.toString(challengeId))
+                            .param("game", Long.toString(gameId))
                             .countdownMillis(1000) // wait 1/10th of a second before running again // todo adjust as needed
                             .method(TaskOptions.Method.GET);
                     queue.add(taskOptions);

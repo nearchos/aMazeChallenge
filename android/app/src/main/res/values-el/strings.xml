@@ -122,7 +122,7 @@
     <string name="Moves">Κινήσεις</string>
     <string name="Details">Λεπτομέριες</string>
     <string name="User_image">Εικόνα χρήστη</string>
-    <string name="Compiling">Σύνταξη κώδικα...</string>
+    <string name="Compiling">Σύνταξη κώδικα…</string>
     <string name="workspace_empty_message">Ο κώδικας σας είναι άδειος. Είστε σίγουροι οτι θέλετε να πάτε πίσω;</string>
     <string name="yes_go_back">Ναί</string>
     <string name="Maze_challenge">Παιχνίδι λαβυρίνθου!</string>
