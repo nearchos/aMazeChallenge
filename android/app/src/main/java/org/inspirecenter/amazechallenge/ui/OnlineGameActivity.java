@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.blockly.model.Block;
 import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.Installation;
@@ -80,7 +82,7 @@ public class OnlineGameActivity extends AppCompatActivity {
     }
 
     public void editCode(final View view) {
-        // todo
+        startActivity(new Intent(OnlineGameActivity.this, BlocklyActivity.class).putExtra(BlocklyActivity.ONLINE_CALLING_ACTIVITY_KEY, true));
     }
 
     public void submitCode(final View view) {

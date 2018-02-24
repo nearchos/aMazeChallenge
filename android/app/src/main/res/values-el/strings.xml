@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="application_motto">{MISSING}</string>
+    <string name="application_motto">Πάντα υπάρχει τρόπος για όσους ξέρουν προγραμματισμό!</string>
     <string name="Game">Παιχνίδι</string>
     <string name="Select_challenge">Επιλογή Σταδίου</string>
     <string name="Select_Personalization_Options">Επιλογή χρώματος/εικόνας</string>
@@ -175,8 +175,6 @@
     <string name="maybe">Μπορεί</string>
     <string name="question_4">Ποιά είναι η γνώμη σας για τον προγραμματισμό;</string>
     <string name="question_5">Πιστεύετε οτι παιχνίδια όπως αυτό θα σας βοηθούσαν να μάθετε προγραμματισμό πιο εύκολα;</string>
-    <string name="Games">Παιχνίδια</string>
-    <string name="Classes">Μαθήματα</string>
     <string name="question_6">Πιστεύετε οτι o ανταγωνισμός είναι καλός ή κακός σε αυτού του είδους τα παιχνίδια;</string>
     <string name="Not_sure">Δεν είμαι σίγουρος</string>
     <string name="invalid_questionnaire_response">Παρακαλώ απαντήστε όλες τις ερωτήσεις.</string>
@@ -243,5 +241,29 @@
     <string name="color_pink">Ροζ</string>
     <string name="color_lightgray">Απαλο Γκρι</string>
     <string name="color_darkgray">Σκουρο Γκρι</string>
+    <string name="invalid_question1">Παρακαλώ εισάγετε βαθμολογία για την Ερώτηση 1.</string>
+    <string name="Awesome">Τέλειο</string>
+    <string name="Terrible">Απαίσιο</string>
+    <string name="Very_Helpful">Πολύ Βοηθητικό</string>
+    <string name="Somewhat_Helpful">Κάπως Βοηθητικό</string>
+    <string name="Not_Helpful">Καθόλου Βοηθητικό</string>
+    <string name="Very_Interesting">Πολύ ενδιαφέρον</string>
+    <string name="Interesting">Ενδιαφέρον</string>
+    <string name="Not_So_Interesting">Όχι τοσο ενδιαφέρον</string>
+    <string name="Not_Interesting_At_All">Καθόλου ενδιαφέρον</string>
+    <string name="question_7">Πώς βαθμολογείτε τις ικανότητες σας στον προγραμματισμό σε σύγκριση με πρίν απο αυτό το παιχνίδι;</string>
+    <string name="significantly_improved">Πολύ βελτιωμένες</string>
+    <string name="slightly_improved">Κάπως βελτιωμένες</string>
+    <string name="the_same">Το ίδιο</string>
+    <string name="Reduced">Κάπως χειρότερες</string>
+    <string name="severely_reduced">Πολύ χειρότερες</string>
+    <string name="question_8">Πόσο πιθανό είναι να παίξετε ξανά αυτό το παιχνίδι στο μέλλον;</string>
+    <string name="i_would_like_to_play_again">Θα ήθελα να ξαναπαίξω</string>
+    <string name="i_do_not_want_to_play_again">Δεν θα ήθελα να ξαναπαίξω</string>
+    <string name="write_your_response">Γράψτε την απάντηση σας...</string>
+    <string name="question_9">Τι σας άρεσε περισσότερο σε αυτό το παιχνίδι;</string>
+    <string name="question_10">Υπάρχει κάτι άλλο που θέλετε να προσθέσετε; (Χρησιμοποιήστε αυτήν την απάντηση για να δώσετε αρνητικά σχόλια, ζητήματα που αντιμετωπίσατε ή τυχόν πρόσθετα σχόλια)</string>
+    <string name="health">Υγεία</string>
+    <string name="points">Πόντοι</string>
 
 </resources>

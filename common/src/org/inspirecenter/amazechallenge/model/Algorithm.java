@@ -2,10 +2,20 @@ package org.inspirecenter.amazechallenge.model;
 
 public enum Algorithm {
 
-    SINGLE_SOLUTION,
-    MANY_SOLUTIONS,
-    SPARSE,
-    EMPTY;
+    SINGLE_SOLUTION("Single Solution"),
+    MANY_SOLUTIONS("Many Solutions"),
+    SPARSE("Sparse"),
+    EMPTY("Empty");
+
+    private final String friendlyName;
+
+    Algorithm(String friendlyName) {
+        this.friendlyName = friendlyName;
+    }
+
+    public String getFriendlyName() {
+        return friendlyName;
+    }
 
     public static int getPosition(Algorithm algorithm) {
         final Algorithm [] algorithms = values();

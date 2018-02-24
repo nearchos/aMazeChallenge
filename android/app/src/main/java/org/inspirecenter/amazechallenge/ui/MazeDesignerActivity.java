@@ -228,7 +228,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         for (Audio a : Audio.values()) {
             if (a.getAudioType() == Audio.AudioType.AMBIENT || a.getAudioType() == Audio.AudioType.NONE) {
                 audioList.add(a);
-                audioAdapter.add(a.toString());
+                audioAdapter.add(a.getName());
             }
         }
         backgroundAudioSpinner.setAdapter(audioAdapter);
@@ -251,7 +251,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         ArrayList<Algorithm> algorithmList = new ArrayList<>();
         for (Algorithm algorithm : Algorithm.values()) {
             algorithmList.add(algorithm);
-            algorithmAdapter.add(algorithm.toString());
+            algorithmAdapter.add(algorithm.getFriendlyName());
         }
         algorithmSpinner.setAdapter(algorithmAdapter);
 

@@ -128,7 +128,7 @@
     <string name="Code_is_auto_saved">Your code is automatically saved!</string>
     <string name="Your_code_has_been_saved">Your code has been saved!</string>
     <string name="Moves">Moves</string>
-    <string name="Details">Details</string>
+    <string name="Details">View Details</string>
     <string name="User_image">User image</string>
     <string name="Compiling">Compiling the code…</string>
     <string name="workspace_empty_message">Workspace is empty. Are you sure you would like to go back?</string>
@@ -284,6 +284,8 @@
     <string name="color_pink">Pink</string>
     <string name="color_lightgray">Light Gray</string>
     <string name="color_darkgray">Dark Gray</string>
+    <string name="health">Health</string>
+    <string name="points">Points</string>
 
 
 </resources>

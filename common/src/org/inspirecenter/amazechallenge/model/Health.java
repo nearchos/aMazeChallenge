@@ -6,7 +6,7 @@ public class Health implements Serializable {
 
     public static int DEFAULT_HEALTH = 100;
     public static int MIN_HEALTH = 0;
-    public static int MAX_HEALTH = 300;
+    public static int MAX_HEALTH = 200;
 
     private int health = DEFAULT_HEALTH;
 

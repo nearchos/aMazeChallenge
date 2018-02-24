@@ -58,6 +58,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     private static final String BLOCK_GENERATORS_FILE = "generators/maze_blocks.js";
     private static final String AMAZE_TOOLEBOX_XML = "toolboxes/maze_toolbox.xml";
     private static final String ALLOWED_PLAYER_CODE_FILES_REGEX = "[a-zA-Z0-9]*";
+    public static final String ONLINE_CALLING_ACTIVITY_KEY = "ONLINE_CALLING_ACTIVITY";
 
     private static final List<String> BLOCK_DEFINITIONS = Arrays.asList(
             DefaultBlocks.COLOR_BLOCKS_PATH,
@@ -82,8 +83,13 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BlocklyActivity.this);
                     sharedPreferences.edit().putString (KEY_ALGORITHM_ACTIVITY_CODE, generatedCode).apply();
                     if(generatedCode != null && !generatedCode.isEmpty()) sharedPreferences.edit().putBoolean(MainActivity.KEY_PREF_EDITED_CODE, true).apply();
-                    //finish();
-                    startActivity(new Intent(BlocklyActivity.this, TrainingActivity.class));
+
+                    boolean goToOnline;
+                    if (getIntent().getSerializableExtra(ONLINE_CALLING_ACTIVITY_KEY) != null) {
+                        goToOnline = (boolean) getIntent().getSerializableExtra(ONLINE_CALLING_ACTIVITY_KEY);
+                        if (goToOnline) startActivity(new Intent(BlocklyActivity.this, OnlineGameActivity.class));
+                    }
+                    else finish();
                 }
             };//end mCodeGeneratorCallback
 
@@ -103,10 +109,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     }//end onCreateContentView()
 
     public void done(final View view) {
-        submitCode(TrainingActivity.class);
+        submitCode();
     }
 
-    private void submitCode(Class <? extends Activity> nextActivityClass) {
+    private void submitCode() {
 
         //Save the code first, but don't display message:
         try { mBlocklyActivityHelper.saveWorkspaceToAppDir(AUTOSAVE_FILENAME); }
@@ -124,12 +130,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
         if (errorList.isEmpty()) {
             if (getController().getWorkspace().hasBlocks()) {
-                Snackbar compilingSnackbar = Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG);
+                Snackbar compilingSnackbar = Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_INDEFINITE);
                 View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getColor(R.color.snackbarGreen));
                 compilingSnackbar.show();
                 onRunCode();
-                Intent intentBack = new Intent(BlocklyActivity.this, nextActivityClass);
-                startActivity(intentBack);
             }//end if has blocks and no error occured
             else {
                 Intent intentBack = new Intent(BlocklyActivity.this, MainActivity.class);
@@ -294,7 +298,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                submitCode(MainActivity.class);
+                submitCode();
                 return true;
 
             case R.id.action_save:
@@ -386,7 +390,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
     @Override
     public void onBackPressed() {
-        submitCode(MainActivity.class);
+        submitCode();
     }
 
     public void runCode() { onRunCode(); }
