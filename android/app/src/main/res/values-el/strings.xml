@@ -224,4 +224,24 @@
         <item>Θα προτιμούσα να μην πω</item>
     </string-array>
 
+    <string name="color_black">Μαυρο</string>
+    <string name="color_darkred">Σκουρο Κοκκινο</string>
+    <string name="color_red">Κοκκινο</string>
+    <string name="color_orange">Πορτοκαλλι</string>
+    <string name="color_gold">Χρυσο</string>
+    <string name="color_yellow">Κιτρινο</string>
+    <string name="color_lime">Λαιμ</string>
+    <string name="color_green">Πρασινο</string>
+    <string name="color_darkgreen">Σκουρο Πρασινο</string>
+    <string name="color_darkblue">Σκουρο Μπλε</string>
+    <string name="color_blue">Μπλε</string>
+    <string name="color_teal">Θαλασσι</string>
+    <string name="color_cyan">Γαλαζιο</string>
+    <string name="color_purple">Μωβ</string>
+    <string name="color_indigo">Σκουρο Μωβ</string>
+    <string name="color_magenta">Πορφυρο</string>
+    <string name="color_pink">Ροζ</string>
+    <string name="color_lightgray">Απαλο Γκρι</string>
+    <string name="color_darkgray">Σκουρο Γκρι</string>
+
 </resources>

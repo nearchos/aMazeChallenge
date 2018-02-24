@@ -265,5 +265,25 @@
     <string name="question_9">What did you enjoy most in this game?</string>
     <string name="question_10">Is there anything else you would like to add? (Use this answer to provide any negative feedback, issues you faced or any additional comments)</string>
 
+    <string name="color_black">Black</string>
+    <string name="color_darkred">Dark Red</string>
+    <string name="color_red">Red</string>
+    <string name="color_orange">Orange</string>
+    <string name="color_gold">Gold</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_lime">Lime</string>
+    <string name="color_green">Green</string>
+    <string name="color_darkgreen">Dark Green</string>
+    <string name="color_darkblue">Dark Blue</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_teal">Teal</string>
+    <string name="color_cyan">Cyan</string>
+    <string name="color_purple">Purple</string>
+    <string name="color_indigo">Indigo</string>
+    <string name="color_magenta">Magenta</string>
+    <string name="color_pink">Pink</string>
+    <string name="color_lightgray">Light Gray</string>
+    <string name="color_darkgray">Dark Gray</string>
+
 
 </resources>
