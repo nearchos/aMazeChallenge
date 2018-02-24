@@ -68,7 +68,7 @@ public class OnlineGameActivity extends AppCompatActivity {
 
         handler = new Handler();
 
-        timer.schedule(new OnlineMazeRunner(), 0L, ONE_SECOND);
+        timer.schedule(new OnlineMazeRunner(), 0L, ONE_SECOND / 2); // todo
     }
 
     @Override
@@ -202,10 +202,10 @@ public class OnlineGameActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String reply) {
             super.onPostExecute(reply);
-            Log.d(TAG, "reply: " + reply);
+Log.d(TAG, "reply: " + reply);
             final ReplyWithGameFullState replyWithFullGameState = new Gson().fromJson(reply, ReplyWithGameFullState.class);
             final GameFullState gameFullState = replyWithFullGameState.getGameFullState();
-            Log.d(TAG, "gameFullState: " + gameFullState); // todo delete
+Log.d(TAG, "gameFullState: " + gameFullState); // todo delete
             if(gameFullState != null) {
                 gameView.update(gameFullState);
                 final boolean active = gameFullState.getActivePlayerIDs().contains(Installation.id(OnlineGameActivity.this));

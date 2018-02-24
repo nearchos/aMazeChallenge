@@ -18,7 +18,6 @@ public class Player implements Serializable {
     private AmazeIcon icon;
     private Shape shape;
     private Health health; // todo must be part of game, not player
-    private boolean isActive = false; // todo must be part of game, not player
     private int points = 0; // todo must be part of game, not player
 
     public Player() {
@@ -95,12 +94,6 @@ public class Player implements Serializable {
                 '}';
     }
 
-    public void setActive() { isActive = true; }
-
-    public void setInactive() { isActive = false; }
-
-    public boolean isActive() { return isActive; }
-
     public int getPoints() { return points; } // todo move to Game
 
     public void changePointsBy(int amount) {
@@ -108,7 +101,7 @@ public class Player implements Serializable {
         else points += amount;
     }
 
-    public void substractPoints(int points) {
+    public void subtractPoints(int points) {
         if (points < 0) throw new RuntimeException("Cannot substract negative points.");
         else this.points -= points;
     }

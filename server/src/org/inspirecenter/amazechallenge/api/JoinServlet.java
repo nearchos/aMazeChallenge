@@ -104,20 +104,6 @@ public class JoinServlet extends HttpServlet {
                                 ofy().save().entity(tGame).now();
                                 return tGame;
                             });
-
-                            if(!game.isIdle()) { // kick start the run-engine servlet
-                                final long waitMillis = Math.max(0L, 1000L - game.getLastExecutionTime());
-                                // trigger processing of game state
-                                final Queue queue = QueueFactory.getDefaultQueue();
-                                TaskOptions taskOptions = TaskOptions.Builder
-                                        .withUrl("/admin/run-engine")
-                                        .param("magic", magic)
-                                        .param("challenge", Long.toString(challengeId))
-                                        .param("game", Long.toString(game.getId()))
-                                        .countdownMillis(waitMillis) // wait 1 second before the call (or less if the execution takes >0 ms)
-                                        .method(TaskOptions.Method.GET);
-                                queue.add(taskOptions);
-                            }
                         }
                     }
                 }

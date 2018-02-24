@@ -8,7 +8,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
-        versionName "0.18"
+        versionName "0.19"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -26,8 +26,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
-
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')

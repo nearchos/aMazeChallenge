@@ -37,6 +37,14 @@
         <servlet-name>GameStateServlet</servlet-name>
         <url-pattern>/api/json/game-state</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>SubmitQuestionnaireServlet</servlet-name>
+        <servlet-class>org.inspirecenter.amazechallenge.api.SubmitQuestionnaireServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SubmitQuestionnaireServlet</servlet-name>
+        <url-pattern>/api/submit-questionnaire</url-pattern>
+    </servlet-mapping>
 
     <!--Admin-->
     <servlet>

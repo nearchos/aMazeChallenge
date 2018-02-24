@@ -13,9 +13,14 @@ import android.widget.RadioButton;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.questionnaire.DichotomousResponse;
 import org.inspirecenter.amazechallenge.model.questionnaire.LikertResponse;
+import org.inspirecenter.amazechallenge.model.questionnaire.QuestionEntry;
+import org.inspirecenter.amazechallenge.model.questionnaire.QuestionnaireEntry;
 
 public class QuestionnaireActivity extends AppCompatActivity {
 
@@ -398,6 +403,26 @@ public class QuestionnaireActivity extends AppCompatActivity {
             System.out.println("Q10: " + question10Response);
 
             //TODO - Server submission
+
+            // first convert to JSON
+            final QuestionEntry[] questionEntries = {
+                    new QuestionEntry("Q1", Float.toString(question1Response)),
+                    new QuestionEntry("Q2", question2Response.toString()),
+                    new QuestionEntry("Q3", Integer.toString(question3Response)),
+                    new QuestionEntry("Q4", question4Response.toString()),
+                    new QuestionEntry("Q5", Integer.toString(question5Response)),
+                    new QuestionEntry("Q6", question6Response.toString()),
+                    new QuestionEntry("Q7", question7Response.toString()),
+                    new QuestionEntry("Q8", question8Response.toString()),
+                    new QuestionEntry("Q9", question9Response),
+                    new QuestionEntry("Q10", question10Response)
+            };
+            final long challengeId = 0L; // todo this must be set (e.g. passed from the calling avtivity via the intent)
+            final QuestionnaireEntry questionnaireEntry = new QuestionnaireEntry(Installation.id(this), challengeId, questionEntries);
+            final String json = new Gson().toJson(questionnaireEntry);
+
+            // todo use a standard asynctask to submit the JSON as a post to /api/submit-questionnaire?magic=...
+            // see submit-code asynctask for an example on submitting via POST
         }
         else Toast.makeText(this, R.string.invalid_questionnaire_response, Toast.LENGTH_LONG).show();
     }
