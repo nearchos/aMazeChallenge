@@ -223,5 +223,6 @@
         <item>Όχι</item>
         <item>Θα προτιμούσα να μην πω</item>
     </string-array>
+    <string name="You">Εσύ</string>
 
 </resources>

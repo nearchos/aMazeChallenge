@@ -200,6 +200,7 @@
     <string name="invalid_questionnaire_response">Please make sure you provide an answer to all questions.</string>
     <string name="invalid_question1" translatable="false">Please provide a rating for question 1.</string>
     <string name="no_response">Please provide a response</string>
+    <string name="You">You</string>
     <string name="Games">Games</string>
     <string name="Classes">Classes</string>
 

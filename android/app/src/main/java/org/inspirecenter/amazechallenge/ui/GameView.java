@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.BackgroundImage;
@@ -53,6 +54,7 @@ public class GameView extends View {
     public static final int COLOR_LIGHT_GREEN   = Color.rgb(192, 255, 192);
 
     private final Context context;
+    private final String you;
 
     public static final BackgroundImage DEFAULT_MAZE_BACKGROUND = BackgroundImage.TEXTURE_GRASS;
 
@@ -60,12 +62,14 @@ public class GameView extends View {
         super(context);
         this.context = context;
         backgroundDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(BackgroundImage.TEXTURE_GRASS.getResourceName(), "drawable", context.getPackageName())));
+        you = context.getString(R.string.You);
     }
 
     public GameView(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         backgroundDrawable = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(BackgroundImage.TEXTURE_GRASS.getResourceName(), "drawable", context.getPackageName())));
+        you = context.getString(R.string.You);
     }
 
     private Grid grid = null;
@@ -165,7 +169,7 @@ public class GameView extends View {
 
         // draw pickables and rewards
         for(final Pickable pickable : pickables) {
-            drawPickupItem(pickable.getPosition(), getDrawableResourceId(pickable), tile_size, padding, canvas);
+            drawPickableItem(pickable.getPosition(), getDrawableResourceId(pickable), tile_size, padding, canvas);
         }
 
         // draw active players
@@ -217,12 +221,26 @@ public class GameView extends View {
     }
 
     private void drawPlayer(final Player player, final Position position, final Direction direction, final int tile_size, final int padding, final Canvas canvas) {
+
+        // draw actual player shape
         if (activePlayerIdToPositionAndDirectionMap.containsKey(player.getId())) {
             drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
         }
+
+        // if this is 'this' player then indicate accordingly
+        final boolean isSelf = player.getId().equals(Installation.id(context));
+        if(isSelf) {
+            final int topLeftX = position.getCol() * tile_size + 2 * padding;
+            final int topLeftY = position.getRow() * tile_size + 2 * padding;
+            paint.setColor(Color.YELLOW);
+            canvas.drawRect(topLeftX + 1, topLeftY + 1, topLeftX + 2 * tile_size / 3, topLeftY + tile_size / 3 + 1, paint);
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(tile_size / 3);
+            canvas.drawText(you, topLeftX + 2, topLeftY+ tile_size / 3 - 1, paint);
+        }
     }
 
-    private void drawPickupItem(final Position position, final int imageResourceID, final int tile_size, final int padding, final Canvas canvas) {
+    private void drawPickableItem(final Position position, final int imageResourceID, final int tile_size, final int padding, final Canvas canvas) {
 
         final int topLeftX = position.getCol() * tile_size + padding;
         final int topLeftY = position.getRow() * tile_size + padding;
@@ -245,7 +263,7 @@ public class GameView extends View {
 
         switch (shape) {
 
-                //Player shapes:
+            //Player shapes:
 
             case TRIANGLE:
                 // draw directed triangle
@@ -304,7 +322,6 @@ public class GameView extends View {
                 paint.setStyle(Paint.Style.STROKE);
                 canvas.drawCircle(topLeftX + tile_size / 2, topLeftY + tile_size / 2, tile_size / 3, paint);
                 break;
-
 
             default:
                 throw new RuntimeException("Invalid shape: " + shape);
