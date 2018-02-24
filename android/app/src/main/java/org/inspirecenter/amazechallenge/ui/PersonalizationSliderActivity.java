@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
@@ -22,6 +23,11 @@ public class PersonalizationSliderActivity extends FragmentActivity {
     private IconPagerAdapter iconPagerAdapter;
     private ViewPager colorPager;
     private ColorPagerAdapter colorPagerAdapter;
+
+    private ImageButton previousIcon;
+    private ImageButton nextIcon;
+    private ImageButton previousColor;
+    private ImageButton nextColor;
 
     private AmazeColor oldColor;
     private AmazeColor newColor;
@@ -51,12 +57,16 @@ public class PersonalizationSliderActivity extends FragmentActivity {
         iconPagerAdapter = new IconPagerAdapter(getSupportFragmentManager());
         iconPager.setAdapter(iconPagerAdapter);
         iconPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        previousIcon = findViewById(R.id.avatar_previous);
+        nextIcon = findViewById(R.id.avatar_next);
 
         //Color
         colorPager = findViewById(R.id.colorPager);
         colorPagerAdapter = new ColorPagerAdapter(getSupportFragmentManager());
         colorPager.setAdapter(colorPagerAdapter);
         colorPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        previousColor = findViewById(R.id.color_previous);
+        nextColor = findViewById(R.id.color_next);
 
         //Set the defaults:
         iconPager.setCurrentItem(AmazeIcon.getIndex(oldIcon));
@@ -86,9 +96,6 @@ public class PersonalizationSliderActivity extends FragmentActivity {
             @Override
             public void onPageSelected(int position) {
                 newIcon = AmazeIcon.values()[position];
-                //TODO: Make this work if possible --> Playing only the GIF that is currently viewable
-                //IconFragment currentFragment = iconPagerAdapter.getRegisteredFragment(iconPager.getCurrentItem());
-                //currentFragment.playGIF();
             }//end onPageSelected()
 
             @Override
@@ -105,6 +112,13 @@ public class PersonalizationSliderActivity extends FragmentActivity {
             @Override
             public void onPageScrollStateChanged(int state) { }
         };
+
+        previousIcon.setOnClickListener(view -> iconPager.arrowScroll(View.FOCUS_LEFT));
+        nextIcon.setOnClickListener(view -> iconPager.arrowScroll(View.FOCUS_RIGHT));
+
+        previousColor.setOnClickListener(view -> colorPager.arrowScroll(View.FOCUS_LEFT));
+        nextColor.setOnClickListener(view -> colorPager.arrowScroll(View.FOCUS_RIGHT));
+
     }//end onCreate()
 
     @Override
