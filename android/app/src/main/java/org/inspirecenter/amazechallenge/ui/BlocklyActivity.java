@@ -40,6 +40,7 @@ import java.util.List;
 
 import static org.inspirecenter.amazechallenge.algorithms.InterpreterError.InterpreterErrorType.ERROR;
 import static org.inspirecenter.amazechallenge.algorithms.InterpreterError.InterpreterErrorType.WARNING;
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 
 public class BlocklyActivity extends AbstractBlocklyActivity {
 
@@ -99,6 +100,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+        setLanguage(this);
+        setTitle(getString(R.string.edit_your_code));
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
     }//end onCreate()

@@ -69,6 +69,7 @@
     <string name="about">About</string>
     <string name="Generate">Generate</string>
     <string name="add_to_training">Add to training</string>
+    <string name="edit_your_code">Edit your code</string>
 
     <string name="maze_designer">Maze Designer</string>
     <string name="generator_numof_rewards">Number of rewards:</string>

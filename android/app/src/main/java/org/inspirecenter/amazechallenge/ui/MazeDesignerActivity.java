@@ -35,6 +35,8 @@ import org.inspirecenter.amazechallenge.utils.FileManager;
 
 import java.util.ArrayList;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
+
 public class MazeDesignerActivity extends AppCompatActivity {
 
     public static final String DESIGNER_MODE_KEY = "DESIGNER_MODE_KEY";
@@ -90,6 +92,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_maze_designer);
 
         backgroundImage = DEFAULT_BACKGROUND_IMAGE;

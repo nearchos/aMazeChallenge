@@ -46,6 +46,7 @@ public class HelpActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        MainActivity.setLanguage(this);
         setContentView(R.layout.activity_help);
 
         // Create the adapter that will return a fragment for each of the three primary sections of

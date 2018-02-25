@@ -49,6 +49,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
+
 public class GameActivity extends AppCompatActivity implements AudioEventListener {
 
     public static final String TAG = "aMaze";
@@ -93,6 +95,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_game);
 
         final ActionBar actionBar = getActionBar();

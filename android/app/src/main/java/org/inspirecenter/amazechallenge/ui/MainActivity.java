@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEY_PREF_LOCALLY_TESTED = "pref-local-tested";
     public static final String KEY_PREF_PLAYED_ONLINE = "pref-played-online";
     public static final String KEY_PREF_SOUND = "pref-sound";
+    public static final String KEY_PREF_LANG = "pref-lang";
 
     private Button buttonLearn;
     private Button buttonPersonalize;
@@ -49,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setLanguage(this);
+
         setContentView(R.layout.activity_main);
 
         buttonLearn = findViewById(R.id.button_learn);
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         buttonGenerator = findViewById(R.id.generator);
         buttonAbout = findViewById(R.id.about);
         fab = findViewById(R.id.activity_main_sound);
+
     }
 
     @Override
@@ -143,12 +149,26 @@ public class MainActivity extends AppCompatActivity {
                 Configuration conf = res.getConfiguration();
                 conf.locale = myLocale;
                 res.updateConfiguration(conf, dm);
+
+                PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(KEY_PREF_LANG, Language.values()[which].getLocale()).apply();
+
                 Intent intent = new Intent(MainActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
         builder.show();
+    }
+
+    public static void setLanguage(Activity activity) {
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        final String currentLocale = sharedPreferences.getString(KEY_PREF_LANG, Language.ENGLISH.getLocale());
+        Locale myLocale = new Locale(currentLocale);
+        Resources res = activity.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
     }
 
 }

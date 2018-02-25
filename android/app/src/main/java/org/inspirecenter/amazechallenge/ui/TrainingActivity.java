@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_COLOR;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_ICON;
@@ -57,6 +58,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_training);
 
         final ActionBar actionBar = getActionBar();

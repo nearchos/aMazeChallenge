@@ -18,12 +18,16 @@ import org.inspirecenter.amazechallenge.R;
 
 import java.util.List;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
+
 public class AboutActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        setLanguage(this);
 
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);

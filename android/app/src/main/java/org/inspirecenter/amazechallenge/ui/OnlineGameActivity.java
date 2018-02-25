@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.blockly.model.Block;
 import com.google.gson.Gson;
@@ -30,6 +32,7 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
 
 public class OnlineGameActivity extends AppCompatActivity {
@@ -43,6 +46,10 @@ public class OnlineGameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_online_game);
 
         gameView = findViewById(R.id.activity_online_game_game_view);

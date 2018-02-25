@@ -22,6 +22,8 @@ import org.inspirecenter.amazechallenge.model.questionnaire.LikertResponse;
 import org.inspirecenter.amazechallenge.model.questionnaire.QuestionEntry;
 import org.inspirecenter.amazechallenge.model.questionnaire.QuestionnaireEntry;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
+
 public class QuestionnaireActivity extends AppCompatActivity {
 
     //Views:
@@ -88,6 +90,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_questionnaire);
 
         //Controls:
