@@ -16,7 +16,7 @@
     "hasQuestionnaire": true,
     "rewards": "LOW",
     "penalties": "LOW",
-    "selectedAlgorithm": "SINGLE_SOLUTION",
+    "algorithm": "SINGLE_SOLUTION",
     "grid": {
         "width": 10,
         "height": 10,

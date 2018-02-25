@@ -290,6 +290,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
             penalties = challenge.getMaxPenalties();
             penaltiesIntensity = challenge.getPenaltiesIntensity();
             selectedAlgorithm = challenge.getAlgorithm();
+            System.out.println(challenge.toString());
+            System.out.println("SEL ALG: " + selectedAlgorithm);
             oldMazeName = challenge.getName();
 
             mazeNameEditText.setText(oldMazeName);
@@ -564,7 +566,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"hasQuestionnaire\": true,\n" +       //Default for training
                 "    \"rewards\": \"" + rewardsIntensity + "\",\n" +
                 "    \"penalties\": \"" + penaltiesIntensity + "\",\n" +
-                "    \"selectedAlgorithm\": \"" + selectedAlgorithm + "\",\n" +
+                "    \"algorithm\": \"" + selectedAlgorithm + "\",\n" +
                 "    \"grid\": {\n" +
                 "        \"width\": " + size + ",\n" +
                 "        \"height\": " + size + ",\n" +

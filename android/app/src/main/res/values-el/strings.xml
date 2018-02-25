@@ -53,7 +53,7 @@
     <string name="load_code">Φόρτωση κώδικα</string>
     <string name="load_code_message">Διαλέξτε κώδικα για φόρτωση:</string>
     <string name="delete_code">Διαγραγή κώδικα;</string>
-    <string name="delete">Διαγραφή</string>
+    <string name="delete">Διαγραφη</string>
     <string name="delete_code_message">Είστε σίγουρος οτι θέλετε να διαγραφεί αυτός ο κώδικας;</string>
     <string name="code_deleted">Ο κώδικας έχει διαγραφεί.</string>
     <string name="code_overwrite">Αντικατάσταση κώδικα;</string>
@@ -98,7 +98,7 @@
     <string name="challenge_deleted">Ο λαβύρινθος έχει διαγραφεί.</string>
     <string name="challenge_choose_option">Επιλέξτε</string>
     <string name="maze_saved">Ο λαβύρινθος έχει αποθηκευτεί.</string>
-    <string name="Edit">Αλλαγή</string>
+    <string name="Edit">Αλλαγη</string>
     <string name="generator_background_audio">Ήχος</string>
     <string name="select">Επιλογή</string>
     <string name="Discard">Απόρριψη</string>
