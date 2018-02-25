@@ -335,13 +335,13 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             healthTextView.setText(Integer.toString(health));
             healthProgress.setProgress(health);
             Drawable drawable = healthProgress.getProgressDrawable();
-            if (health < 30) {
+            if (health <= 30) {
                 healthTextView.setTextColor(getColor(R.color.materialRed));
                 drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialRed)));
-            } else if (health < 50) {
+            } else if (health <= 50) {
                 healthTextView.setTextColor(getColor(R.color.materialYellow));
                 drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialYellow)));
-            } else if (health > 100) {
+            } else if (health >= 100) {
                 healthTextView.setTextColor(getColor(R.color.materialBlue));
                 drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialBlue)));
             } else {

@@ -163,11 +163,11 @@
     <string name="error_noerror">Κανένα λάθος</string>
     <string name="questionnaire">Ερωτηματολόγιο</string>
     <string name="questionnaire_instructions_body">Παρακαλώ απαντήστε τις ερωτήσεις τίμια, χωρίς να παρέχετε περισσότερες πληροφορίες απο ότι χρειάζεται. Εαν δέν είστε σίγουροι τι ρώτα μία ερώτηση, μιλήστε με κάποιον που μπορεί να σας βοηθήσει. Μπορείτε να παραλήψετε αυτό το ερωτηματολόγιο, όμως οι γνώμες σας είναι πολύτιμες.</string>
-    <string name="questionnaire_instructions_title">Οδηγείες</string>
+    <string name="questionnaire_instructions_title">Οδηγίες</string>
     <string name="question_1">Πώς ήταν η εμπειρία σας παίζοντας το aMazeChallenge;</string>
     <string name="answer_1_no">Καθόλου</string>
     <string name="answer_1_yes">Σίγουρα</string>
-    <string name="Skip">Παράληψη</string>
+    <string name="Skip">Παραληψη</string>
     <string name="question_2">Πόσο πιθανό θα ήταν να μοιραστείτε αυτή την εμπειρία με τους φίλους σας;</string>
     <string name="question_3">Σε ποιό βαθμός πιστεύετε ότι αυτή η εμπειρία σας βοήθησε να μάθετε περισσότερα για τον προγραμματισμό;</string>
     <string name="answer_3_no">Καθόλου</string>
