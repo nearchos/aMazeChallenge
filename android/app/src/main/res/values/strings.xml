@@ -198,7 +198,7 @@
     <string name="question_6">Do you believe competition is good or bad in such games?</string>
     <string name="Not_sure">Not sure</string>
     <string name="invalid_questionnaire_response">Please make sure you provide an answer to all questions.</string>
-    <string name="invalid_question1" translatable="false">Please provide a rating for question 1.</string>
+    <string name="invalid_question1">Please provide a rating for question 1.</string>
     <string name="no_response">Please provide a response</string>
     <string name="You">You</string>
     <string name="Games">Games</string>
@@ -246,26 +246,47 @@
     </string-array>
 
     <string name="question_4">What is your opinion about programming?</string>
-    <string name="Awesome" translatable="false">Awesome</string>
-    <string name="Terrible" translatable="false">Terrible</string>
-    <string name="Very_Helpful" translatable="false">Very helpful</string>
-    <string name="Somewhat_Helpful" translatable="false">Somewhat helpful</string>
-    <string name="Not_Helpful" translatable="false">Not helpful</string>
-    <string name="Very_Interesting" translatable="false">Very Interesting</string>
-    <string name="Interesting" translatable="false">Interesting</string>
-    <string name="Not_So_Interesting" translatable="false">Not so interesting</string>
-    <string name="Not_Interesting_At_All" translatable="false">Not interesting at all</string>
-    <string name="question_7" translatable="false">How do you rate your programming skills compared to before playing this game?</string>
-    <string name="significantly_improved" translatable="false">Significantly improved</string>
-    <string name="slightly_improved" translatable="false">Slightly improved</string>
-    <string name="the_same" translatable="false">The same</string>
-    <string name="Reduced" translatable="false">Reduced</string>
-    <string name="severely_reduced" translatable="false">Severely reduced</string>
-    <string name="question_8" translatable="false">How likely are you to play this game again in the future?</string>
-    <string name="i_would_like_to_play_again" translatable="false">I would like to play again</string>
-    <string name="i_do_not_want_to_play_again" translatable="false">I do not want to play again</string>
-    <string name="write_your_response" translatable="false">Write your response…</string>
-    <string name="question_9" translatable="false">What did you enjoy most in this game?</string>
-    <string name="question_10" translatable="false">Is there anything else you would like to add? (Use this answer to provide any negative feedback, issues you faced or any additional comments)</string>
+    <string name="Awesome">Awesome</string>
+    <string name="Terrible">Terrible</string>
+    <string name="Very_Helpful">Very helpful</string>
+    <string name="Somewhat_Helpful">Somewhat helpful</string>
+    <string name="Not_Helpful">Not helpful</string>
+    <string name="Very_Interesting">Very Interesting</string>
+    <string name="Interesting">Interesting</string>
+    <string name="Not_So_Interesting">Not so interesting</string>
+    <string name="Not_Interesting_At_All">Not interesting at all</string>
+    <string name="question_7">How do you rate your programming skills compared to before playing this game?</string>
+    <string name="significantly_improved">Significantly improved</string>
+    <string name="slightly_improved">Slightly improved</string>
+    <string name="the_same">The same</string>
+    <string name="Reduced">Reduced</string>
+    <string name="severely_reduced">Severely reduced</string>
+    <string name="question_8">How likely are you to play this game again in the future?</string>
+    <string name="i_would_like_to_play_again">I would like to play again</string>
+    <string name="i_do_not_want_to_play_again">I do not want to play again</string>
+    <string name="write_your_response">Write your response...</string>
+    <string name="question_9">What did you enjoy most in this game?</string>
+    <string name="question_10">Is there anything else you would like to add? (Use this answer to provide any negative feedback, issues you faced or any additional comments)</string>
+
+    <string name="color_black">Black</string>
+    <string name="color_darkred">Dark Red</string>
+    <string name="color_red">Red</string>
+    <string name="color_orange">Orange</string>
+    <string name="color_gold">Gold</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_lime">Lime</string>
+    <string name="color_green">Green</string>
+    <string name="color_darkgreen">Dark Green</string>
+    <string name="color_darkblue">Dark Blue</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_teal">Teal</string>
+    <string name="color_cyan">Cyan</string>
+    <string name="color_purple">Purple</string>
+    <string name="color_indigo">Indigo</string>
+    <string name="color_magenta">Magenta</string>
+    <string name="color_pink">Pink</string>
+    <string name="color_lightgray">Light Gray</string>
+    <string name="color_darkgray">Dark Gray</string>
+
 
 </resources>
