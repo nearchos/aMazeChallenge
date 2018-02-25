@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -9,7 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
+import com.google.blockly.model.Block;
 import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.Installation;
@@ -28,6 +32,7 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
 
 public class OnlineGameActivity extends AppCompatActivity {
@@ -41,6 +46,10 @@ public class OnlineGameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_online_game);
 
         gameView = findViewById(R.id.activity_online_game_game_view);
@@ -80,7 +89,7 @@ public class OnlineGameActivity extends AppCompatActivity {
     }
 
     public void editCode(final View view) {
-        // todo
+        startActivity(new Intent(OnlineGameActivity.this, BlocklyActivity.class).putExtra(BlocklyActivity.ONLINE_CALLING_ACTIVITY_KEY, true));
     }
 
     public void submitCode(final View view) {

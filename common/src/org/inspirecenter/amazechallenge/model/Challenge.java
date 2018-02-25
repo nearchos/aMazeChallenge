@@ -237,15 +237,17 @@ public class Challenge implements Serializable {
                 ", maxActivePlayers=" + maxActivePlayers +
                 ", startTimestamp=" + startTimestamp +
                 ", endTimestamp=" + endTimestamp +
+                ", hasQuestionnaire=" + hasQuestionnaire +
+                ", algorithm=" + algorithm +
                 ", rewards=" + rewards +
                 ", penalties=" + penalties +
                 ", grid=" + grid +
                 ", lineColor='" + lineColor + '\'' +
-                ", difficulty='" + difficulty + '\'' +
+                ", difficulty=" + difficulty +
                 ", createdBy='" + createdBy + '\'' +
                 ", createdOn=" + createdOn +
-                ", backgroundAudio='" + backgroundAudio + '\'' +
-                ", backgroundImage='" + backgroundImage + '\'' +
+                ", backgroundAudio=" + backgroundAudio +
+                ", backgroundImage=" + backgroundImage +
                 '}';
     }
 }

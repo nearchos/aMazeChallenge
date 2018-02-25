@@ -24,6 +24,7 @@ import org.inspirecenter.amazechallenge.model.AmazeColor;
 import org.inspirecenter.amazechallenge.model.AmazeIcon;
 
 import static org.inspirecenter.amazechallenge.ui.ColorFragment.isBrightColor;
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 
 public class PersonalizeActivity extends AppCompatActivity {
 
@@ -44,6 +45,7 @@ public class PersonalizeActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_personalize);
 
         setTitle(R.string.Personalize);

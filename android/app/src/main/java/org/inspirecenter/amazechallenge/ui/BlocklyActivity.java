@@ -1,6 +1,7 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
 import org.inspirecenter.amazechallenge.utils.ErrorFinderManager;
 import org.inspirecenter.amazechallenge.utils.FileManager;
+import org.mozilla.javascript.tools.jsc.Main;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ import java.util.List;
 
 import static org.inspirecenter.amazechallenge.algorithms.InterpreterError.InterpreterErrorType.ERROR;
 import static org.inspirecenter.amazechallenge.algorithms.InterpreterError.InterpreterErrorType.WARNING;
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 
 public class BlocklyActivity extends AbstractBlocklyActivity {
 
@@ -56,6 +59,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     private static final String BLOCK_GENERATORS_FILE = "generators/maze_blocks.js";
     private static final String AMAZE_TOOLEBOX_XML = "toolboxes/maze_toolbox.xml";
     private static final String ALLOWED_PLAYER_CODE_FILES_REGEX = "[a-zA-Z0-9]*";
+    public static final String ONLINE_CALLING_ACTIVITY_KEY = "ONLINE_CALLING_ACTIVITY";
 
     private static final List<String> BLOCK_DEFINITIONS = Arrays.asList(
             DefaultBlocks.COLOR_BLOCKS_PATH,
@@ -80,8 +84,13 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BlocklyActivity.this);
                     sharedPreferences.edit().putString (KEY_ALGORITHM_ACTIVITY_CODE, generatedCode).apply();
                     if(generatedCode != null && !generatedCode.isEmpty()) sharedPreferences.edit().putBoolean(MainActivity.KEY_PREF_EDITED_CODE, true).apply();
-                    //finish();
-                    startActivity(new Intent(BlocklyActivity.this, MainActivity.class));
+
+                    boolean goToOnline;
+                    if (getIntent().getSerializableExtra(ONLINE_CALLING_ACTIVITY_KEY) != null) {
+                        goToOnline = (boolean) getIntent().getSerializableExtra(ONLINE_CALLING_ACTIVITY_KEY);
+                        if (goToOnline) startActivity(new Intent(BlocklyActivity.this, OnlineGameActivity.class));
+                    }
+                    else finish();
                 }
             };//end mCodeGeneratorCallback
 
@@ -91,6 +100,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+        setLanguage(this);
+        setTitle(getString(R.string.edit_your_code));
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
     }//end onCreate()
@@ -122,7 +133,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
         if (errorList.isEmpty()) {
             if (getController().getWorkspace().hasBlocks()) {
-                Snackbar compilingSnackbar = Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG);
+                Snackbar compilingSnackbar = Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_INDEFINITE);
                 View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getColor(R.color.snackbarGreen));
                 compilingSnackbar.show();
                 onRunCode();

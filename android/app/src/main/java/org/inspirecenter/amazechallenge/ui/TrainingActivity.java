@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_COLOR;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_ICON;
@@ -56,6 +58,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_training);
 
         final ActionBar actionBar = getActionBar();
@@ -74,13 +77,23 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         //gifView.play();
 
         final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
+        final CardView infoCard = findViewById(R.id.cardview_name_email);
         final TextView nameTextView = findViewById(R.id.activity_training_user_name);
+        infoCard.setBackgroundColor(Color.parseColor(userAmazeColor.getCode()));
         nameTextView.setText(name);
-        nameTextView.setTextColor(Color.parseColor(userAmazeColor.getCode()));
         final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
         final TextView emailTextView = findViewById(R.id.activity_training_user_email);
         emailTextView.setText(email);
-        emailTextView.setTextColor(Color.parseColor(userAmazeColor.getCode()));
+
+        if (ColorFragment.isBrightColor(Color.parseColor(userAmazeColor.getCode()))) {
+            nameTextView.setTextColor(Color.BLACK);
+            emailTextView.setTextColor(Color.BLACK);
+        }
+        else {
+            nameTextView.setTextColor(Color.WHITE);
+            emailTextView.setTextColor(Color.WHITE);
+        }
+
 
         challengesRecyclerView = findViewById(R.id.activity_training_challenges_list_view);
         challengesRecyclerView.setLayoutManager(new LinearLayoutManager(this));

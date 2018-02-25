@@ -17,6 +17,8 @@ import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
 import org.inspirecenter.amazechallenge.model.AmazeIcon;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
+
 public class PersonalizationSliderActivity extends FragmentActivity {
 
     private ViewPager iconPager;
@@ -43,6 +45,7 @@ public class PersonalizationSliderActivity extends FragmentActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
+        setLanguage(this);
         setContentView(R.layout.personalization_screen_slider);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

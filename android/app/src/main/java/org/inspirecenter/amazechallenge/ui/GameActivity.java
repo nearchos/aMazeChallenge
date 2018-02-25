@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.LightingColorFilter;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -21,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -45,6 +48,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 
 public class GameActivity extends AppCompatActivity implements AudioEventListener {
 
@@ -73,8 +78,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     private Button resetButton;
     private TextView healthTextView;
     private TextView pointsTextView;
+    private ProgressBar healthProgress;
 
-    private TextView movesDataTextView;
     private Button movesDetailsButton;
 
     final GameActivity instance = this;
@@ -90,6 +95,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_game);
 
         final ActionBar actionBar = getActionBar();
@@ -126,7 +132,10 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             }
         });
 
+        healthProgress = findViewById(R.id.playerHealthProgress);
+
         healthTextView = findViewById(R.id.activity_game_health);
+        System.out.println("AA" + healthTextView.getText());
         updateHealthTextView();
 
         pointsTextView = findViewById(R.id.activity_game_points);
@@ -156,7 +165,6 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         this.nextButton = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_button_next);
         this.nextButton.setOnClickListener(v -> makeNextMove());
 
-        movesDataTextView = findViewById(R.id.activity_game_moves_data);
         movesDetailsButton = findViewById(R.id.activity_game_moves_details);
         movesDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,7 +218,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             noCodeDialog.setPositiveButton(R.string.no_code_action, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    startService(new Intent(GameActivity.this, BlocklyActivity.class));
+                    startActivity(new Intent(GameActivity.this, BlocklyActivity.class));
                     finish();
                 }
             });
@@ -320,14 +328,33 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
 
     private void updateHealthTextView() {
         final Intent intent = getIntent();
+        int oldHealth = Integer.parseInt(healthTextView.getText().toString());
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
-        healthTextView.setText("Player health: " + player.getHealth().get() );
+        int health = player.getHealth().get();
+        if (health != oldHealth) {
+            healthTextView.setText(Integer.toString(health));
+            healthProgress.setProgress(health);
+            Drawable drawable = healthProgress.getProgressDrawable();
+            if (health <= 30) {
+                healthTextView.setTextColor(getColor(R.color.materialRed));
+                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialRed)));
+            } else if (health <= 50) {
+                healthTextView.setTextColor(getColor(R.color.materialYellow));
+                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialYellow)));
+            } else if (health >= 100) {
+                healthTextView.setTextColor(getColor(R.color.materialBlue));
+                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialBlue)));
+            } else {
+                healthTextView.setTextColor(getColor(R.color.materialGreen));
+                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialGreen)));
+            }
+        }
     }
 
     private void updatePointsTextView() {
         final Intent intent = getIntent();
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
-        pointsTextView.setText("Player points: " + player.getPoints() );
+        pointsTextView.setText(Integer.toString(player.getPoints()));
     }
 
     @Override

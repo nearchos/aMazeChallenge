@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/personalization_card_padding"
+    android:background="@color/ditheredGray"
     tools:context="org.inspirecenter.amazechallenge.ui.PersonalizeActivity">
 
     <android.support.design.widget.FloatingActionButton
@@ -31,6 +32,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
+            android:background="@color/white"
             android:padding="16dp">
 
             <RelativeLayout

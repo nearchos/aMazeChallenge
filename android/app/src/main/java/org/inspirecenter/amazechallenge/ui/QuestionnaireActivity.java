@@ -1,9 +1,13 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,12 +21,25 @@ import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.questionnaire.DichotomousResponse;
 import org.inspirecenter.amazechallenge.model.questionnaire.LikertResponse;
 import org.inspirecenter.amazechallenge.model.questionnaire.QuestionEntry;
 import org.inspirecenter.amazechallenge.model.questionnaire.QuestionnaireEntry;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Arrays;
+
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
+import static org.inspirecenter.amazechallenge.ui.OnlineGameActivity.convertStreamToString;
+
 public class QuestionnaireActivity extends AppCompatActivity {
+
+    public static final String CHALLENGE_KEY = "ChallengeID";
 
     //Views:
     private Button skipButton;
@@ -88,6 +105,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_questionnaire);
 
         //Controls:
@@ -402,8 +420,6 @@ public class QuestionnaireActivity extends AppCompatActivity {
             System.out.println("Q9: " + question9Response);
             System.out.println("Q10: " + question10Response);
 
-            //TODO - Server submission
-
             // first convert to JSON
             final QuestionEntry[] questionEntries = {
                     new QuestionEntry("Q1", Float.toString(question1Response)),
@@ -417,12 +433,14 @@ public class QuestionnaireActivity extends AppCompatActivity {
                     new QuestionEntry("Q9", question9Response),
                     new QuestionEntry("Q10", question10Response)
             };
-            final long challengeId = 0L; // todo this must be set (e.g. passed from the calling avtivity via the intent)
+            final long challengeId = getIntent().getLongExtra(CHALLENGE_KEY, 0);
             final QuestionnaireEntry questionnaireEntry = new QuestionnaireEntry(Installation.id(this), challengeId, questionEntries);
             final String json = new Gson().toJson(questionnaireEntry);
 
             // todo use a standard asynctask to submit the JSON as a post to /api/submit-questionnaire?magic=...
             // see submit-code asynctask for an example on submitting via POST
+            new SubmitQuestionnaireAsyncTask(json, challengeId, getString(R.string.api_url), getString(R.string.magic)).execute();
+
         }
         else Toast.makeText(this, R.string.invalid_questionnaire_response, Toast.LENGTH_LONG).show();
     }
@@ -491,14 +509,67 @@ public class QuestionnaireActivity extends AppCompatActivity {
             return false;
         } else question9_answer.setError(null);
 
-        //Q10
+        //Q10 - OPTIONAL
         if (question10Response == null) {
-            question10_answer.setError(getString(R.string.no_response));
-            question10_answer.requestFocus();
-            return false;
-        } else question10_answer.setError(null);
+            question10Response = "No response";
+        }
 
         return true;
+    }
+
+    private class SubmitQuestionnaireAsyncTask extends AsyncTask<Void, Void, String> {
+
+        private final String answers;
+        private final long challengeID;
+        private final String apiUrlBase;
+        private final String magic;
+
+        SubmitQuestionnaireAsyncTask(final String answers, final long challengeID, final String apiUrlBase, final String magic) {
+            this.answers = answers;
+            this.challengeID = challengeID;
+            this.apiUrlBase = apiUrlBase;
+            this.magic = magic;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(final Void... ignore) {
+            try {
+                final URL apiURL = new URL(apiUrlBase + "/submit-questionnaire?magic=" + magic);
+                final HttpURLConnection httpURLConnection = (HttpURLConnection) apiURL.openConnection();
+                httpURLConnection.setDoInput(true); // Allow Inputs
+                httpURLConnection.setDoOutput(true); // Allow Outputs
+                httpURLConnection.setUseCaches(false); // Don't use a Cached Copy
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
+                httpURLConnection.setRequestProperty("Content-Type", "application/json");
+
+                final DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
+                dataOutputStream.write(answers.getBytes());
+                dataOutputStream.close();
+
+                final InputStream inputStream = httpURLConnection.getInputStream();
+                return convertStreamToString(inputStream);
+            } catch (IOException e) {
+                // show message in snackbar
+//                Snackbar.make(findViewById(R.id.activity_online_game), "Error while submitting answers: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                // log error
+                Log.e("SubmitQuestionnaire", "Error: " + Arrays.toString(e.getStackTrace()));
+                return "Error: " + Arrays.toString(e.getStackTrace());
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final String reply) {
+            super.onPostExecute(reply);
+//            Snackbar.make(findViewById(R.id.activity_online_game), "Answers uploaded \n" + reply, Snackbar.LENGTH_SHORT).show();
+            startActivity(new Intent(QuestionnaireActivity.this, MainActivity.class));
+            Log.d("SubmitQuestionnaire", "reply: " + reply);
+        }
     }
 
 }

@@ -35,6 +35,8 @@ import org.inspirecenter.amazechallenge.utils.FileManager;
 
 import java.util.ArrayList;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
+
 public class MazeDesignerActivity extends AppCompatActivity {
 
     public static final String DESIGNER_MODE_KEY = "DESIGNER_MODE_KEY";
@@ -90,6 +92,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setLanguage(this);
         setContentView(R.layout.activity_maze_designer);
 
         backgroundImage = DEFAULT_BACKGROUND_IMAGE;
@@ -228,7 +231,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         for (Audio a : Audio.values()) {
             if (a.getAudioType() == Audio.AudioType.AMBIENT || a.getAudioType() == Audio.AudioType.NONE) {
                 audioList.add(a);
-                audioAdapter.add(a.toString());
+                audioAdapter.add(a.getName());
             }
         }
         backgroundAudioSpinner.setAdapter(audioAdapter);
@@ -251,7 +254,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
         ArrayList<Algorithm> algorithmList = new ArrayList<>();
         for (Algorithm algorithm : Algorithm.values()) {
             algorithmList.add(algorithm);
-            algorithmAdapter.add(algorithm.toString());
+            algorithmAdapter.add(algorithm.getFriendlyName());
         }
         algorithmSpinner.setAdapter(algorithmAdapter);
 
@@ -287,6 +290,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
             penalties = challenge.getMaxPenalties();
             penaltiesIntensity = challenge.getPenaltiesIntensity();
             selectedAlgorithm = challenge.getAlgorithm();
+            System.out.println(challenge.toString());
+            System.out.println("SEL ALG: " + selectedAlgorithm);
             oldMazeName = challenge.getName();
 
             mazeNameEditText.setText(oldMazeName);
@@ -561,7 +566,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"hasQuestionnaire\": true,\n" +       //Default for training
                 "    \"rewards\": \"" + rewardsIntensity + "\",\n" +
                 "    \"penalties\": \"" + penaltiesIntensity + "\",\n" +
-                "    \"selectedAlgorithm\": \"" + selectedAlgorithm + "\",\n" +
+                "    \"algorithm\": \"" + selectedAlgorithm + "\",\n" +
                 "    \"grid\": {\n" +
                 "        \"width\": " + size + ",\n" +
                 "        \"height\": " + size + ",\n" +
