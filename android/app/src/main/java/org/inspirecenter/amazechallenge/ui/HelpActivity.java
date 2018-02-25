@@ -1,6 +1,8 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,18 +24,33 @@ import android.webkit.WebView;
 import android.widget.ImageButton;
 
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.model.Language;
+
+import java.util.Locale;
+
+import static org.inspirecenter.amazechallenge.ui.MainActivity.KEY_PREF_LANG;
 
 public class HelpActivity extends AppCompatActivity {
 
     public static final String KEY_PREF_LAST_HELP_PAGE_INDEX = "pref-last-help-page";
 
-    // todo create actual content of HELP pages
-    public static final String [] ASSET_URLS = new String [] {
-            "file:///android_asset/help/personalization.html",
-            "file:///android_asset/help/coding.html",
-            "file:///android_asset/help/training.html",
-            "file:///android_asset/help/online.html"
+    public static final String [] ASSET_URLS_EN = new String [] {
+            "file:///android_asset/help/en/index.html",
+            "file:///android_asset/help/en/personalization.html",
+            "file:///android_asset/help/en/coding.html",
+            "file:///android_asset/help/en/training.html",
+            "file:///android_asset/help/en/online.html"
     };
+
+    public static final String [] ASSET_URLS_GR = new String [] {
+            "file:///android_asset/help/gr/index.html",
+            "file:///android_asset/help/gr/personalization.html",
+            "file:///android_asset/help/gr/coding.html",
+            "file:///android_asset/help/gr/training.html",
+            "file:///android_asset/help/gr/online.html"
+    };
+
+    public static String[] ASSET_URLS;
 
     /** The {@link ViewPager} that will host the section contents. */
     private ViewPager viewPager;
@@ -47,6 +65,12 @@ public class HelpActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         MainActivity.setLanguage(this);
+
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String currentLocale = sharedPreferences.getString(KEY_PREF_LANG, Language.ENGLISH.getLocale());
+        if (currentLocale.equals("el")) ASSET_URLS = ASSET_URLS_GR;
+        else ASSET_URLS = ASSET_URLS_EN;
+
         setContentView(R.layout.activity_help);
 
         // Create the adapter that will return a fragment for each of the three primary sections of
