@@ -22,11 +22,11 @@ public enum PickableType {
     ORANGE("orange", REWARD, FRUIT, "Orange reward +50 health", 50, 0, 7),
 
     COIN_5("coin5", REWARD, NONE, "Coin reward +5 points", 0, 5, 10),
-    COIN_10("coin10", REWARD, NONE, "Coin reward +10 points", 0, 10, 6),
-    COIN_20("coin20", REWARD, NONE, "Coin reward +20 points", 0, 20, 4),
-    GIFTBOX("giftbox", REWARD, NONE, "Gift reward +50 points", 0, 50, 3),
+    COIN_10("coin10", REWARD, NONE, "Coin reward +10 points", 0, 10, 8),
+    COIN_20("coin20", REWARD, NONE, "Coin reward +20 points", 0, 20, 6),
+    GIFTBOX("giftbox", REWARD, NONE, "Gift reward +50 points", 0, 50, 5),
 
-    BOMB("bomb", PENALTY, NONE, "Bomb penalty -50 health", 50, 0, 10), // customize bombs?
+    BOMB("bomb", PENALTY, NONE, "Bomb penalty -50 health", 100, 0, 10),
 
     SPEEDHACK("doublemoves", REWARD, NONE, "Player gets to do 2 moves", 0, 0, 15),
     TRAP("trap", PENALTY, NONE, "Player loses 1 move", 0, 0, 15)

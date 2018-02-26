@@ -88,19 +88,21 @@ public class RuntimeController {
                     // handle pickables and rewards (i.e. add/substract health etc.)
                     for(int i = 0; i < game.getPickables().size(); i++) {
                         Pickable pickable = game.getPickables().get(i);
+
+
                         if(pickable.getPosition().equals(position)) {
 
-                            //Change stats:
-
+                            //Player runs over a bomb:
                             if (pickable.getPickableType() == PickableType.BOMB) {
                                 if (pickable.getState() == 1 || pickable.getState() == 2)
                                     game.getPlayerById(playerId).getHealth().changeBy(pickable.getPickableType().getHealthChange());
                             }
                             else game.getPlayerById(playerId).getHealth().changeBy(pickable.getPickableType().getHealthChange());
 
+                            //Apply effects of point-related pickables:
                             game.getPlayerById(playerId).changePointsBy(pickable.getPickableType().getPointsChange());
 
-                            //Apply effects:
+                            //Apply effects of speed-related pickables:
                             if (pickable.getPickableType() == PickableType.SPEEDHACK) {
                                 addPlayerDoubleTurnsById(playerId, PickableType.SPEEDHACK_TURNS_AMOUNT);
                             } else if (pickable.getPickableType() == PickableType.TRAP) {
@@ -108,9 +110,34 @@ public class RuntimeController {
                             }
 
                             // if audio event listener set, notify with event
-                            if(audioEventListener != null) audioEventListener.onAudioEvent(pickable);
+                            if(audioEventListener != null && pickable.getPickableType() != PickableType.BOMB) audioEventListener.onAudioEvent(pickable);
                             if (pickable.getPickableType() != PickableType.BOMB) game.removePickupItem(i);
                         }
+
+                        //Player is near a bomb, but not over it:
+                        if (pickable.getPickableType() == PickableType.BOMB && (pickable.getState() == 1 || pickable.getState() == 2)) {
+
+                        /*
+                            NOTE: Bombs will do damage in terms of radius:
+                                1) On top of bomb - 100% damage of original.
+                                2) 1 block away from bomb (incl. diagonals) - 50% damage of original.
+                         */
+                            int colDifference = Math.abs(position.getCol() - pickable.getPosition().getCol());
+                            int rowDifference = Math.abs(position.getRow() - pickable.getPosition().getRow());
+
+                            //1 Block-radius away:
+                            if (colDifference <= 1 && rowDifference <= 1) {
+                                game.getPlayerById(playerId).getHealth().changeBy(pickable.getPickableType().getHealthChange() / 2);
+                            }
+
+                            if(audioEventListener != null) audioEventListener.onAudioEvent(pickable);
+
+                        }
+
+
+
+
+
                     }
                 }
                 break;

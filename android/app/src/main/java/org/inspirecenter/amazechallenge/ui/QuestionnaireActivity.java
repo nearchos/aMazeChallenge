@@ -434,6 +434,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
                     new QuestionEntry("Q10", question10Response)
             };
             final long challengeId = getIntent().getLongExtra(CHALLENGE_KEY, 0);
+            System.out.println("ID:" + challengeId);
             final QuestionnaireEntry questionnaireEntry = new QuestionnaireEntry(Installation.id(this), challengeId, questionEntries);
             final String json = new Gson().toJson(questionnaireEntry);
 
@@ -503,10 +504,8 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
         //Q9
         if (question9Response == null) {
-            question9_answer.setError(getString(R.string.no_response));
-            question9_answer.requestFocus();
-            return false;
-        } else question9_answer.setError(null);
+            question9Response = "No response";
+        }
 
         //Q10 - OPTIONAL
         if (question10Response == null) {

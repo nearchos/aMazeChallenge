@@ -65,6 +65,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     private static final float DEFAULT_AMBIENT_VOLUME = 0.7f;
 
     private boolean isRunning = false;
+    private boolean hasCreatedQuestionnaire = false;
 
     private Challenge challenge;
     private Game game;
@@ -263,29 +264,41 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             gameView.invalidate();
             updateHealthTextView();
             updatePointsTextView();
-            // update movesDataTextView
-//        movesDataTextView.setText(game.getStatisticsDescription()); // todo
             if (RuntimeController.hasSomeoneReachedTheTargetPosition(game, challenge.getGrid())) {
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(MainActivity.KEY_PREF_LOCALLY_TESTED, true).apply();
                 Toast.makeText(this, getString(R.string.maze_completed) + " " + challenge.getName() + "!", Toast.LENGTH_LONG).show();
                 if (backgroundAudio != null) backgroundAudio.stop();
 
-                if (challenge.getHasQuestionnaire())
-                    startActivity(new Intent(this, QuestionnaireActivity.class));
-                else
-                    finish();
+                if (challenge.getHasQuestionnaire() && !hasCreatedQuestionnaire) {
+                    Intent intent = new Intent(this, QuestionnaireActivity.class);
+                    intent.putExtra(QuestionnaireActivity.CHALLENGE_KEY, challenge.getId());
+                    hasCreatedQuestionnaire = true;
+                    startActivity(intent);
+                }
+                else finish();
             }
 
             if (RuntimeController.allPlayersHaveLost(game)) {
                 RuntimeController.resetTurnEffects();
-                Snackbar.make(gameView, getString(R.string.maze_lost), Snackbar.LENGTH_INDEFINITE).setAction(R.string.maze_play_again, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        resetGame();
-                    }
-                }).setActionTextColor(Color.GREEN).show();
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 if (v != null) v.vibrate(500);
+
+                AlertDialog.Builder lostDialog = new AlertDialog.Builder(this, R.style.ErrorDialogStyle);
+                lostDialog.setTitle(R.string.maze_lost);
+                lostDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });
+                lostDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        resetGame();
+                    }
+                });
+                lostDialog.setCancelable(false);
+                lostDialog.create().show();
             }
         }
 
@@ -341,7 +354,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             } else if (health <= 50) {
                 healthTextView.setTextColor(getColor(R.color.materialYellow));
                 drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialYellow)));
-            } else if (health >= 100) {
+            } else if (health > 100) {
                 healthTextView.setTextColor(getColor(R.color.materialBlue));
                 drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialBlue)));
             } else {
@@ -383,14 +396,22 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
                 if (sound) audioEventsMap.get(Audio.EVENT_GIFTBOX.toString()).start();
                 break;
             case BOMB:
-                if (pickable.getState() == 1  || pickable.getState() == 2)
+                if (pickable.getState() == 1  || pickable.getState() == 2) {
                     if (sound) audioEventsMap.get(Audio.EVENT_BOMB.toString()).start();
+                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (v != null) v.vibrate(250);
+                }
                 break;
             case SPEEDHACK:
                 if (sound) audioEventsMap.get(Audio.EVENT_SPEEDHACK.toString()).start();
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                long[] pattern = {100, 100, 100};
+                if (v != null) v.vibrate(pattern, -1);
                 break;
             case TRAP:
                 if (sound) audioEventsMap.get(Audio.EVENT_TRAP.toString()).start();
+                Vibrator vTrap = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                if (vTrap != null) vTrap.vibrate(250);
                 break;
         }
     }

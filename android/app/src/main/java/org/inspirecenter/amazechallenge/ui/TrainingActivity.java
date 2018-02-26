@@ -66,7 +66,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().name());
+        final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().toString());
         final AmazeColor userAmazeColor = AmazeColor.valueOf(userColorName);
 
         final String userIconName = sharedPreferences.getString(PersonalizeActivity.PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
