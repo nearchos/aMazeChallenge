@@ -6,7 +6,7 @@
     <string name="Select_Personalization_Options">Επιλογη χρωματος/εικονας</string>
     <string name="Home">{ΜISSING}</string>
     <string name="Learn">Μαθηση</string>
-    <string name="Personalize">Προσωποποιηση</string>
+    <string name="Personalize">Προσαρμογη</string>
     <string name="Add_player">Προσθήκη Παίκτη</string>
     <string name="Start_game">Εκκίνηση Παιχνιδιού</string>
     <string name="Selected_algorithm">Επιλογή Αλγορίθμου</string>
@@ -112,9 +112,9 @@
     <string name="Help">Βοήθεια</string>
     <string name="Check_code">Έλεγχος κώδικα</string>
     <string name="Apply">Εφαρμογή</string>
-    <string name="Edit_your_code">Αλλαγη κωδικα</string>
+    <string name="Edit_your_code">Επεξεργασια κωδικα</string>
     <string name="Submit_code">Υποβολή κώδικα</string>
-    <string name="Edit_code">Αλλαγη κωδικα</string>
+    <string name="Edit_code">Επεξεργασια κωδικα</string>
     <string name="Training">Εκπαιδευση</string>
     <string name="Test_locally">Τοπικη δοκιμη</string>
     <string name="Play_online">Παιξτε online</string>

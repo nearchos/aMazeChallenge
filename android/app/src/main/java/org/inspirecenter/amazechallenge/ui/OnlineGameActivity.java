@@ -211,10 +211,8 @@ public class OnlineGameActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String reply) {
             super.onPostExecute(reply);
-Log.d(TAG, "reply: " + reply);
             final ReplyWithGameFullState replyWithFullGameState = new Gson().fromJson(reply, ReplyWithGameFullState.class);
             final GameFullState gameFullState = replyWithFullGameState.getGameFullState();
-Log.d(TAG, "gameFullState: " + gameFullState); // todo delete
             if(gameFullState != null) {
                 gameView.update(gameFullState);
                 final boolean active = gameFullState.getActivePlayerIDs().contains(Installation.id(OnlineGameActivity.this));
@@ -233,7 +231,7 @@ Log.d(TAG, "gameFullState: " + gameFullState); // todo delete
         @Override
         public void run() {
             handler.post(() -> {
-                Log.d(TAG, "getting game-state for challenge: " + challenge.getName());
+//                Log.d(TAG, "getting game-state for challenge: " + challenge.getName());
                 new GetGameStateAsyncTask(email, challenge.getId()).execute();
             });
         }

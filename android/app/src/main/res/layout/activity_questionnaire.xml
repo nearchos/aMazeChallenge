@@ -67,6 +67,13 @@
                     android:layout_marginTop="10dp"
                     android:id="@+id/skip_button" />
 
+<!--todo delete-->
+<Button
+    android:onClick="test"
+    android:text="test"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+
             </RelativeLayout>
 
 

@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -38,6 +39,8 @@ import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 import static org.inspirecenter.amazechallenge.ui.OnlineGameActivity.convertStreamToString;
 
 public class QuestionnaireActivity extends AppCompatActivity {
+
+    public static final String TAG = "amaze-questionnaire";
 
     public static final String CHALLENGE_KEY = "ChallengeID";
 
@@ -439,7 +442,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
             // todo use a standard asynctask to submit the JSON as a post to /api/submit-questionnaire?magic=...
             // see submit-code asynctask for an example on submitting via POST
-            new SubmitQuestionnaireAsyncTask(json, challengeId, getString(R.string.api_url), getString(R.string.magic)).execute();
+            new SubmitQuestionnaireAsyncTask(this, json).execute();
 
         }
         else Toast.makeText(this, R.string.invalid_questionnaire_response, Toast.LENGTH_LONG).show();
@@ -517,30 +520,28 @@ public class QuestionnaireActivity extends AppCompatActivity {
         return true;
     }
 
-    private class SubmitQuestionnaireAsyncTask extends AsyncTask<Void, Void, String> {
+    static class SubmitQuestionnaireAsyncTask extends AsyncTask<Void, Void, String> {
 
+        private final Context context;
         private final String answers;
-        private final long challengeID;
         private final String apiUrlBase;
         private final String magic;
 
-        SubmitQuestionnaireAsyncTask(final String answers, final long challengeID, final String apiUrlBase, final String magic) {
+        SubmitQuestionnaireAsyncTask(final Context context, final String answers) {
+            this.context = context;
             this.answers = answers;
-            this.challengeID = challengeID;
-            this.apiUrlBase = apiUrlBase;
-            this.magic = magic;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+            this.apiUrlBase = context.getString(R.string.api_url);
+            this.magic = context.getString(R.string.magic);
         }
 
         @Override
         protected String doInBackground(final Void... ignore) {
+Log.e(TAG, "Start");
+            DataOutputStream dataOutputStream = null;
+            InputStream inputStream = null;
             try {
                 final URL apiURL = new URL(apiUrlBase + "/submit-questionnaire?magic=" + magic);
-                final HttpURLConnection httpURLConnection = (HttpURLConnection) apiURL.openConnection();
+                final HttpURLConnection httpURLConnection  = (HttpURLConnection) apiURL.openConnection();
                 httpURLConnection.setDoInput(true); // Allow Inputs
                 httpURLConnection.setDoOutput(true); // Allow Outputs
                 httpURLConnection.setUseCaches(false); // Don't use a Cached Copy
@@ -548,18 +549,26 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
                 httpURLConnection.setRequestProperty("Content-Type", "application/json");
 
-                final DataOutputStream dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
+Log.e(TAG, "Middle");
+                dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
                 dataOutputStream.write(answers.getBytes());
-                dataOutputStream.close();
+                dataOutputStream.flush();
+Log.e(TAG, "Flush & Close");
 
-                final InputStream inputStream = httpURLConnection.getInputStream();
-                return convertStreamToString(inputStream);
+                inputStream = httpURLConnection.getInputStream();
+                final String reply = convertStreamToString(inputStream);
+Log.e(TAG, "Reply: " + reply);
+                return reply;
             } catch (IOException e) {
                 // show message in snackbar
 //                Snackbar.make(findViewById(R.id.activity_online_game), "Error while submitting answers: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
                 // log error
-                Log.e("SubmitQuestionnaire", "Error: " + Arrays.toString(e.getStackTrace()));
-                return "Error: " + Arrays.toString(e.getStackTrace());
+                Log.e(TAG, "Error: " + e.getMessage() +"\n" + Arrays.toString(e.getStackTrace()));
+                return "Error: " + e.getMessage();
+            } finally {
+Log.e(TAG, "Closing...");
+                try { if(dataOutputStream != null) dataOutputStream.close(); } catch (IOException ioe) { Log.e(TAG, "Error while closing dataOutputStream: " + ioe.getMessage()); }
+                try { if(inputStream != null) inputStream.close(); } catch (IOException ioe) { Log.e(TAG, "Error while closing inputStream: " + ioe.getMessage()); }
             }
         }
 
@@ -567,9 +576,8 @@ public class QuestionnaireActivity extends AppCompatActivity {
         protected void onPostExecute(final String reply) {
             super.onPostExecute(reply);
 //            Snackbar.make(findViewById(R.id.activity_online_game), "Answers uploaded \n" + reply, Snackbar.LENGTH_SHORT).show();
-            startActivity(new Intent(QuestionnaireActivity.this, MainActivity.class));
+            context.startActivity(new Intent(context, MainActivity.class));
             Log.d("SubmitQuestionnaire", "reply: " + reply);
         }
     }
-
 }

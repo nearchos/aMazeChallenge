@@ -73,7 +73,7 @@ public class JoinServlet extends HttpServlet {
                     } else if(now > challenge.getEndTimestamp()) {
                         errors.add("Challenge has ended on: " + new Date(challenge.getEndTimestamp()));
                     } else {
-                        final AmazeColor playerColor = AmazeColor.getByName(colorName);
+                        final AmazeColor playerColor = AmazeColor.valueOf(colorName);
                         final AmazeIcon playerIcon = AmazeIcon.getByName(iconName);
                         final Shape playerShape = Shape.getShapeByCode(shapeCode);
 
