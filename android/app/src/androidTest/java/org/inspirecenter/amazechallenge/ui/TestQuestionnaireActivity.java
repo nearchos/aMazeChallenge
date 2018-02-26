@@ -32,8 +32,11 @@ public class TestQuestionnaireActivity {
         final QuestionnaireEntry questionnaireEntry = new QuestionnaireEntry(Installation.id(appContext), 0L, questionEntries);
         final String json = new GsonBuilder().setPrettyPrinting().create().toJson(questionnaireEntry);
         System.out.println("json: " + json);
-        new QuestionnaireActivity.SubmitQuestionnaireAsyncTask(appContext, json).execute();
         System.out.println("SubmitQuestionnaireAsyncTask...");
+        new QuestionnaireActivity.SubmitQuestionnaireAsyncTask(appContext, json).execute();
+        System.out.println("sleep....");
+try { Thread.currentThread().sleep(1000); } catch (InterruptedException ie) {}
+        System.out.println("woke up!");
         assertEquals("", "");
     }
 }

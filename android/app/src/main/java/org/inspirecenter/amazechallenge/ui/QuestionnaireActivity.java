@@ -1,9 +1,7 @@
 package org.inspirecenter.amazechallenge.ui;
 
-import android.content.Context;
-import android.content.Intent;
+import android.app.Activity;
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,7 +20,6 @@ import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
-import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.questionnaire.DichotomousResponse;
 import org.inspirecenter.amazechallenge.model.questionnaire.LikertResponse;
 import org.inspirecenter.amazechallenge.model.questionnaire.QuestionEntry;
@@ -440,9 +437,8 @@ public class QuestionnaireActivity extends AppCompatActivity {
             final QuestionnaireEntry questionnaireEntry = new QuestionnaireEntry(Installation.id(this), challengeId, questionEntries);
             final String json = new Gson().toJson(questionnaireEntry);
 
-            // todo use a standard asynctask to submit the JSON as a post to /api/submit-questionnaire?magic=...
-            // see submit-code asynctask for an example on submitting via POST
-            new SubmitQuestionnaireAsyncTask(this, json).execute();
+            // use a standard asynctask to submit the JSON as a post to /api/json/submit-questionnaire?magic=...
+            new SubmitQuestionnaireAsyncTask(this, json, getString(R.string.api_url), getString(R.string.magic)).execute();
 
         }
         else Toast.makeText(this, R.string.invalid_questionnaire_response, Toast.LENGTH_LONG).show();
@@ -522,21 +518,20 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
     static class SubmitQuestionnaireAsyncTask extends AsyncTask<Void, Void, String> {
 
-        private final Context context;
+        private final Activity activity;
         private final String answers;
         private final String apiUrlBase;
         private final String magic;
 
-        SubmitQuestionnaireAsyncTask(final Context context, final String answers) {
-            this.context = context;
+        SubmitQuestionnaireAsyncTask(final Activity activity, final String answers, final String apiUrlBase, final String magic) {
+            this.activity = activity;
             this.answers = answers;
-            this.apiUrlBase = context.getString(R.string.api_url);
-            this.magic = context.getString(R.string.magic);
+            this.apiUrlBase = apiUrlBase;
+            this.magic = magic;
         }
 
         @Override
         protected String doInBackground(final Void... ignore) {
-Log.e(TAG, "Start");
             DataOutputStream dataOutputStream = null;
             InputStream inputStream = null;
             try {
@@ -549,26 +544,18 @@ Log.e(TAG, "Start");
                 httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
                 httpURLConnection.setRequestProperty("Content-Type", "application/json");
 
-Log.i(TAG, "Middle");
                 dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
                 dataOutputStream.write(answers.getBytes());
-Log.i(TAG, "write: " + answers);
                 dataOutputStream.close();
-Log.i(TAG, "closed");
 
                 inputStream = httpURLConnection.getInputStream();
-Log.i(TAG, "inputStream");
                 final String reply = convertStreamToString(inputStream);
-Log.i(TAG, "Reply: " + reply);
                 return reply;
             } catch (IOException e) {
-                // show message in snackbar
-//                Snackbar.make(findViewById(R.id.activity_online_game), "Error while submitting answers: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
                 // log error
                 Log.e(TAG, "Error: " + e.getMessage() +"\n" + Arrays.toString(e.getStackTrace()));
                 return "Error: " + e.getMessage();
             } finally {
-Log.e(TAG, "Closing...");
                 try { if(dataOutputStream != null) dataOutputStream.close(); } catch (IOException ioe) { Log.e(TAG, "Error while closing dataOutputStream: " + ioe.getMessage()); }
                 try { if(inputStream != null) inputStream.close(); } catch (IOException ioe) { Log.e(TAG, "Error while closing inputStream: " + ioe.getMessage()); }
             }
@@ -577,9 +564,12 @@ Log.e(TAG, "Closing...");
         @Override
         protected void onPostExecute(final String reply) {
             super.onPostExecute(reply);
-//            Snackbar.make(findViewById(R.id.activity_online_game), "Answers uploaded \n" + reply, Snackbar.LENGTH_SHORT).show();
-            context.startActivity(new Intent(context, MainActivity.class));
-            Log.d("SubmitQuestionnaire", "reply: " + reply);
+            if(reply.startsWith("Error")) {
+                Toast.makeText(activity, R.string.Error_while_uploading_answers, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(activity, R.string.Thank_you_for_your_feedback, Toast.LENGTH_SHORT).show();
+            }
+            activity.finish();
         }
     }
 }

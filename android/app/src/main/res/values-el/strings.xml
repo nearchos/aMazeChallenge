@@ -267,5 +267,9 @@
     <string name="question_10">Υπάρχει κάτι άλλο που θέλετε να προσθέσετε; (Χρησιμοποιήστε αυτήν την απάντηση για να δώσετε αρνητικά σχόλια, ζητήματα που αντιμετωπίσατε ή τυχόν πρόσθετα σχόλια)</string>
     <string name="health">Υγεία</string>
     <string name="points">Πόντοι</string>
+    <string name="Thank_you_for_your_feedback">Σας ευχαριστούμε για τον χρόνο σας!</string>
+    <string name="Error_while_uploading_answers">Σφάλμα κατά την μεταφόρτωση των απαντήσεων</string>
+    <string name="Games">Παιχνίδια</string>
+    <string name="Classes">Κλάσεις</string>
 
 </resources>

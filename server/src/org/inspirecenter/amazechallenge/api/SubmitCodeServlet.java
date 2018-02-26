@@ -78,7 +78,6 @@ public class SubmitCodeServlet extends HttpServlet {
                         } else {
                             // store maze solver code in data-store
                             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
-log("Submit code. Adding binding in memcache to key: " + getKey(challengeId, playerId));//todo
                             memcacheService.put(getKey(challengeId, playerId), code);
 
                             game.resetPlayerById(playerId);

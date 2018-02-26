@@ -42,7 +42,6 @@ public class SubmitQuestionnaireServlet extends HttpServlet {
             errors.add("Empty 'json' payload");
         } else {
             try {
-                log.info("Received JSON: " + json);
                 final QuestionnaireEntry questionnaireEntry = gson.fromJson(json, QuestionnaireEntry.class);
 
                 // save entity to datastore

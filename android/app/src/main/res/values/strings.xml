@@ -205,6 +205,9 @@
     <string name="Games">Games</string>
     <string name="Classes">Classes</string>
 
+    <string name="Error_while_uploading_answers">Error while uploading answers</string>
+    <string name="Thank_you_for_your_feedback">Thank you for your feedback</string>
+
     <string-array name="rows_and_cols_selection">
         <item>5 (Tiny)</item>
         <item>6</item>

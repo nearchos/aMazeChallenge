@@ -43,7 +43,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>SubmitQuestionnaireServlet</servlet-name>
-        <url-pattern>/api/submit-questionnaire</url-pattern>
+        <url-pattern>/api/json/submit-questionnaire</url-pattern>
     </servlet-mapping>
 
     <!--Admin-->
