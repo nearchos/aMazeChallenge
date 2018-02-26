@@ -94,7 +94,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(OnlineChallengeActivity.this);
         final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
         final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
-        final String colorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().getName());
+        final String colorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().toString());
         final String iconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.getDefault().getName());
         final String shapeCode = sharedPreferences.getString(PREFERENCE_SHAPE_CODE, "triangle");
         new JoinChallengeAsyncTask(email, name, colorName, iconName, shapeCode, challenge).execute();

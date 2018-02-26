@@ -34,7 +34,8 @@ public class ColorFragment extends Fragment {
         if (bundle != null) color = (AmazeColor) bundle.getSerializable(PersonalizeActivity.PREFERENCE_KEY_COLOR);
         if (color != null) {
             colorView.setBackgroundColor(Color.parseColor(color.getHexCode()));
-            final int resourceId = getResources().getIdentifier(color.getResourceIdAsString(), "int", "null");
+            final int resourceId = getResources().getIdentifier(color.getResourceIdAsString(), "string", getContext().getPackageName());
+            System.out.println("RESID:" + resourceId);
             colorName.setText(getString(resourceId));
             if (isBrightColor(Color.parseColor(color.getHexCode()))) colorName.setTextColor(Color.BLACK);
         }//end if nonnull

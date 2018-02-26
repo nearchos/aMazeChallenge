@@ -50,8 +50,8 @@ public class PersonalizationSliderActivity extends FragmentActivity {
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         //Get the old values:
-        final String oldColorName = sharedPreferences.getString(PersonalizeActivity.PREFERENCE_KEY_COLOR, AmazeColor.COLOR_BLACK.getName());
-        newColor = oldColor = AmazeColor.getByName(oldColorName);
+        final String oldColorName = sharedPreferences.getString(PersonalizeActivity.PREFERENCE_KEY_COLOR, AmazeColor.BLACK.toString());
+        newColor = oldColor = AmazeColor.valueOf(oldColorName);
         final String oldIconName = sharedPreferences.getString(PersonalizeActivity.PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
         newIcon = oldIcon = AmazeIcon.getByName(oldIconName);
 
@@ -87,7 +87,7 @@ public class PersonalizationSliderActivity extends FragmentActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PreferenceManager.getDefaultSharedPreferences(view.getContext()).edit().putString(PersonalizeActivity.PREFERENCE_KEY_COLOR, newColor.getName()).apply();
+                PreferenceManager.getDefaultSharedPreferences(view.getContext()).edit().putString(PersonalizeActivity.PREFERENCE_KEY_COLOR, newColor.toString()).apply();
                 PreferenceManager.getDefaultSharedPreferences(view.getContext()).edit().putString(PersonalizeActivity.PREFERENCE_KEY_ICON, newIcon.getName()).apply();
                 PersonalizationSliderActivity.super.onBackPressed();
             }//end onClick()
@@ -163,7 +163,7 @@ public class PersonalizationSliderActivity extends FragmentActivity {
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-               preferences.edit().putString(PersonalizeActivity.PREFERENCE_KEY_COLOR, newColor.getName()).apply();
+               preferences.edit().putString(PersonalizeActivity.PREFERENCE_KEY_COLOR, newColor.toString()).apply();
                preferences.edit().putString(PersonalizeActivity.PREFERENCE_KEY_ICON, newIcon.getName()).apply();
                dialogInterface.dismiss();
                PersonalizationSliderActivity.super.onBackPressed();
