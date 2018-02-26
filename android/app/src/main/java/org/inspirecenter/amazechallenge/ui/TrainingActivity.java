@@ -129,7 +129,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
     }
 
     @Override
-    public void onChallengeLongSelect(Challenge challenge) {
+    public void onChallengeLongSelect(final Challenge challenge) {
         if (!challenge.getCreatedBy().equals("admin")) {
 
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -152,7 +152,7 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
                     dialogInterface.dismiss();
                 }
             });
-            Dialog deleteDialog = dialog.create();
+            final Dialog deleteDialog = dialog.create();
 
             //Show option between edit and delete:
             AlertDialog.Builder optionDialog = new AlertDialog.Builder(this);
