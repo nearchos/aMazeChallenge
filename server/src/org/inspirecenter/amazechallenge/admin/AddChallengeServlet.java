@@ -59,7 +59,7 @@ public class AddChallengeServlet extends HttpServlet {
                 final PickableIntensity maxRewards = PickableIntensity.LOW;
                 final PickableIntensity maxPenalties = PickableIntensity.LOW;
                 final Algorithm algorithm = Algorithm.SINGLE_SOLUTION;
-                final String lineColor = AmazeColor.COLOR_BLUE.getName();
+                final String lineColor = AmazeColor.BLUE.name();
                 final ChallengeDifficulty difficulty = ChallengeDifficulty.EASY;
                 final String createdBy = UserServiceFactory.getUserService().getCurrentUser().getEmail();
                 final long createdOn = System.currentTimeMillis();
