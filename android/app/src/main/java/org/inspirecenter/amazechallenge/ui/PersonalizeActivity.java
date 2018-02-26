@@ -129,11 +129,11 @@ public class PersonalizeActivity extends AppCompatActivity {
     private void updatePersonalization() {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         {
-            final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.COLOR_BLACK.getName()); //TODO, This causes errors when installing on a new device...
-            final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
-            final int userColor = Color.parseColor(userAmazeColor.getCode());
+            final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.BLACK.name()); //TODO, This causes errors when installing on a new device...
+            final AmazeColor userAmazeColor = AmazeColor.valueOf(userColorName);
+            final int userColor = Color.parseColor(userAmazeColor.getHexCode());
             selectColorButton.setBackgroundColor(userColor);
-            selectColorButton.setTextColor(isBrightColor(Color.parseColor(userAmazeColor.getCode())) ? Color.BLACK : Color.WHITE);
+            selectColorButton.setTextColor(isBrightColor(Color.parseColor(userAmazeColor.getHexCode())) ? Color.BLACK : Color.WHITE);
         }
         {
             final String userIconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());

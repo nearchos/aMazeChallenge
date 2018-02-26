@@ -66,8 +66,8 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().getName());
-        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
+        final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().name());
+        final AmazeColor userAmazeColor = AmazeColor.valueOf(userColorName);
 
         final String userIconName = sharedPreferences.getString(PersonalizeActivity.PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
         final AmazeIcon userAmazeIcon = AmazeIcon.getByName(userIconName);
@@ -79,13 +79,13 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
         final CardView infoCard = findViewById(R.id.cardview_name_email);
         final TextView nameTextView = findViewById(R.id.activity_training_user_name);
-        infoCard.setBackgroundColor(Color.parseColor(userAmazeColor.getCode()));
+        infoCard.setBackgroundColor(Color.parseColor(userAmazeColor.getHexCode()));
         nameTextView.setText(name);
         final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
         final TextView emailTextView = findViewById(R.id.activity_training_user_email);
         emailTextView.setText(email);
 
-        if (ColorFragment.isBrightColor(Color.parseColor(userAmazeColor.getCode()))) {
+        if (ColorFragment.isBrightColor(Color.parseColor(userAmazeColor.getHexCode()))) {
             nameTextView.setTextColor(Color.BLACK);
             emailTextView.setTextColor(Color.BLACK);
         }
@@ -110,8 +110,8 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
 
         final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, "guest@example.com");
         final String name = sharedPreferences.getString(PREFERENCE_KEY_NAME, "Guest");
-        final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().getName());
-        final AmazeColor userAmazeColor = AmazeColor.getByName(userColorName);
+        final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().name());
+        final AmazeColor userAmazeColor = AmazeColor.valueOf(userColorName);
         final String userIconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
         final AmazeIcon userAmazeIcon = AmazeIcon.getByName(userIconName);
         final Shape shape = Shape.TRIANGLE; // todo enable user selection

@@ -224,7 +224,7 @@ public class GameView extends View {
 
         // draw actual player shape
         if (activePlayerIdToPositionAndDirectionMap.containsKey(player.getId())) {
-            drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getCode()), tile_size, padding, canvas);
+            drawShape(position, player.getShape(), direction, Color.parseColor(player.getColor().getHexCode()), tile_size, padding, canvas);
         }
 
         // if this is 'this' player then indicate accordingly

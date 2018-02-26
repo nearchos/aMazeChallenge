@@ -4,6 +4,7 @@ package org.inspirecenter.amazechallenge.ui;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ public class ColorFragment extends Fragment {
         if (bundle != null) color = (AmazeColor) bundle.getSerializable(PersonalizeActivity.PREFERENCE_KEY_COLOR);
         if (color != null) {
             colorView.setBackgroundColor(Color.parseColor(color.getHexCode()));
-            final int resourceId = getResources().getIdentifier(color.getResourceIdAsString(), "int", "null");
+            final int resourceId = getResources().getIdentifier(color.getResourceIdAsString(), "string", getActivity().getPackageName());
             colorName.setText(getString(resourceId));
             if (isBrightColor(Color.parseColor(color.getHexCode()))) colorName.setTextColor(Color.BLACK);
         }//end if nonnull

@@ -549,15 +549,17 @@ Log.e(TAG, "Start");
                 httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
                 httpURLConnection.setRequestProperty("Content-Type", "application/json");
 
-Log.e(TAG, "Middle");
+Log.i(TAG, "Middle");
                 dataOutputStream = new DataOutputStream(httpURLConnection.getOutputStream());
                 dataOutputStream.write(answers.getBytes());
-                dataOutputStream.flush();
-Log.e(TAG, "Flush & Close");
+Log.i(TAG, "write: " + answers);
+                dataOutputStream.close();
+Log.i(TAG, "closed");
 
                 inputStream = httpURLConnection.getInputStream();
+Log.i(TAG, "inputStream");
                 final String reply = convertStreamToString(inputStream);
-Log.e(TAG, "Reply: " + reply);
+Log.i(TAG, "Reply: " + reply);
                 return reply;
             } catch (IOException e) {
                 // show message in snackbar
