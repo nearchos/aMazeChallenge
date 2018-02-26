@@ -135,12 +135,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
+                    android:paddingStart="5dp"
                     android:text="@string/Interval"
                     style="@style/Base.TextAppearance.AppCompat.Body1"
                     android:layout_width="0dp"

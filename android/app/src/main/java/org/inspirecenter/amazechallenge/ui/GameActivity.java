@@ -285,6 +285,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
 
                 AlertDialog.Builder lostDialog = new AlertDialog.Builder(this, R.style.ErrorDialogStyle);
                 lostDialog.setTitle(R.string.maze_lost);
+                lostDialog.setMessage(R.string.maze_play_again);
                 lostDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
