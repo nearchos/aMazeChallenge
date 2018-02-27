@@ -1,0 +1,36 @@
+{
+  "id": 0,
+  "apiVersion": 1,
+  "name": "Watch Your Step",
+  "description": "Watch where you step. Bombs will get you.",
+  "difficulty": "MEDIUM",
+  "createdOn":1519723249125,
+  "createdBy": "admin",
+  "canRepeat": true,
+  "canJoinAfterStart": true,
+  "canStepOnEachOther": true,
+  "minActivePlayers": 1,
+  "maxActivePlayers": 10,
+  "startTimestamp": 0,
+  "endTimestamp": 0,
+  "hasQuestionnaire": false,
+  "rewards": "MEDIUM",
+  "penalties": "MEDIUM",
+  "algorithm": "SPARSE",
+  "grid": {
+    "width": 10,
+    "height": 10,
+    "data": "5111111119420000200841000010084208400208418c40010862000002085100022108cc402950084000120008622223222a",
+    "startingPosition": {
+      "row": 0,
+      "col": 9
+    },
+    "targetPosition": {
+      "row": 9,
+      "col": 0
+    }
+  },
+  "lineColor": "#ffffff00",
+  "backgroundImage": "TEXTURE_METAL",
+  "backgroundAudio": "AMBIENT_CITY"
+}
