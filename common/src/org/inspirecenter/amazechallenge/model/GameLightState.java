@@ -15,18 +15,21 @@ public class GameLightState implements Serializable {
     private Map<String,PlayerPositionAndDirection> activeIDsToPlayerPositionsAndDirections = new HashMap<>();
     private List<String> queuedPlayerIDs = new Vector<>();
     private List<String> waitingPlayerIDs = new Vector<>();
+    private List<Pickable> pickables = new Vector<>();
+
     private long lastUpdated = 0;
     private long counter = 0;
 
     GameLightState(final Map<String,PlayerPositionAndDirection> playerIDsToPositionsAndDirections,
                    final List<String> queuedPlayerIDs,
+                   final List<Pickable> pickables,
                    final long lastUpdated,
                    final long counter) {
         super();
 
         activeIDsToPlayerPositionsAndDirections.putAll(playerIDsToPositionsAndDirections);
-
         this.queuedPlayerIDs.addAll(queuedPlayerIDs);
+        this.pickables.addAll(pickables);
 
         this.lastUpdated = lastUpdated;
         this.counter = counter;
@@ -46,6 +49,10 @@ public class GameLightState implements Serializable {
 
     public List<String> getWaitingPlayerIDs() {
         return waitingPlayerIDs;
+    }
+
+    public List<Pickable> getPickables() {
+        return pickables;
     }
 
     public long getLastUpdated() {

@@ -183,7 +183,7 @@ public class Game implements Serializable {
     }
 
     public GameFullState getFullState(final Grid grid) {
-        return new GameFullState(activePlayerIDsToPositionAndDirections, queuedPlayers, allPlayerIDsToPlayers, grid, lastUpdated, counter);
+        return new GameFullState(activePlayerIDsToPositionAndDirections, queuedPlayers, pickables, allPlayerIDsToPlayers, grid, lastUpdated, counter);
     }
 
     public Map<String,PlayerPositionAndDirection> getPlayerIDsToPositionAndDirections() {

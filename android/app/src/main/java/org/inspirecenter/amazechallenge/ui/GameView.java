@@ -116,6 +116,7 @@ public class GameView extends View {
         allIDsToPlayers = gameFullState.getAllIDsToPlayers();
         activePlayerIdToPositionAndDirectionMap = gameFullState.getActiveIDsToPlayerPositionsAndDirections();
         queuedPlayerIDs = gameFullState.getQueuedPlayerIDs();
+        pickables = gameFullState.getPickables();
         invalidate();
     }
 

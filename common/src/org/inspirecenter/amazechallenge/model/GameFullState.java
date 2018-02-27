@@ -13,11 +13,12 @@ public class GameFullState extends GameLightState {
     public GameFullState(
             final Map<String,PlayerPositionAndDirection> playerIDsToPositionAndDirections,
             final List<String> queuedPlayerIds,
+            final List<Pickable> pickables,
             final Map<String,Player> playerIDsToPlayers,
             final Grid grid,
             final long lastUpdated,
             final long counter) {
-        super(playerIDsToPositionAndDirections, queuedPlayerIds, lastUpdated, counter);
+        super(playerIDsToPositionAndDirections, queuedPlayerIds, pickables, lastUpdated, counter);
 
         this.playerIDsToPlayers = new HashMap<>(playerIDsToPlayers);
         this.grid = grid;

@@ -53,10 +53,10 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
             rhinoContext.setOptimizationLevel(-1);
             final org.mozilla.javascript.ScriptableObject scope = rhinoContext.initStandardObjects();
             rhinoContext.evaluateString(scope, code, INIT_FUNCTION, 1, null);
+            // todo the line below sometimes generates a class cast exception: java.lang.ClassCastException: org.mozilla.javascript.UniqueTag cannot be cast to org.mozilla.javascript.Function
             final org.mozilla.javascript.Function function = (org.mozilla.javascript.Function) scope.get(INIT_FUNCTION, scope);
             function.call(rhinoContext, scope, scope, new Object[] { this });
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             org.mozilla.javascript.Context.exit();
@@ -162,7 +162,7 @@ public class InterpretedMazeSolver extends AbstractMazeSolver {
      * @return Return the index of the character at which the variable declarations stop.
      */
     private static int getPlayerCodeStart(String code) {
-        if (code.length() == 0) return 0;
+        if (code == null || code.length() == 0) return 0;
         int totalLineCharacters = 0;
         String [] lines = code.split("\n");
         for (int i = 0; i < lines.length; i++) {
