@@ -238,6 +238,7 @@
     </string-array>
 
     <string-array name="rewardsAndPenalties">
+        <item>None</item>
         <item>Low</item>
         <item>Medium</item>
         <item>High</item>

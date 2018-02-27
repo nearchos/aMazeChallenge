@@ -179,6 +179,8 @@ public class Challenge implements Serializable {
 
     public int getMaxRewards() {
         switch (rewards) {
+            case NONE:
+                return 0;
             case LOW:
                 return (getGrid().getHeight()) / 5;
             case MEDIUM:
@@ -192,6 +194,8 @@ public class Challenge implements Serializable {
 
     public int getMaxPenalties() {
         switch (penalties) {
+            case NONE:
+                return 0;
             case LOW:
                 return (getGrid().getHeight()) / 5;
             case MEDIUM:

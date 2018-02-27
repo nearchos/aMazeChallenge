@@ -563,7 +563,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"maxActivePlayers\": 10,\n" +         //Default for training
                 "    \"startTimestamp\": 0,\n" +            //Default for training
                 "    \"endTimestamp\": 0,\n" +              //Default for training
-                "    \"hasQuestionnaire\": true,\n" +       //Default for training
+                "    \"hasQuestionnaire\": false,\n" +       //Default for training
                 "    \"rewards\": \"" + rewardsIntensity + "\",\n" +
                 "    \"penalties\": \"" + penaltiesIntensity + "\",\n" +
                 "    \"algorithm\": \"" + selectedAlgorithm + "\",\n" +

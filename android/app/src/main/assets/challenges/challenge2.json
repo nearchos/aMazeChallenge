@@ -13,7 +13,7 @@
     "maxActivePlayers": 10,
     "startTimestamp": 0,
     "endTimestamp": 0,
-    "hasQuestionnaire": true,
+    "hasQuestionnaire": false,
     "rewards": "HIGH",
     "penalties": "HIGH",
     "algorithm": "SINGLE_SOLUTION",
