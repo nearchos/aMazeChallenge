@@ -34,10 +34,15 @@ public class HelpActivity extends AppCompatActivity {
             "file:///android_asset/help/en/index.html",
             "file:///android_asset/help/en/personalization.html",
             "file:///android_asset/help/en/coding.html",
+            "file:///android_asset/help/en/writingCode_part1.html",
+            "file:///android_asset/help/en/writingCode_part2.html",
+            "file:///android_asset/help/en/writingCode_part3.html",
+            "file:///android_asset/help/en/samplecode.html",
             "file:///android_asset/help/en/training.html",
             "file:///android_asset/help/en/online.html"
     };
 
+    //TODO
     public static final String [] ASSET_URLS_GR = new String [] {
             "file:///android_asset/help/gr/index.html",
             "file:///android_asset/help/gr/personalization.html",

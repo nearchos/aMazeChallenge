@@ -1,0 +1,95 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="../style.css"></head>
+<body bgcolor="#ddd">
+
+<h1>Writing your code (3/3)</h1>
+
+    <h3 style="text-align: center;">Direction</h3>
+
+    <p>There is a set of directions, based on the natural compass:</p>
+    <div style="text-align: center;"><img  src="../images/directions.png"/></div>
+    <p>The North points up, as in all natural compasses. Direction is useful to determine where the maze exit is (and how to find it).</p>
+
+    <h3 style="text-align: center;">Checking for Direction</h3>
+    <p>You can check for your avatars current direction using the 'get Direction' function:
+        <div style="text-align: center;"><img  src="../images/getdirection.png"/></div>
+    </p>
+
+    <p>Similarly, you can check where the exit is based on your avatars current position using the 'compass' function:
+        <div style="text-align: center;"><img src="../images/compass.png"/></div>
+    </p>
+
+    <p>Both of these functions will return a Direction (North, East, South, West) which you can use to guide your avatar to the exit.</p>
+
+    <hr/>
+
+    <h3 style="text-align: center;">Pickable items</h3>
+    <p>Some items will be created inside the maze randomly. Each of these items has specific effects (either good or bad) and are picked when your avatar walks over them.</p>
+    <p>These items can affect your health, points or speed inside the maze which make it crucial to know what each item is to either take or avoid it.</p>
+
+    <h4 style="color: green;">Fruits (Rewards)</h4>
+
+    <ul style="list-style-type: none;">
+        <li><img style="display: inline-block;" height=20 src="../images/orange.png"/> Oranges (+50 health)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/apple.png"/> Apples (+30 health)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/grapes.png"/> Grapes (+25 health)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/watermelon.png"/> Watermelons (+20 health)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/banana.png"/> Bananas (+15 health)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/strawberry.png"/> Strawberries (+10 health)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/peach.png"/> Peaches (+5 health)</li>
+    </ul>
+
+    <h4 style="color: green;">Coins &amp; Giftbox (Rewards)</h4>
+
+    <ul style="list-style-type: none;">
+        <li><img style="display: inline-block;" height=20 src="../images/coin5.png"/> 5pt Coin (+5 points)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/coin10.png"/> 10pt Coin (+10 points)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/coin20.png"/> 20pt Coin (+20 points)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/giftbox.png"/> Giftbox (+50 points)</li>
+    </ul>
+
+    <h4 style="color: green;">Other rewards</h4>
+
+    <ul style="list-style-type: none;">
+        <li><img style="display: inline-block;" height=20 src="../images/doublemoves.png"/> Speedhack (Move twice at each turn for the next 5 turns)</li>
+    </ul>
+
+
+    <h4 style="color: red;">Penalties</h4>
+
+    <ul style="list-style-type: none;">
+        <li><img style="display: inline-block;" height=20 src="../images/trap.png"/> Trap (No moves for the next 5 turns)</li>
+        <li><img style="display: inline-block;" height=20 src="../images/bomb.png"/> Bomb (Causes player to lose health depending on the distance from the bomb when it explodes)</li>
+    </ul>
+
+    <hr/>
+
+    <h3 style="text-align: center;">Checking for Pickable items</h3>
+
+    <p>As you may have noticed, there are two categories of items in the maze: <span style="color: green">Rewards</span> and <span style="color: red">Penalties</span>.
+        You can check if an adjacent block contains a type of item (or no item) using the 'look' function and a given direction:
+    </p>
+
+    <div style="text-align: center;"><img src="../images/look.png"/></div>
+
+    <p>This will return either of the following three values so you can determine if your avatar should move to that position or not.</p>
+
+    <div style="text-align: center;"><img src="../images/pickabletypes.png"/></div>
+
+    <p>For example:</p>
+    <div style="text-align: center;"><img class="styledImage"  style="width: 100%;" src="../images/sampledirection.png"/></div>
+
+    <hr/>
+
+    <h3 style="text-align: center;">Using the compass</h3>
+
+    <p>Knowing how to use the compass will be cruicial in some mazes. <b>Remember that the compass will always point to the direction of the exit.</b>
+    You can use the compass to get the direction that your avatar needs to move towards to find the exit:
+    </p>
+
+    <div style="text-align: center;"><img class="styledImage"  style="width: 100%;" src="../images/compasssample.png"/></div>
+
+    <br><br><div style="text-align: center; text-size: 18px;"><b>Swipe left to continue</b><img height=50 src="../images/swipe_left_black.png"/></div>
+
+</body>
+</html>
