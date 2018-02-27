@@ -212,6 +212,7 @@
     </string-array>
 
     <string-array name="rewardsAndPenalties">
+        <item>Κανένα</item>
         <item>Χαμηλό</item>
         <item>Μεσαίο</item>
         <item>Ψηλό</item>
@@ -262,7 +263,7 @@
     <string name="question_8">Πόσο πιθανό είναι να παίξετε ξανά αυτό το παιχνίδι στο μέλλον;</string>
     <string name="i_would_like_to_play_again">Θα ήθελα να ξαναπαίξω</string>
     <string name="i_do_not_want_to_play_again">Δεν θα ήθελα να ξαναπαίξω</string>
-    <string name="write_your_response">Γράψτε την απάντηση σας...</string>
+    <string name="write_your_response">Γράψτε την απάντηση σας&#8230;</string>
     <string name="question_9">Τι σας άρεσε περισσότερο σε αυτό το παιχνίδι;</string>
     <string name="question_10">Υπάρχει κάτι άλλο που θέλετε να προσθέσετε; (Χρησιμοποιήστε αυτήν την απάντηση για να δώσετε αρνητικά σχόλια, ζητήματα που αντιμετωπίσατε ή τυχόν πρόσθετα σχόλια)</string>
     <string name="health">Υγεία</string>
@@ -271,5 +272,8 @@
     <string name="Error_while_uploading_answers">Σφάλμα κατά την μεταφόρτωση των απαντήσεων</string>
     <string name="Games">Παιχνίδια</string>
     <string name="Classes">Κλάσεις</string>
+    <string name="sound_VibrationOnly">Ήχος και δόνηση</string>
+    <string name="sound_SoundsOnly">Ήχος μόνο</string>
+    <string name="sound_AllOff">Χώρις ήχο και δόνηση</string>
 
 </resources>

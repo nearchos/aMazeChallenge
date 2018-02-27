@@ -49,6 +49,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import static org.inspirecenter.amazechallenge.ui.MainActivity.KEY_PREF_SOUND;
+import static org.inspirecenter.amazechallenge.ui.MainActivity.KEY_PREF_VIBRATION;
 import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 
 public class GameActivity extends AppCompatActivity implements AudioEventListener {
@@ -88,6 +90,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     private HashMap<String, MediaPlayer> audioEventsMap = new HashMap<>();
     private MediaPlayer backgroundAudio;
     private boolean sound = true;
+    private boolean vibration = true;
 
 
     @Override
@@ -187,7 +190,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         }
 
         //Sound prefs:
-        sound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(MainActivity.KEY_PREF_SOUND, true);
+        sound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_SOUND, true);
+        vibration = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_VIBRATION, true);
     }
 
     private Handler handler;
@@ -280,8 +284,11 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
 
             if (RuntimeController.allPlayersHaveLost(game)) {
                 RuntimeController.resetTurnEffects();
-                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                if (v != null) v.vibrate(500);
+
+                if (vibration) {
+                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (v != null) v.vibrate(500);
+                }
 
                 AlertDialog.Builder lostDialog = new AlertDialog.Builder(this, R.style.ErrorDialogStyle);
                 lostDialog.setTitle(R.string.maze_lost);
@@ -399,20 +406,26 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             case BOMB:
                 if (pickable.getState() == 1  || pickable.getState() == 2) {
                     if (sound) audioEventsMap.get(Audio.EVENT_BOMB.toString()).start();
-                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                    if (v != null) v.vibrate(250);
+                    if (vibration) {
+                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                        if (v != null) v.vibrate(250);
+                    }
                 }
                 break;
             case SPEEDHACK:
                 if (sound) audioEventsMap.get(Audio.EVENT_SPEEDHACK.toString()).start();
-                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                long[] pattern = {100, 100, 100};
-                if (v != null) v.vibrate(pattern, -1);
+                if (vibration) {
+                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    long[] pattern = {100, 100, 100};
+                    if (v != null) v.vibrate(pattern, -1);
+                }
                 break;
             case TRAP:
                 if (sound) audioEventsMap.get(Audio.EVENT_TRAP.toString()).start();
-                Vibrator vTrap = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                if (vTrap != null) vTrap.vibrate(250);
+                if (vibration) {
+                    Vibrator vTrap = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (vTrap != null) vTrap.vibrate(250);
+                }
                 break;
         }
     }

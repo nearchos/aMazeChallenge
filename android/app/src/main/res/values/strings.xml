@@ -269,7 +269,7 @@
     <string name="question_8">How likely are you to play this game again in the future?</string>
     <string name="i_would_like_to_play_again">I would like to play again</string>
     <string name="i_do_not_want_to_play_again">I do not want to play again</string>
-    <string name="write_your_response">Write your response...</string>
+    <string name="write_your_response">Write your response&#8230;</string>
     <string name="question_9">What did you enjoy most in this game?</string>
     <string name="question_10">Is there anything else you would like to add? (Use this answer to provide any negative feedback, issues you faced or any additional comments)</string>
 
@@ -295,5 +295,9 @@
     <string name="health">Health</string>
     <string name="points">Points</string>
 
+
+    <string name="sound_AllOff">All Off</string>
+    <string name="sound_SoundsOnly">Sounds Only</string>
+    <string name="sound_VibrationOnly">Sound &amp; Vibration</string>
 
 </resources>

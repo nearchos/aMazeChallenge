@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEY_PREF_PLAYED_ONLINE = "pref-played-online";
     public static final String KEY_PREF_SOUND = "pref-sound";
     public static final String KEY_PREF_LANG = "pref-lang";
+    public static final String KEY_PREF_VIBRATION = "pref-vibration";
 
     private Button buttonLearn;
     private Button buttonPersonalize;
@@ -123,11 +124,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sound(View view) {
-        boolean sound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_SOUND, true);
-        sound = !sound;
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(KEY_PREF_SOUND, sound).apply();
-        if (sound) fab.setImageDrawable(getDrawable(R.drawable.ic_volume_up_black_24dp));
-        else fab.setImageDrawable(getDrawable(R.drawable.ic_volume_off_black_24dp));
+
+        String[] options = {getString(R.string.sound_AllOff), getString(R.string.sound_SoundsOnly), getString(R.string.sound_VibrationOnly)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //All Off
+                if (i == 0) {
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit()
+                            .putBoolean(KEY_PREF_VIBRATION, false).apply();
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit()
+                            .putBoolean(KEY_PREF_SOUND, false).apply();
+                    fab.setImageDrawable(getDrawable(R.drawable.ic_volume_off_black_24dp));
+                }
+                //Sounds Only
+                else if (i == 1) {
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit()
+                            .putBoolean(KEY_PREF_VIBRATION, false).apply();
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit()
+                            .putBoolean(KEY_PREF_SOUND, true).apply();
+                    fab.setImageDrawable(getDrawable(R.drawable.ic_volume_mute_black_24dp));
+                }
+                //Sound & Vibration
+                else if (i == 2) {
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit()
+                            .putBoolean(KEY_PREF_VIBRATION, true).apply();
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit()
+                            .putBoolean(KEY_PREF_SOUND, true).apply();
+                    fab.setImageDrawable(getDrawable(R.drawable.ic_volume_up_black_24dp));
+                }
+            }
+        });
+        builder.create().show();
+
+//
+//        boolean sound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_SOUND, true);
+//        sound = !sound;
+//        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(KEY_PREF_SOUND, sound).apply();
+//        if (sound) fab.setImageDrawable(getDrawable(R.drawable.ic_volume_up_black_24dp));
+//        else fab.setImageDrawable(getDrawable(R.drawable.ic_volume_off_black_24dp));
     }
 
     public void language(View view) {
