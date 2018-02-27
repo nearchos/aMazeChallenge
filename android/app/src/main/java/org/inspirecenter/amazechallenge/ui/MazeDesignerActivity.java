@@ -51,6 +51,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private static final int MAX_ROWS = 30;
     private static final int MAX_COLUMNS = 30;
     private final BackgroundImage DEFAULT_BACKGROUND_IMAGE = BackgroundImage.TEXTURE_GRASS;
+    private String mazeGridData = null;
 
     DesignerMode mode = DesignerMode.CREATE;
 
@@ -372,8 +373,8 @@ public class MazeDesignerActivity extends AppCompatActivity {
             }).create().show();
         }
         else {
-            final String data = MazeGenerator.generate(selectedAlgorithm, size, startingPosition, targetPosition);
-            final Grid grid = new Grid(size, size, data, startingPosition, targetPosition);
+            mazeGridData = MazeGenerator.generate(selectedAlgorithm, size, startingPosition, targetPosition);
+            final Grid grid = new Grid(size, size, mazeGridData, startingPosition, targetPosition);
             gameView.setBackgroundDrawable(backgroundImage);
             gameView.setGrid(grid);
             gameView.invalidate();
@@ -544,9 +545,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private String toJSON() {
         final Position startingPosition = new Position(startPos_row, startPos_column);
         final Position targetPosition = new Position(targetPos_row, targetPos_column);
-//        final String data = MazeGenerator.generate(size, startingPosition, targetPosition);
-        // todo choose algorithm
-        final String data = MazeGenerator.generate(Algorithm.MANY_SOLUTIONS, size, startingPosition, targetPosition);
+        if (mazeGridData == null) mazeGridData = MazeGenerator.generate(selectedAlgorithm, size, startingPosition, targetPosition);
 
         return  "{\n" +
                 "    \"id\": 0,\n" +
@@ -570,7 +569,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
                 "    \"grid\": {\n" +
                 "        \"width\": " + size + ",\n" +
                 "        \"height\": " + size + ",\n" +
-                "        \"data\": \"" + data + "\",\n" +
+                "        \"data\": \"" + mazeGridData + "\",\n" +
                 "        \"startingPosition\": {\n" +
                 "            \"row\": " + startPos_row + ",\n" +
                 "            \"col\": " + startPos_column + "\n" +

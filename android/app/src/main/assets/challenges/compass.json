@@ -5,7 +5,7 @@
   "description": "Use your compass to find the exit.",
   "difficulty": "MEDIUM",
   "createdOn": 1519718270541,
-  "createdBy": "player",
+  "createdBy": "admin",
   "canRepeat": true,
   "canJoinAfterStart": true,
   "canStepOnEachOther": true,
