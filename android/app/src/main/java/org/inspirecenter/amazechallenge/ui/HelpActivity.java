@@ -1,10 +1,10 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
@@ -12,8 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +23,6 @@ import android.widget.ImageButton;
 
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.Language;
-
-import java.util.Locale;
 
 import static org.inspirecenter.amazechallenge.ui.MainActivity.KEY_PREF_LANG;
 
@@ -57,13 +53,13 @@ public class HelpActivity extends AppCompatActivity {
 
     private ImageButton imageButtonPrevious;
     private ImageButton imageButtonNext;
+    private FloatingActionButton buttonNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         MainActivity.setLanguage(this);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -79,6 +75,8 @@ public class HelpActivity extends AppCompatActivity {
         // which will keep every loaded fragment in memory. If this becomes too memory intensive,
         // it may be best to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
         final SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        buttonNext = findViewById(R.id.activity_help_button_next);
 
         // Set up the ViewPager with the sections adapter.
         viewPager = findViewById(R.id.container);
@@ -114,6 +112,12 @@ public class HelpActivity extends AppCompatActivity {
         // access and set 'next' button's visibility
         imageButtonPrevious.setVisibility(position > 0 ? View.VISIBLE : View.GONE);
         imageButtonNext.setVisibility(position < ASSET_URLS.length - 1 ? View.VISIBLE : View.GONE);
+        buttonNext.setVisibility(position < ASSET_URLS.length - 1 ? View.GONE : View.VISIBLE);
+    }
+
+    public void done(final View view) {
+        startActivity(new Intent(this, PersonalizeActivity.class));
+        finish();
     }
 
     /**

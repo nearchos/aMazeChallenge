@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.inspirecenter.amazechallenge">
 
-    <uses-permission
-        android:name="android.permission.GET_ACCOUNTS"
-        android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -27,12 +25,12 @@
             android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.HelpActivity"
+            android:noHistory="true"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
@@ -44,6 +42,7 @@
         <activity
             android:name=".ui.PersonalizeActivity"
             android:label="@string/Personalize"
+            android:noHistory="true"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
@@ -53,8 +52,17 @@
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
         </activity>
         <activity
+            android:name=".ui.PersonalizationSliderActivity"
+            android:label="@string/Personalize"
+            android:parentActivityName=".ui.PersonalizeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.inspirecenter.amazechallenge.ui.PersonalizeActivity" />
+        </activity>
+        <activity
             android:name=".ui.BlocklyActivity"
             android:label="@string/Edit_your_code"
+            android:noHistory="true"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/BlocklyAppTheme">
             <meta-data
@@ -97,6 +105,7 @@
         <activity
             android:name=".ui.OnlineGameActivity"
             android:label="@string/Play_online"
+            android:noHistory="true"
             android:parentActivityName=".ui.OnlineChallengeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -113,14 +122,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.inspirecenter.amazechallenge.ui.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.PersonalizationSliderActivity"
-            android:label="@string/Personalize"
-            android:parentActivityName=".ui.PersonalizeActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.inspirecenter.amazechallenge.ui.PersonalizeActivity" />
         </activity>
         <activity
             android:name=".ui.MazeDesignerActivity"

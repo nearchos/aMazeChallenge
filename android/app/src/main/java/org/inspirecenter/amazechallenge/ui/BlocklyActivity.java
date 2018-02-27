@@ -1,7 +1,6 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -30,7 +28,6 @@ import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpreterError;
 import org.inspirecenter.amazechallenge.utils.ErrorFinderManager;
 import org.inspirecenter.amazechallenge.utils.FileManager;
-import org.mozilla.javascript.tools.jsc.Main;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -59,7 +56,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
     private static final String BLOCK_GENERATORS_FILE = "generators/maze_blocks.js";
     private static final String AMAZE_TOOLEBOX_XML = "toolboxes/maze_toolbox.xml";
     private static final String ALLOWED_PLAYER_CODE_FILES_REGEX = "[a-zA-Z0-9]*";
-    public static final String ONLINE_CALLING_ACTIVITY_KEY = "ONLINE_CALLING_ACTIVITY";
+
+    public static final String INTENT_KEY_NEXT_ACTIVITY = "INTENT_KEY_NEXT_ACTIVITY";
 
     private static final List<String> BLOCK_DEFINITIONS = Arrays.asList(
             DefaultBlocks.COLOR_BLOCKS_PATH,
@@ -75,24 +73,30 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
             BLOCK_GENERATORS_FILE
     );//end List JAVASCRIPT_GENERATORS
 
-    CodeGenerationRequest.CodeGeneratorCallback mCodeGeneratorCallback =
-            new CodeGenerationRequest.CodeGeneratorCallback() {
-                @Override
-                public void onFinishCodeGeneration(final String generatedCode) {
-                    Log.i(TAG, "generatedCode:\n" + generatedCode);
-                    Toast.makeText(getApplicationContext(), R.string.Your_code_has_been_saved, Toast.LENGTH_LONG).show();
-                    final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BlocklyActivity.this);
-                    sharedPreferences.edit().putString (KEY_ALGORITHM_ACTIVITY_CODE, generatedCode).apply();
-                    if(generatedCode != null && !generatedCode.isEmpty()) sharedPreferences.edit().putBoolean(MainActivity.KEY_PREF_EDITED_CODE, true).apply();
+    CodeGenerationRequest.CodeGeneratorCallback mCodeGeneratorCallback = generatedCode -> {
+        Log.d(TAG, "generatedCode:\n" + generatedCode);
+        Toast.makeText(getApplicationContext(), R.string.Your_code_has_been_saved, Toast.LENGTH_LONG).show();
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(BlocklyActivity.this);
+        sharedPreferences.edit().putString (KEY_ALGORITHM_ACTIVITY_CODE, generatedCode).apply();
 
-                    boolean goToOnline;
-                    if (getIntent().getSerializableExtra(ONLINE_CALLING_ACTIVITY_KEY) != null) {
-                        goToOnline = (boolean) getIntent().getSerializableExtra(ONLINE_CALLING_ACTIVITY_KEY);
-                        if (goToOnline) startActivity(new Intent(BlocklyActivity.this, OnlineGameActivity.class));
-                    }
-                    else finish();
-                }
-            };//end mCodeGeneratorCallback
+        if(generatedCode != null && !generatedCode.isEmpty()) {
+            sharedPreferences.edit().putBoolean(MainActivity.KEY_PREF_EDITED_CODE, true).apply();
+        }
+
+        final boolean goToTraining = TrainingActivity.class.getCanonicalName().equals(getIntent().getSerializableExtra(INTENT_KEY_NEXT_ACTIVITY));
+        final boolean goToOnline = OnlineGameActivity.class.getCanonicalName().equals(getIntent().getSerializableExtra(INTENT_KEY_NEXT_ACTIVITY));
+        Log.d(TAG, "goToTraining: " + goToTraining);
+        Log.d(TAG, "goToOnline: " + goToOnline);
+
+        if(goToTraining) {
+            startActivity(new Intent(BlocklyActivity.this, TrainingActivity.class));
+        } else  if(goToOnline) {
+            startActivity(new Intent(BlocklyActivity.this, OnlineGameActivity.class));
+        } else {
+            Log.d(TAG, "goToFinish!");
+            BlocklyActivity.this.finish();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,12 +108,12 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         setTitle(getString(R.string.edit_your_code));
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
-    }//end onCreate()
+    }
 
     @Override
     protected View onCreateContentView(int containerId) {
         return getLayoutInflater().inflate(R.layout.activity_blockly, null);
-    }//end onCreateContentView()
+    }
 
     public void done(final View view) {
         submitCode();
@@ -139,8 +143,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 onRunCode();
             }//end if has blocks and no error occured
             else {
-                Intent intentBack = new Intent(BlocklyActivity.this, MainActivity.class);
-                startActivity(intentBack);
+                finish();
             }//end if no blocks and no error
         }//end if no errors
         else {
@@ -358,13 +361,10 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 FileManager.getCodes(instance);
                 final ListView list = new ListView(BlocklyActivity.this);
                 loadDialog = ErrorDialogCreator.createLoadDialog(instance, list);
-                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        FileManager.setSaveFilename(codeFilesList.get(i));
-                        onLoadWorkspace();
-                        loadDialog.dismiss();
-                    }
+                list.setOnItemClickListener((adapterView, view, i, l) -> {
+                    FileManager.setSaveFilename(codeFilesList.get(i));
+                    onLoadWorkspace();
+                    loadDialog.dismiss();
                 });
                 loadDialog.show();
                 return true;
@@ -375,17 +375,8 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.Clear_code)
                         .setMessage(R.string.Are_you_sure_you_want_to_erase_the_code)
-                        .setPositiveButton(R.string.Clear, new DialogInterface.OnClickListener() {
-                            @Override public void onClick(DialogInterface dialogInterface, int i) {
-                                onClearWorkspace();
-                            }
-                        })
-                        .setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        }).create().show();
+                        .setPositiveButton(R.string.Clear, (dialogInterface, i) -> onClearWorkspace())
+                        .setNegativeButton(R.string.Cancel, (dialogInterface, i) -> dialogInterface.cancel()).create().show();
                 return true;
         }//end switch
         return super.onOptionsItemSelected(item);
@@ -393,9 +384,12 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
 
     @Override
     public void onBackPressed() {
+        getIntent().putExtra(INTENT_KEY_NEXT_ACTIVITY, ""); // reset intent extra so that the activity returns to main after it finishes compiling
         submitCode();
     }
 
-    public void runCode() { onRunCode(); }
+    public void runCode() {
+        onRunCode();
+    }
 
 }//end activity BlocklyActivity

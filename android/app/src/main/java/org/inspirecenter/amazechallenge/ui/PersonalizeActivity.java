@@ -3,7 +3,6 @@ package org.inspirecenter.amazechallenge.ui;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,6 +23,9 @@ import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.model.AmazeColor;
 import org.inspirecenter.amazechallenge.model.AmazeIcon;
 
+import java.util.regex.Pattern;
+
+import static org.inspirecenter.amazechallenge.ui.BlocklyActivity.INTENT_KEY_NEXT_ACTIVITY;
 import static org.inspirecenter.amazechallenge.ui.ColorFragment.isBrightColor;
 import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 
@@ -43,8 +46,7 @@ public class PersonalizeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setLanguage(this);
         setContentView(R.layout.activity_personalize);
 
@@ -57,8 +59,6 @@ public class PersonalizeActivity extends AppCompatActivity {
         gifView = findViewById(R.id.activity_personalize_icon);
         selectColorButton = findViewById(R.id.activity_personalize_button_select_color);
         selectColorButton.setOnClickListener(view -> startActivity(new Intent(this, PersonalizationSliderActivity.class)));
-        updatePersonalization();
-        //gifView.play();
     }
 
     public static final int PERMISSIONS_REQUEST_GET_ACCOUNT = 42;
@@ -66,25 +66,55 @@ public class PersonalizeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
-        nameEditText.setText(name);
 
-        updatePersonalization();
-
-        final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
-        if(email.isEmpty()) {
-            if(checkSelfPermission(Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[] { Manifest.permission.GET_ACCOUNTS }, PERMISSIONS_REQUEST_GET_ACCOUNT);
+        // load personalization preferences
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // update user color
+        {
+            final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.BLACK.name());
+            final AmazeColor userAmazeColor = AmazeColor.valueOf(userColorName);
+            final int userColor = Color.parseColor(userAmazeColor.getHexCode());
+            selectColorButton.setBackgroundColor(userColor);
+            selectColorButton.setTextColor(isBrightColor(Color.parseColor(userAmazeColor.getHexCode())) ? Color.BLACK : Color.WHITE);
+        }
+        // update user icon/avatar
+        {
+            final String userIconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
+            final AmazeIcon selectedAmazeIcon = AmazeIcon.getByName(userIconName);
+            gifView.setImageResource(getDrawableResourceId(selectedAmazeIcon));
+        }
+        // update user email and name
+        {
+            final String email = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_EMAIL, "");
+            final String name = PreferenceManager.getDefaultSharedPreferences(this).getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
+            if(email.isEmpty()) {
+                if(checkSelfPermission(Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[] { Manifest.permission.GET_ACCOUNTS }, PERMISSIONS_REQUEST_GET_ACCOUNT);
+                } else {
+                    selectAccount();
+                }
             } else {
-                selectAccount();
+                emailEditText.setText(email);
+                nameEditText.setText(name);
             }
-        } else {
-            emailEditText.setText(email);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    protected void onPause() {
+        super.onPause();
+
+        save();
+//        // verify name is non-empty and email is valid
+//        final String name = nameEditText.getText().toString().trim();
+//        final String email = emailEditText.getText().toString().toLowerCase().trim();
+//
+//        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_EMAIL, email).apply();
+//        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_NAME, name).apply();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String [] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == PERMISSIONS_REQUEST_GET_ACCOUNT) {
             selectAccount();
@@ -92,54 +122,53 @@ public class PersonalizeActivity extends AppCompatActivity {
         // do nothing if denied
     }
 
-    @SuppressLint("SetTextI18n")
     private void selectAccount() {
+        final Pattern emailPattern = Patterns.EMAIL_ADDRESS;
+
         final AccountManager accountManager = AccountManager.get(this);
-        final Account[] accounts = accountManager.getAccountsByType("com.google");
+        final Account [] accounts = accountManager.getAccounts();
 
-        if(accounts.length == 0) {
-            // ignore
-            emailEditText.setText("guest@example.com");
-        } else { // accounts.length >= 1
-            // select the first email
-            emailEditText.setText(accounts[0].name);
+        String email = getString(R.string.Guest_email);
+        String name = getString(R.string.Guest);
+
+        for (Account account : accounts) {
+            if (emailPattern.matcher(account.name).matches()) {
+                email = account.name;
+                name = email.indexOf('@') > -1 ? email.substring(0, email.indexOf('@')) : email;
+                break;
+            }
         }
+
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putString(PREFERENCE_KEY_EMAIL, email).apply();
+        sharedPreferences.edit().putString(PREFERENCE_KEY_NAME, name).apply();
+
+        emailEditText.setText(email);
+        nameEditText.setText(name);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        final String name = nameEditText.getText().toString().trim();
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_NAME, name).apply();
-        final String email = emailEditText.getText().toString().toLowerCase().trim();
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_EMAIL, email).apply();
-    }
-
-    public void done(final View view) {
+    private void save() {
         // verify name is non-empty and email is valid
         final String name = nameEditText.getText().toString().trim();
         final String email = emailEditText.getText().toString().toLowerCase().trim();
-        if(name.isEmpty()) ; // todo show warning dialog
-        if(email.isEmpty()) ; // todo show error dialog - and do not allow to proceed
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(name.isEmpty()) {
+            final String defaultName = sharedPreferences.getString(PREFERENCE_KEY_NAME, getString(R.string.Guest));
+            sharedPreferences.edit().putString(PREFERENCE_KEY_NAME, defaultName).apply();
+        }
+        if(email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            final String defaultEmail = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
+            sharedPreferences.edit().putString(PREFERENCE_KEY_EMAIL, defaultEmail).apply();
+        }
 
         PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(MainActivity.KEY_PREF_PERSONALIZED, true).apply();
-        startActivity(new Intent(this, BlocklyActivity.class));
     }
 
-    private void updatePersonalization() {
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        {
-            final String userColorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.BLACK.name()); //TODO, This causes errors when installing on a new device...
-            final AmazeColor userAmazeColor = AmazeColor.valueOf(userColorName);
-            final int userColor = Color.parseColor(userAmazeColor.getHexCode());
-            selectColorButton.setBackgroundColor(userColor);
-            selectColorButton.setTextColor(isBrightColor(Color.parseColor(userAmazeColor.getHexCode())) ? Color.BLACK : Color.WHITE);
-        }
-        {
-            final String userIconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.ICON_1.getName());
-            final AmazeIcon selectedAmazeIcon = AmazeIcon.getByName(userIconName);
-            gifView.setImageResource(getDrawableResourceId(selectedAmazeIcon));
-        }
+    public void done(final View view) {
+        save();
+        final Intent intent = new Intent(this, BlocklyActivity.class);
+        intent.putExtra(INTENT_KEY_NEXT_ACTIVITY, TrainingActivity.class.getCanonicalName());
+        startActivity(intent);
     }
 
     int getDrawableResourceId(final AmazeIcon amazeIcon) {

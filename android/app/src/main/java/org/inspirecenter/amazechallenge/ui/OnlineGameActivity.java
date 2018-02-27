@@ -32,6 +32,7 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static org.inspirecenter.amazechallenge.ui.BlocklyActivity.INTENT_KEY_NEXT_ACTIVITY;
 import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
 
@@ -59,7 +60,7 @@ public class OnlineGameActivity extends AppCompatActivity {
     private String email = null;
 
     private Handler handler;
-    private Timer timer = new Timer();
+    private Timer timer = null;
 
     @Override
     protected void onResume() {
@@ -77,6 +78,9 @@ public class OnlineGameActivity extends AppCompatActivity {
 
         handler = new Handler();
 
+        if(timer == null) {
+            timer = new Timer();
+        }
         timer.schedule(new OnlineMazeRunner(), 0L, ONE_SECOND / 2); // todo
     }
 
@@ -89,7 +93,9 @@ public class OnlineGameActivity extends AppCompatActivity {
     }
 
     public void editCode(final View view) {
-        startActivity(new Intent(OnlineGameActivity.this, BlocklyActivity.class).putExtra(BlocklyActivity.ONLINE_CALLING_ACTIVITY_KEY, true));
+        final Intent intent = new Intent(OnlineGameActivity.this, BlocklyActivity.class);
+        intent.putExtra(INTENT_KEY_NEXT_ACTIVITY, OnlineGameActivity.class.getCanonicalName());
+        startActivity(intent);
     }
 
     public void submitCode(final View view) {
@@ -230,10 +236,11 @@ public class OnlineGameActivity extends AppCompatActivity {
     private class OnlineMazeRunner extends TimerTask {
         @Override
         public void run() {
-            handler.post(() -> {
-//                Log.d(TAG, "getting game-state for challenge: " + challenge.getName());
-                new GetGameStateAsyncTask(email, challenge.getId()).execute();
-            });
+            if(handler != null) {
+                handler.post(() -> {
+                    new GetGameStateAsyncTask(email, challenge.getId()).execute();
+                });
+            }
         }
     }
 }
