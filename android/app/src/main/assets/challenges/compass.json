@@ -1,0 +1,36 @@
+{
+  "id": 0,
+  "apiVersion": 1,
+  "name": "Compass",
+  "description": "Use your compass to find the exit.",
+  "difficulty": "MEDIUM",
+  "createdOn": 1519718270541,
+  "createdBy": "player",
+  "canRepeat": true,
+  "canJoinAfterStart": true,
+  "canStepOnEachOther": true,
+  "minActivePlayers": 1,
+  "maxActivePlayers": 10,
+  "startTimestamp": 0,
+  "endTimestamp": 0,
+  "hasQuestionnaire": false,
+  "rewards": "LOW",
+  "penalties": "LOW",
+  "algorithm": "EMPTY",
+  "grid": {
+    "width": 5,
+    "height": 5,
+    "data": "51959ccccccc4ace6218733ae",
+    "startingPosition": {
+      "row": 0,
+      "col": 2
+    },
+    "targetPosition": {
+      "row": 4,
+      "col": 2
+    }
+  },
+  "lineColor": "#ffffffff",
+  "backgroundImage": "TEXTURE_GRASS",
+  "backgroundAudio": "AUDIO_NONE"
+}
