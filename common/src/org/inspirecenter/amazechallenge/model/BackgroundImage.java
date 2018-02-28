@@ -4,6 +4,13 @@ public enum BackgroundImage {
 
     TEXTURE_GRASS("Grass", "texture_grass", BackgroundImageType.JPG),
     TEXTURE_METAL("Metal", "texture_metal", BackgroundImageType.JPG),
+    TEXTURE_TILES("Tiles", "texture_tiles", BackgroundImageType.JPG),
+    TEXTURE_GRAVEL("Gravel", "texture_gravel", BackgroundImageType.JPG),
+    TEXTURE_WATER("Water", "texture_water", BackgroundImageType.JPG),
+    TEXTURE_WOOD("Wood", "texture_wood", BackgroundImageType.JPG),
+    TEXTURE_ROCKY("Rocky", "texture_rocky", BackgroundImageType.JPG),
+    TEXTURE_SPACE("Space", "texture_space", BackgroundImageType.JPG),
+    TEXTURE_MOON("Moon", "texture_moon", BackgroundImageType.JPG),
     TEXTURE_LAVA("Lava", "texture_lava", BackgroundImageType.JPG);
 
     public enum BackgroundImageType {

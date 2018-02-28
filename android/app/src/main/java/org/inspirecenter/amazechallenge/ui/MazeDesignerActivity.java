@@ -140,11 +140,16 @@ public class MazeDesignerActivity extends AppCompatActivity {
         maze_size_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (hasSizeSelected) {
+                if (mode == DesignerMode.EDIT) {
+                    if (hasSizeSelected) {
+                        final int size = i + 5;
+                        setSize(size, new Position(0, size - 1), new Position(size - 1, 0));
+                    } else hasSizeSelected = true;
+                }
+                else {
                     final int size = i + 5;
                     setSize(size, new Position(0, size - 1), new Position(size - 1, 0));
                 }
-                else hasSizeSelected = true;
             }
 
             @Override
@@ -499,9 +504,6 @@ public class MazeDesignerActivity extends AppCompatActivity {
         startPos_Column_Spinner.setAdapter(adapter);
         targetPos_Row_Spinner.setAdapter(adapter);
         targetPos_Column_Spinner.setAdapter(adapter);
-
-        System.out.println("startPos" + startPosition.getRow() + " " + startPosition.getCol());
-        System.out.println("targetPos" + targetPosition.getRow() + " " + targetPosition.getCol());
 
         startPos_Row_Spinner.setSelection(startPosition.getRow());
         startPos_Column_Spinner.setSelection(startPosition.getCol());

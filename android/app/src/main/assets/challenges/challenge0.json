@@ -32,5 +32,5 @@
     },
     "lineColor": "#FFFF00",
     "backgroundImage": "TEXTURE_GRASS",
-    "backgroundAudio": "AUDIO_NONE"
+    "backgroundAudio": "AMBIENT_TROPICAL_FOREST"
 }

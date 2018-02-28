@@ -32,5 +32,5 @@
     },
     "lineColor": "#FFFFFF",
     "backgroundImage": "texture_lava",
-    "backgroundAudio": "AUDIO_NONE"
+    "backgroundAudio": "AMBIENT_FIRE"
 }
