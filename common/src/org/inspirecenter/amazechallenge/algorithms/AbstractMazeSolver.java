@@ -52,4 +52,55 @@ public abstract class AbstractMazeSolver implements MazeSolver {
     public Direction compass() {
         return RuntimeController.compass(getGrid().getTargetPosition(), getPosition());
     }
+
+    public Direction onMove(PlayerMove playerMove) {
+        switch (getDirection()) {
+            case NORTH:
+                switch (playerMove) {
+                    case TURN_CLOCKWISE:
+                        return Direction.EAST;
+                    case TURN_COUNTERCLOCKWISE:
+                        return Direction.WEST;
+                    case MOVE_FORWARD:
+                    case NO_MOVE:
+                        return getDirection();
+                }
+                break;
+            case SOUTH:
+                switch (playerMove) {
+                    case TURN_CLOCKWISE:
+                        return Direction.WEST;
+                    case TURN_COUNTERCLOCKWISE:
+                        return Direction.EAST;
+                    case MOVE_FORWARD:
+                    case NO_MOVE:
+                        return getDirection();
+                }
+                break;
+            case WEST:
+                switch (playerMove) {
+                    case TURN_CLOCKWISE:
+                        return Direction.NORTH;
+                    case TURN_COUNTERCLOCKWISE:
+                        return Direction.SOUTH;
+                    case MOVE_FORWARD:
+                    case NO_MOVE:
+                        return getDirection();
+                }
+                break;
+            case EAST:
+                switch (playerMove) {
+                    case TURN_CLOCKWISE:
+                        return Direction.SOUTH;
+                    case TURN_COUNTERCLOCKWISE:
+                        return Direction.NORTH;
+                    case MOVE_FORWARD:
+                    case NO_MOVE:
+                        return getDirection();
+                }
+                break;
+        }
+        return Direction.NORTH;
+    }
+
 }

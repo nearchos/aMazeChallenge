@@ -143,3 +143,24 @@ Blockly.JavaScript['maze_compass'] = function(block) {
   var code = 'instance.compass()';
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
+
+Blockly.JavaScript['maze_onmove'] = function(block) {
+  var value_move = Blockly.JavaScript.valueToCode(block, 'move', Blockly.JavaScript.ORDER_ATOMIC);
+  var code = 'instance.onMove(' + value_move + ')';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_literal_move_forward'] = function(block) {
+  var code = 'Packages.org.inspirecenter.amazechallenge.algorithms.PlayerMove.MOVE_FORWARD';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_literal_turn_clockwise'] = function(block) {
+  var code = 'Packages.org.inspirecenter.amazechallenge.algorithms.PlayerMove.TURN_CLOCKWISE';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['maze_literal_turn_counterclockwise'] = function(block) {
+  var code = 'Packages.org.inspirecenter.amazechallenge.algorithms.PlayerMove.TURN_COUNTERCLOCKWISE';
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};

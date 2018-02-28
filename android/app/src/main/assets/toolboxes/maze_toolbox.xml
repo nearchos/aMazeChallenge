@@ -15,6 +15,7 @@
             <block type="maze_look"></block>
             <block type="maze_get_direction"></block>
             <block type="maze_compass"></block>
+            <block type="maze_onmove"></block>
             <block type="maze_direction_north"></block>
             <block type="maze_direction_south"></block>
             <block type="maze_direction_east"></block>
@@ -22,8 +23,9 @@
             <block type="maze_pickabletype_reward"></block>
             <block type="maze_pickabletype_penalty"></block>
             <block type="maze_pickabletype_none"></block>
-
-
+            <block type="maze_literal_move_forward"></block>
+            <block type="maze_literal_turn_clockwise"></block>
+            <block type="maze_literal_turn_counterclockwise"></block>
         </category>
 
         <category name="Logic" colour="210">

@@ -203,6 +203,46 @@
     "colour": 60,
     "tooltip": "Gets the direction the player needs to go to find the exit.",
     "helpUrl": ""
+  },
+  {
+    "type": "maze_onmove",
+    "message0": "on move %1",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "move",
+        "check": "PlayerMove"
+      }
+    ],
+    "inputsInline": false,
+    "output": "Direction",
+    "colour": 65,
+    "tooltip": "Returns the direction the player will be facing when turning toward a certain direction",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_literal_move_forward",
+    "message0": "Move Forward",
+    "output": "PlayerMove",
+    "colour": 260,
+    "tooltip": "",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_literal_turn_clockwise",
+    "message0": "Turn Clockwise",
+    "output": "PlayerMove",
+    "colour": 260,
+    "tooltip": "",
+    "helpUrl": ""
+  },
+  {
+    "type": "maze_literal_turn_counterclockwise",
+    "message0": "Turn Counter-Clockwise",
+    "output": "PlayerMove",
+    "colour": 260,
+    "tooltip": "",
+    "helpUrl": ""
   }
 
 ]
