@@ -77,33 +77,42 @@ public class JoinServlet extends HttpServlet {
                         final AmazeIcon playerIcon = AmazeIcon.getByName(iconName);
                         final Shape playerShape = Shape.getShapeByCode(shapeCode);
 
-                        final long gameId;
-
                         Game game = ofy()
                                 .load()
                                 .type(Game.class)
                                 .filter("challengeId", challengeId)
                                 .first()
                                 .now();
-                        gameId = game == null ? 0L : game.getId();
 
-                        final boolean alreadyContainsPlayer = game != null && game.containsPlayerById(id);
+                        final long gameId = game == null ? 0L : game.getId();
+                        final boolean gameExists = game != null;
 
-                        if(!alreadyContainsPlayer) {
-                            // handle the addition of a new player in a transaction to ensure atomicity
-                            game = ofy().transact(() -> {
-                                // add binding of user to game
-                                final Game tGame = gameId == 0 ?
-                                        new Game(challengeId) :
-                                        ofy().load().key(Key.create(Game.class, gameId)).now();
+                        // handle the addition of a new player within a transaction to ensure atomicity
+                        game = ofy().transact(() -> {
+                            // add binding of user to game
+                            final Game tGame = gameId == 0 ?
+                                    new Game(challengeId) :
+                                    ofy().load().key(Key.create(Game.class, gameId)).now();
 
-                                // modify
-                                tGame.addPlayer(new Player(id, email, name, playerColor, playerIcon, playerShape));
+                            // modify
+                            tGame.addPlayer(new Player(id, email, name, playerColor, playerIcon, playerShape));
 
-                                // save
-                                ofy().save().entity(tGame).now();
-                                return tGame;
-                            });
+                            // save
+                            ofy().save().entity(tGame).now();
+
+                            return tGame;
+                        });
+
+                        if(!gameExists) {
+                            // the first player to join the game (and create it), also kick-starts the RunEngineServlet
+                            final Queue queue = QueueFactory.getDefaultQueue();
+                            TaskOptions taskOptions = TaskOptions.Builder
+                                    .withUrl("/admin/run-engine")
+                                    .param("magic", magic)
+                                    .param("challenge", Long.toString(challengeId))
+                                    .param("game", Long.toString(game.getId()))
+                                    .method(TaskOptions.Method.GET);
+                            queue.add(taskOptions);
                         }
                     }
                 }

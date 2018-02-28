@@ -3,6 +3,7 @@ package org.inspirecenter.amazechallenge.api;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.gson.Gson;
+import org.inspirecenter.amazechallenge.admin.RunEngineServlet;
 import org.inspirecenter.amazechallenge.model.GameFullState;
 
 import javax.servlet.ServletException;
@@ -12,10 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Vector;
-
-import static org.inspirecenter.amazechallenge.admin.RunEngineServlet.KEY_CACHED_GAME;
+import java.util.logging.Logger;
 
 public class GameStateServlet extends HttpServlet {
+
+    private static final Logger log = Logger.getLogger(GameStateServlet.class.getName());
 
     private final Gson gson = new Gson();
 
@@ -40,8 +42,11 @@ public class GameStateServlet extends HttpServlet {
         } else {
             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
 
-            gameFullState = (GameFullState) memcacheService.get(KEY_CACHED_GAME.replaceAll("%", challengeIdAsString));
-            if(gameFullState == null) errors.add("Could not find game for challenge id '" + challengeIdAsString + "' in memcache");
+            gameFullState = (GameFullState) memcacheService.get(RunEngineServlet.getGameKey(challengeIdAsString));
+            if(gameFullState == null) {
+                log.info("Could not find game for challenge id '" + challengeIdAsString + "' in memcache (missing key: " + RunEngineServlet.getGameKey(challengeIdAsString) + ")");
+                errors.add("Could not find game for challenge id '" + challengeIdAsString + "' in memcache");
+            }
         }
 
         // return cached or generated value

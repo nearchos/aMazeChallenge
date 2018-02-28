@@ -13,7 +13,7 @@ public abstract class AbstractMazeSolver implements MazeSolver {
     protected transient Game game;
     final String playerID;
 
-    AbstractMazeSolver(final Challenge challenge, final Game game, final String playerID) { // todo check accessor
+    AbstractMazeSolver(final Challenge challenge, final Game game, final String playerID) {
         super();
         init(challenge, game);
         this.playerID = playerID;

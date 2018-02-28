@@ -93,7 +93,7 @@ public class Game implements Serializable {
         waitingPlayers.add(playerId);
         //New
         final Player player = getPlayerById(playerId);
-        player.resetPoints();
+        player.reset();
         return existed;
     }
 

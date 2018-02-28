@@ -7,6 +7,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.Gson;
 import com.googlecode.objectify.ObjectifyService;
+import org.inspirecenter.amazechallenge.admin.RunEngineServlet;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
 
@@ -78,26 +79,10 @@ public class SubmitCodeServlet extends HttpServlet {
                         } else {
                             // store maze solver code in data-store
                             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
-                            memcacheService.put(getKey(challengeId, playerId), code);
+                            memcacheService.put(getMazeCodeKey(challengeId, playerId), code);
 
                             game.resetPlayerById(playerId); // reset so that he stops if currently active
                             game.queuePlayerById(playerId); // queue so they can start as soon as a slot is available
-
-                            final boolean hasActiveOrQueuedPlayers = game.hasActiveOrQueuedPlayers(); // if yes, another thread is already handling this
-                            final boolean mustScheduleTask = !hasActiveOrQueuedPlayers && challenge.isActive();
-                            if(mustScheduleTask) { // kick start the run-engine servlet
-                                final long waitMillis = Math.max(0L, 1000L - game.getLastExecutionTime());
-                                // trigger processing of game state
-                                final Queue queue = QueueFactory.getDefaultQueue();
-                                TaskOptions taskOptions = TaskOptions.Builder
-                                        .withUrl("/admin/run-engine")
-                                        .param("magic", magic)
-                                        .param("challenge", Long.toString(challengeId))
-                                        .param("game", Long.toString(game.getId()))
-                                        .countdownMillis(waitMillis) // wait 1 second before the call (or less if the execution takes >0 ms)
-                                        .method(TaskOptions.Method.GET);
-                                queue.add(taskOptions);
-                            }
                         }
                     }
                 }
@@ -117,7 +102,7 @@ public class SubmitCodeServlet extends HttpServlet {
         printWriter.println(reply);
     }
 
-    public static String getKey(final long challengeId, final String playerId) {
+    public static String getMazeCodeKey(final long challengeId, final String playerId) {
         return KEY_MAZE_SOLVER_CODE.replace("%1", Long.toString(challengeId)).replace("%2", playerId);
     }
 }

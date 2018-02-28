@@ -111,7 +111,12 @@ public class Player implements Serializable {
         else this.points += points;
     }
 
-    public void resetPoints() {
+    private void resetPoints() {
         points = 0;
+    }
+
+    public void reset() {
+        health.resetHealth();
+        resetPoints();
     }
 }
