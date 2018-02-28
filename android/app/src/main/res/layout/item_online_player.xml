@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_online_player_card_view"
+    android:layout_margin="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/item_online_player_name"
+            android:text="@string/Name"
+            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:padding="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:lines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/item_online_player_points_label"
+            android:text="@string/points"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:padding="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/item_online_player_points"
+            android:text="123"
+            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:textColor="@color/materialGreen"
+            android:padding="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@id/item_online_player_points_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/item_online_player_status"
+            android:text="active"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:textColor="@color/materialGreen"
+            android:padding="4dp"
+            android:layout_below="@id/item_online_player_name"
+            android:layout_alignParentStart="true"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/item_online_player_health_label"
+            android:text="@string/health"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:padding="4dp"
+            android:layout_below="@id/item_online_player_name"
+            android:layout_alignParentEnd="true"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"/>
+
+        <ProgressBar
+            android:id="@+id/item_online_player_health"
+            android:max="200"
+            android:progress="100"
+            android:progressTint="@color/materialGreen"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+            android:padding="4dp"
+            android:layout_toStartOf="@id/item_online_player_health_label"
+            android:layout_toEndOf="@id/item_online_player_status"
+            android:layout_below="@id/item_online_player_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

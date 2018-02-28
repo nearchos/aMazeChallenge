@@ -9,12 +9,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.google.gson.Gson;
 
@@ -46,14 +47,14 @@ public class OnlineGameActivity extends AppCompatActivity {
     private boolean isFABOpen = false;
 
     private GameView gameView;
-    private ListView scoreboardListView;
-    private View fabBackground;
+    private RecyclerView scoreboardRecyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private OnlinePlayerAdapter onlinePlayerAdapter;
 
+    private View fabBackground;
     FloatingActionButton mainFAB;
     LinearLayout fabLayout_upload;
     LinearLayout fabLayout_edit;
-    FloatingActionButton editCodeFAB;
-    FloatingActionButton uploadCodeFAB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +66,20 @@ public class OnlineGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_online_game);
 
         gameView = findViewById(R.id.activity_online_game_game_view);
-        scoreboardListView = findViewById(R.id.activity_online_challenge_list_view);
+
+        scoreboardRecyclerView = findViewById(R.id.activity_online_game_recycler_view);
+
+        // use a linear layout manager
+        layoutManager = new LinearLayoutManager(this);
+        scoreboardRecyclerView.setLayoutManager(layoutManager);
+
+        // specify and set an adapter
+        onlinePlayerAdapter = new OnlinePlayerAdapter(Installation.id(this));
+        scoreboardRecyclerView.setAdapter(onlinePlayerAdapter);
 
         mainFAB = findViewById(R.id.activity_online_game_button_main_fab);
-        editCodeFAB = findViewById(R.id.fab_edit_code);
         fabLayout_edit = findViewById(R.id.fabLayout_edit);
         fabLayout_upload = findViewById(R.id.fabLayout_upload);
-        uploadCodeFAB = findViewById(R.id.fab_upload_code);
 
         fabBackground = findViewById(R.id.fab_background);
         fabBackground.setOnClickListener(new View.OnClickListener() {
@@ -80,21 +88,6 @@ public class OnlineGameActivity extends AppCompatActivity {
                 closeFABMenu();
             }
         });
-
-        editCodeFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editCode(view);
-            }
-        });
-
-        uploadCodeFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                submitCode(view);
-            }
-        });
-
     }
 
     private Challenge challenge;
@@ -116,6 +109,9 @@ public class OnlineGameActivity extends AppCompatActivity {
             Log.e(TAG, "Invalid null argument 'challenge'in Intent");
             finish();
         }
+
+        onlinePlayerAdapter.clear();
+        onlinePlayerAdapter.notifyDataSetChanged();
 
         handler = new Handler();
 
@@ -265,7 +261,8 @@ public class OnlineGameActivity extends AppCompatActivity {
                     if(gameFullState != null) {
 
                         gameView.update(gameFullState);
-//                scoreboardAdapter.update(gameFullState); todo
+                        onlinePlayerAdapter.update(gameFullState);
+                        onlinePlayerAdapter.notifyDataSetChanged();
                         final boolean active = gameFullState.getActivePlayerIDs().contains(Installation.id(OnlineGameActivity.this));
                         final boolean queued = gameFullState.getQueuedPlayerIDs().contains(Installation.id(OnlineGameActivity.this));
                         // todo save to preferences and check if sounds needs to be played
@@ -289,7 +286,11 @@ public class OnlineGameActivity extends AppCompatActivity {
         public void run() {
             if(handler != null) {
                 handler.post(() -> {
-                    new GetGameStateAsyncTask(email, challenge.getId()).execute();
+                    if(challenge == null) {
+                        finish();
+                    } else {
+                        new GetGameStateAsyncTask(email, challenge.getId()).execute();
+                    }
                 });
             }
         }
@@ -297,11 +298,11 @@ public class OnlineGameActivity extends AppCompatActivity {
 
     private void showFABMenu(){
         isFABOpen=true;
+        fabBackground.setVisibility(View.VISIBLE);
         fabLayout_edit.setVisibility(View.VISIBLE);
         fabLayout_upload.setVisibility(View.VISIBLE);
-        fabBackground.setVisibility(View.VISIBLE);
-        fabLayout_edit.animate().translationY(-getResources().getDimension(R.dimen.standard_40));
-        fabLayout_upload.animate().translationY(-getResources().getDimension(R.dimen.standard_65));
+        fabLayout_edit.animate().translationY(-getResources().getDimension(R.dimen.standard_65));
+        fabLayout_upload.animate().translationY(-getResources().getDimension(R.dimen.standard_125));
     }
 
     private void closeFABMenu(){
