@@ -50,4 +50,7 @@ public class Health implements Serializable {
 
     public boolean isAtMin() { return (health <= MIN_HEALTH); }
 
+    public int asInt() {
+        return health;
+    }
 }//end class Health
