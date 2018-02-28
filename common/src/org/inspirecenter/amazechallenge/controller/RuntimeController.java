@@ -61,7 +61,10 @@ public class RuntimeController {
                 game.setPlayerPositionAndDirectionById(playerToMoveId, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
                 game.resetPlayerById(playerToMoveId);
                 resetTurnEffects();
-                game.getAudioEventListener().onGameEndAudioEvent(false);
+                final AudioEventListener audioEventListener = game.getAudioEventListener();
+                if(audioEventListener != null) {
+                    audioEventListener.onGameEndAudioEvent(false);
+                }
             }
 
             generateItems(game, challenge, grid);
