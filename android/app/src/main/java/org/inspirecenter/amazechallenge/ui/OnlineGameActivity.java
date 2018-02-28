@@ -12,12 +12,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ListView;
 
 import com.google.blockly.model.Block;
 import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
+import org.inspirecenter.amazechallenge.api.Reply;
+import org.inspirecenter.amazechallenge.api.ReplyWithErrors;
 import org.inspirecenter.amazechallenge.api.ReplyWithGameFullState;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.GameFullState;
@@ -43,6 +46,7 @@ public class OnlineGameActivity extends AppCompatActivity {
     public static final long ONE_SECOND = 1000L;
 
     private GameView gameView;
+    private ListView scoreboardListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,7 @@ public class OnlineGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_online_game);
 
         gameView = findViewById(R.id.activity_online_game_game_view);
+        scoreboardListView = findViewById(R.id.activity_online_challenge_list_view);
     }
 
     private Challenge challenge;
@@ -81,7 +86,7 @@ public class OnlineGameActivity extends AppCompatActivity {
         if(timer == null) {
             timer = new Timer();
         }
-        timer.schedule(new OnlineMazeRunner(), 0L, ONE_SECOND / 2); // todo
+        timer.schedule(new OnlineMazeRunner(), 0L, ONE_SECOND); // todo
     }
 
     @Override
@@ -219,11 +224,21 @@ public class OnlineGameActivity extends AppCompatActivity {
             super.onPostExecute(reply);
             final ReplyWithGameFullState replyWithFullGameState = new Gson().fromJson(reply, ReplyWithGameFullState.class);
             final GameFullState gameFullState = replyWithFullGameState.getGameFullState();
-            if(gameFullState != null) {
-                gameView.update(gameFullState);
-                final boolean active = gameFullState.getActivePlayerIDs().contains(Installation.id(OnlineGameActivity.this));
-                final boolean queued = gameFullState.getQueuedPlayerIDs().contains(Installation.id(OnlineGameActivity.this));
-                // todo save to preferences and check if sounds needs to be played
+            switch (replyWithFullGameState.getStatus()) {
+                case OK:
+                    if(gameFullState != null) {
+
+                        gameView.update(gameFullState);
+//                scoreboardAdapter.update(gameFullState); todo
+                        final boolean active = gameFullState.getActivePlayerIDs().contains(Installation.id(OnlineGameActivity.this));
+                        final boolean queued = gameFullState.getQueuedPlayerIDs().contains(Installation.id(OnlineGameActivity.this));
+                        // todo save to preferences and check if sounds needs to be played
+                    }
+                    break;
+                case ERROR:
+                default:
+                    final ReplyWithErrors replyWithErrors = new Gson().fromJson(reply, ReplyWithErrors.class);
+                    Snackbar.make(findViewById(R.id.activity_online_game), "Error in game state: " + replyWithErrors.getErrors(), Snackbar.LENGTH_SHORT).show();
             }
         }
     }
