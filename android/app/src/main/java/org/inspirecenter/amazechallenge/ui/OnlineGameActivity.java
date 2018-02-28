@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,14 +13,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.google.blockly.model.Block;
 import com.google.gson.Gson;
 
 import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
-import org.inspirecenter.amazechallenge.api.Reply;
 import org.inspirecenter.amazechallenge.api.ReplyWithErrors;
 import org.inspirecenter.amazechallenge.api.ReplyWithGameFullState;
 import org.inspirecenter.amazechallenge.model.Challenge;
@@ -42,11 +42,18 @@ import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE
 public class OnlineGameActivity extends AppCompatActivity {
 
     public static final String TAG = "aMazeChallenge";
-
     public static final long ONE_SECOND = 1000L;
+    private boolean isFABOpen = false;
 
     private GameView gameView;
     private ListView scoreboardListView;
+    private View fabBackground;
+
+    FloatingActionButton mainFAB;
+    LinearLayout fabLayout_upload;
+    LinearLayout fabLayout_edit;
+    FloatingActionButton editCodeFAB;
+    FloatingActionButton uploadCodeFAB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +66,20 @@ public class OnlineGameActivity extends AppCompatActivity {
 
         gameView = findViewById(R.id.activity_online_game_game_view);
         scoreboardListView = findViewById(R.id.activity_online_challenge_list_view);
+
+        mainFAB = findViewById(R.id.activity_online_game_button_main_fab);
+        editCodeFAB = findViewById(R.id.fab_edit_code);
+        fabLayout_edit = findViewById(R.id.fabLayout_edit);
+        fabLayout_upload = findViewById(R.id.fabLayout_upload);
+        uploadCodeFAB = findViewById(R.id.fab_upload_code);
+
+        fabBackground = findViewById(R.id.fab_background);
+        fabBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeFABMenu();
+            }
+        });
     }
 
     private Challenge challenge;
@@ -258,4 +279,28 @@ public class OnlineGameActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void showFABMenu(){
+        isFABOpen=true;
+        fabLayout_edit.setVisibility(View.VISIBLE);
+        fabLayout_upload.setVisibility(View.VISIBLE);
+        fabBackground.setVisibility(View.VISIBLE);
+        editCodeFAB.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
+        uploadCodeFAB.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
+    }
+
+    private void closeFABMenu(){
+        isFABOpen=false;
+        fabBackground.setVisibility(View.GONE);
+        fabLayout_edit.setVisibility(View.GONE);
+        fabLayout_upload.setVisibility(View.GONE);
+        editCodeFAB.animate().translationY(0);
+        uploadCodeFAB.animate().translationY(0);
+    }
+
+    public void openFAB(View view) {
+        if (!isFABOpen) showFABMenu();
+        else closeFABMenu();
+    }
+
 }

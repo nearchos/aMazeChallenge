@@ -33,4 +33,6 @@
     <color name="materialPurple">#efaa00ff</color>
     <color name="materialViolet">#efc51162</color>
 
+    <color name="transparent">#00000000</color>
+
 </resources>
