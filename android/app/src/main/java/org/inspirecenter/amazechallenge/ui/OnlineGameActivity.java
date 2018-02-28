@@ -79,9 +79,7 @@ public class OnlineGameActivity extends AppCompatActivity {
 
         mainFAB = findViewById(R.id.activity_online_game_button_main_fab);
         fabLayout_edit = findViewById(R.id.fabLayout_edit);
-//        editCodeFAB = findViewById(R.id.fab_edit_code);
         fabLayout_upload = findViewById(R.id.fabLayout_upload);
-//        uploadCodeFAB = findViewById(R.id.fab_upload_code);
 
         fabBackground = findViewById(R.id.fab_background);
         fabBackground.setOnClickListener(new View.OnClickListener() {

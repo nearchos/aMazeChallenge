@@ -299,5 +299,7 @@
     <string name="sound_AllOff">All Off</string>
     <string name="sound_SoundsOnly">Sounds Only</string>
     <string name="sound_VibrationOnly">Sound &amp; Vibration</string>
+    <string name="upload_code">Upload code</string>
+    <string name="edit_code">Edit code</string>
 
 </resources>
