@@ -52,6 +52,7 @@ public class MazeDesignerActivity extends AppCompatActivity {
     private static final int MAX_COLUMNS = 30;
     private final BackgroundImage DEFAULT_BACKGROUND_IMAGE = BackgroundImage.TEXTURE_GRASS;
     private String mazeGridData = null;
+    private boolean hasSizeSelected = false;
 
     DesignerMode mode = DesignerMode.CREATE;
 
@@ -139,8 +140,11 @@ public class MazeDesignerActivity extends AppCompatActivity {
         maze_size_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                final int size = i + 5;
-                setSize(size, new Position(0, size-1), new Position(size-1, 0));
+                if (hasSizeSelected) {
+                    final int size = i + 5;
+                    setSize(size, new Position(0, size - 1), new Position(size - 1, 0));
+                }
+                else hasSizeSelected = true;
             }
 
             @Override
@@ -282,23 +286,19 @@ public class MazeDesignerActivity extends AppCompatActivity {
             backgroundImage = challenge.getBackgroundImage();
             backgroundAudio = challenge.getBackgroundAudio();
             size = challenge.getGrid().getHeight();
-            startPos_row = challenge.getGrid().getStartingPosition().getRow();
-            startPos_column = challenge.getGrid().getStartingPosition().getCol();
-            targetPos_row = challenge.getGrid().getTargetPosition().getRow();
-            targetPos_column = challenge.getGrid().getTargetPosition().getCol();
+            Position startingPosition = challenge.getGrid().getStartingPosition();
+            Position targetPosition = challenge.getGrid().getTargetPosition();
             rewards = challenge.getMaxRewards();
             rewardsIntensity = challenge.getRewardsIntensity();
             penalties = challenge.getMaxPenalties();
             penaltiesIntensity = challenge.getPenaltiesIntensity();
             selectedAlgorithm = challenge.getAlgorithm();
-            System.out.println(challenge.toString());
-            System.out.println("SEL ALG: " + selectedAlgorithm);
             oldMazeName = challenge.getName();
 
             mazeNameEditText.setText(oldMazeName);
             mazeDescriptionEditText.setText(challenge.getDescription());
-            maze_size_Spinner.setSelection(challenge.getGrid().getHeight() - 5);
-            setSize(challenge.getGrid().getHeight(), new Position(startPos_row, startPos_column), new Position(targetPos_row, targetPos_column));
+            maze_size_Spinner.setSelection(size - 5);
+            setSize(size, startingPosition, targetPosition);
             backgroundAudioSpinner.setSelection(Audio.getIdFromString(backgroundAudio.getSoundResourceName()));
             selectColorButton.setBackgroundColor(selectedWallColor);
             if (ColorFragment.isBrightColor(selectedWallColor)) selectColorButton.setTextColor(Color.BLACK);
@@ -499,6 +499,9 @@ public class MazeDesignerActivity extends AppCompatActivity {
         startPos_Column_Spinner.setAdapter(adapter);
         targetPos_Row_Spinner.setAdapter(adapter);
         targetPos_Column_Spinner.setAdapter(adapter);
+
+        System.out.println("startPos" + startPosition.getRow() + " " + startPosition.getCol());
+        System.out.println("targetPos" + targetPosition.getRow() + " " + targetPosition.getCol());
 
         startPos_Row_Spinner.setSelection(startPosition.getRow());
         startPos_Column_Spinner.setSelection(startPosition.getCol());
