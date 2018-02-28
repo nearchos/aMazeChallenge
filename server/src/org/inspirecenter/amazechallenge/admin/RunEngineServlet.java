@@ -181,21 +181,22 @@ public class RunEngineServlet extends HttpServlet {
         RuntimeController.makeMove(challenge, game, playerIDsToMazeSolvers);
 
         // store maze solvers' state to memcache
-        for(final String activePlayerEmail : activePlayerIDs) {
-            final MazeSolver mazeSolver = playerIDsToMazeSolvers.get(activePlayerEmail);
-            memcacheService.put(getMazeSolverStateKey(game.getId(), activePlayerEmail), mazeSolver.getState());
+        for(final String activePlayerId : activePlayerIDs) {
+            final MazeSolver mazeSolver = playerIDsToMazeSolvers.get(activePlayerId);
+            memcacheService.put(getMazeSolverStateKey(game.getId(), activePlayerId), mazeSolver.getState());
         }
 
         // remove completed players (move from 'active' back to 'waiting')
         final Position targetPosition = challenge.getGrid().getTargetPosition();
         for(final String activePlayerId : activePlayerIDs) {
             final Position playerPosition = game.getPositionById(activePlayerId);
+            // for any players that were moved in 'inactive' status, reset their state and code so they are not restarted automatically
             if(playerPosition.equals(targetPosition)) {
-                memcacheService.delete(getMazeSolverStateKey(game.getId(), activePlayerId));
+                memcacheService.delete(getMazeSolverStateKey(game.getId(), activePlayerId)); // reset algorithm's state
+                memcacheService.delete(SubmitCodeServlet.getKey(challenge.getId(), activePlayerId)); // reset submitted code
                 game.resetPlayerById(activePlayerId);
             }
         }
-
 
         // update game with number of rounds executed
         game.touch(System.currentTimeMillis() - startTime);
@@ -207,7 +208,7 @@ public class RunEngineServlet extends HttpServlet {
         return KEY_CACHED_GAME.replace("%", Long.toString(challengeId));
     }
 
-    private static String getMazeSolverStateKey(final long gameId, final String playerEmail) {
-        return KEY_CACHED_MAZE_SOLVER_STATE.replace("%1", Long.toString(gameId)).replace("%2", playerEmail);
+    private static String getMazeSolverStateKey(final long gameId, final String playerId) {
+        return KEY_CACHED_MAZE_SOLVER_STATE.replace("%1", Long.toString(gameId)).replace("%2", playerId);
     }
 }

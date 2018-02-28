@@ -35,32 +35,31 @@ public class RuntimeController {
     public static void makeMove(final Challenge challenge, final Game game, final Map<String,MazeSolver> playerIdsToMazeSolvers) {
         final Grid grid = challenge.getGrid();
 
-        // then apply next move to active players
+        // apply next move to active players
         final List<String> playersToMoveIDs = game.getActivePlayerIDs();
-        for (final String playersToMoveId : playersToMoveIDs) {
-            final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirectionById(playersToMoveId);
-            final Player player = game.getPlayerById(playersToMoveId);
-            final MazeSolver mazeSolver = playerIdsToMazeSolvers.get(playersToMoveId);
+        for (final String playerToMoveId : playersToMoveIDs) {
+            final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirectionById(playerToMoveId);
+            final Player player = game.getPlayerById(playerToMoveId);
+            final MazeSolver mazeSolver = playerIdsToMazeSolvers.get(playerToMoveId);
 
-            if (playerHasLostTurnsById(playersToMoveId)) {
-                decreasePlayerLostTurnsRemainingById(playersToMoveId);
+            if (playerHasLostTurnsById(playerToMoveId)) {
+                decreasePlayerLostTurnsRemainingById(playerToMoveId);
             } else {
                 final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
-                applyPlayerMove(grid, game, playersToMoveId, playerPositionAndDirection, nextPlayerMove);
+                applyPlayerMove(grid, game, playerToMoveId, playerPositionAndDirection, nextPlayerMove);
             }
 
             // check if a second move is needed
-            if (playerHasDoubleTurnsById(playersToMoveId)) {
+            if (playerHasDoubleTurnsById(playerToMoveId)) {
                 final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
-                applyPlayerMove(grid, game, playersToMoveId, game.getPlayerPositionAndDirectionById(playersToMoveId), nextPlayerMove);
-                decreasePlayerDoubleTurnsRemainingById(playersToMoveId);
+                applyPlayerMove(grid, game, playerToMoveId, game.getPlayerPositionAndDirectionById(playerToMoveId), nextPlayerMove);
+                decreasePlayerDoubleTurnsRemainingById(playerToMoveId);
             }
 
             //Check the player's health:
             if (player.getHealth().isAtMin()) {
-                game.resetPlayerById(playersToMoveId);
-                game.setPlayerPositionAndDirectionById(playersToMoveId, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
-                game.resetPlayerById(playersToMoveId);
+                game.setPlayerPositionAndDirectionById(playerToMoveId, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
+                game.resetPlayerById(playerToMoveId);
                 resetTurnEffects();
                 game.getAudioEventListener().onGameEndAudioEvent(false);
             }
@@ -130,14 +129,10 @@ public class RuntimeController {
                                 game.getPlayerById(playerId).getHealth().changeBy(pickable.getPickableType().getHealthChange() / 2);
                             }
 
-                            if(audioEventListener != null) audioEventListener.onAudioEvent(pickable);
-
+                            if(audioEventListener != null) {
+                                audioEventListener.onAudioEvent(pickable);
+                            }
                         }
-
-
-
-
-
                     }
                 }
                 break;

@@ -80,7 +80,8 @@ public class SubmitCodeServlet extends HttpServlet {
                             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
                             memcacheService.put(getKey(challengeId, playerId), code);
 
-                            game.resetPlayerById(playerId);
+                            game.resetPlayerById(playerId); // reset so that he stops if currently active
+                            game.queuePlayerById(playerId); // queue so they can start as soon as a slot is available
 
                             final boolean hasActiveOrQueuedPlayers = game.hasActiveOrQueuedPlayers(); // if yes, another thread is already handling this
                             final boolean mustScheduleTask = !hasActiveOrQueuedPlayers && challenge.isActive();
