@@ -80,6 +80,21 @@ public class OnlineGameActivity extends AppCompatActivity {
                 closeFABMenu();
             }
         });
+
+        editCodeFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editCode(view);
+            }
+        });
+
+        uploadCodeFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                submitCode(view);
+            }
+        });
+
     }
 
     private Challenge challenge;
@@ -285,8 +300,8 @@ public class OnlineGameActivity extends AppCompatActivity {
         fabLayout_edit.setVisibility(View.VISIBLE);
         fabLayout_upload.setVisibility(View.VISIBLE);
         fabBackground.setVisibility(View.VISIBLE);
-        editCodeFAB.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
-        uploadCodeFAB.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
+        fabLayout_edit.animate().translationY(-getResources().getDimension(R.dimen.standard_40));
+        fabLayout_upload.animate().translationY(-getResources().getDimension(R.dimen.standard_65));
     }
 
     private void closeFABMenu(){
@@ -294,8 +309,8 @@ public class OnlineGameActivity extends AppCompatActivity {
         fabBackground.setVisibility(View.GONE);
         fabLayout_edit.setVisibility(View.GONE);
         fabLayout_upload.setVisibility(View.GONE);
-        editCodeFAB.animate().translationY(0);
-        uploadCodeFAB.animate().translationY(0);
+        fabLayout_edit.animate().translationY(0);
+        fabLayout_upload.animate().translationY(0);
     }
 
     public void openFAB(View view) {

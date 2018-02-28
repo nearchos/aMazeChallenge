@@ -56,6 +56,19 @@
 
         <!--</LinearLayout>-->
 
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/activity_online_game_game_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/activity_online_game_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
         <View
             android:id="@+id/fab_background"
             android:layout_width="match_parent"
@@ -69,26 +82,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/standard_23"
-            android:padding="@dimen/standard_12"
+            android:padding="5dp"
             android:clipToPadding="false"
             android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/standard_23"
-            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="@dimen/standard_65"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:visibility="gone">
+            android:visibility="gone"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upload code"/>
+                android:text="@string/upload_code"/>
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab_upload_code"
+                android:onClick="submitCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:tint="@color/colorPrimaryDark"
+                android:tint="@color/white"
+                app:backgroundTint="@color/materialBlue"
+                app:fabSize="mini"
                 app:srcCompat="@drawable/ic_cloud_upload_black_24dp" />
 
         </LinearLayout>
@@ -99,11 +115,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/standard_23"
-            android:padding="@dimen/standard_12"
+            android:padding="5dp"
             android:clipToPadding="false"
             android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/standard_23"
-            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="@dimen/standard_40"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:visibility="gone">
@@ -111,14 +126,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Edit code"/>
+                android:text="@string/edit_code"/>
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab_edit_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:tint="@color/colorPrimaryDark"
+                android:tint="@color/white"
+                android:backgroundTint="@color/materialRed"
+                android:onClick="editCode"
+                app:fabSize="mini"
                 app:srcCompat="@drawable/ic_create_white_48dp" />
 
         </LinearLayout>
@@ -132,20 +150,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/activity_online_game_game_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ListView
-                android:id="@+id/activity_online_game_list_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            />
 
     </RelativeLayout>
 
