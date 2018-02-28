@@ -94,7 +94,7 @@ public class RuntimeController {
 
                         if(pickable.getPosition().equals(position)) {
 
-                            //Player runs over a bomb:
+                            //Health-related pickables:
                             if (pickable.getPickableType() == PickableType.BOMB) {
                                 if (pickable.getState() == 1 || pickable.getState() == 2)
                                     game.getPlayerById(playerId).getHealth().changeBy(pickable.getPickableType().getHealthChange());

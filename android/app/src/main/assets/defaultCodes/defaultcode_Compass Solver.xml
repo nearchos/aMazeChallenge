@@ -1,0 +1,95 @@
+
+<xml xmlns="http://www.w3.org/1999/xhtml">
+    <block type="maze_run_function" id="4378c7a4-4845-4db3-8f96-614207e4864b" x="41.0" y="82.0">
+        <statement name="run">
+            <block type="controls_if" id="d4001aa2-3838-42ff-b5c2-23f2e07b4548">
+                <mutation elseif="2" else="1" />
+                <value name="IF0">
+                    <block type="logic_compare" id="e9f833aa-e251-4d8e-b361-24e536ffc756">
+                        <value name="A">
+                            <block type="maze_compass" id="18a36b90-1dae-4dcc-8d70-00377693c5df" />
+                        </value>
+                        <value name="B">
+                            <block type="maze_onmove" id="4b5deb68-96d2-415c-b108-851ce31e158a">
+                                <value name="move">
+                                    <block type="maze_literal_move_forward" id="b95f2044-51ed-41f5-b64d-b9ad78b98211" />
+                                </value>
+                            </block>
+                        </value>
+                        <field name="OP">EQ</field>
+                    </block>
+                </value>
+                <statement name="DO0">
+                    <block type="controls_if" id="439aa785-3d14-4ebb-b47a-df743ec5ff34">
+                        <mutation elseif="0" else="1" />
+                        <value name="IF0">
+                            <block type="maze_canmove_forward" id="a1e765cd-4f5e-4647-b8f5-a34b3cc5bd4c" />
+                        </value>
+                        <statement name="DO0">
+                            <block type="maze_move_forward" id="473b95ee-56e5-46bb-9a57-92b6dcbb89af" />
+                        </statement>
+                        <statement name="ELSE">
+                            <block type="maze_turn_ccw" id="9113d422-d849-45a0-9ea0-b01070c6b3e7" />
+                        </statement>
+                    </block>
+                </statement>
+                <value name="IF1">
+                    <block type="logic_compare" id="36df9abe-68ec-471a-adde-b82247d4a472">
+                        <value name="A">
+                            <block type="maze_compass" id="2d635715-df42-4209-a46f-4bd91d9072cc" />
+                        </value>
+                        <value name="B">
+                            <block type="maze_onmove" id="4c8be72b-4511-451f-aac9-b9fcf41f73e5">
+                                <value name="move">
+                                    <block type="maze_literal_turn_clockwise" id="5700e231-bd3f-43b4-9019-9fcd81be62dc" />
+                                </value>
+                            </block>
+                        </value>
+                        <field name="OP">EQ</field>
+                    </block>
+                </value>
+                <statement name="DO1">
+                    <block type="controls_if" id="d8671663-debe-4285-b2ca-fa14c16edebe">
+                        <mutation elseif="1" else="1" />
+                        <value name="IF0">
+                            <block type="maze_canmove_right" id="297d6fd9-95ba-4ae1-aca5-5ce31483b990" />
+                        </value>
+                        <statement name="DO0">
+                            <block type="maze_turn_cw" id="1928a610-00fa-414e-8549-017d3f36a77a" />
+                        </statement>
+                        <value name="IF1">
+                            <block type="maze_canmove_forward" id="32c485d5-c834-4408-a74d-5ba081593543" />
+                        </value>
+                        <statement name="DO1">
+                            <block type="maze_move_forward" id="4abccf97-0246-480a-bdb3-3b9ff58046df" />
+                        </statement>
+                        <statement name="ELSE">
+                            <block type="maze_turn_ccw" id="52d35f2a-f0b7-4c8d-a77e-1b00a9f1975e" />
+                        </statement>
+                    </block>
+                </statement>
+                <value name="IF2">
+                    <block type="logic_compare" id="ce7eb6e7-96aa-4d59-a930-f496b7c479ab">
+                        <value name="A">
+                            <block type="maze_compass" id="dc50a3a2-5366-4fc5-bcc0-86d8096a2a3d" />
+                        </value>
+                        <value name="B">
+                            <block type="maze_onmove" id="77e7bf11-2c05-4ff7-a955-c7d440819d0b">
+                                <value name="move">
+                                    <block type="maze_literal_turn_counterclockwise" id="99142299-f813-4c7b-a505-6859bcd8f9d7" />
+                                </value>
+                            </block>
+                        </value>
+                        <field name="OP">EQ</field>
+                    </block>
+                </value>
+                <statement name="DO2">
+                    <block type="maze_turn_ccw" id="d508e07d-5257-4a16-895b-1b0fad2dfbae" />
+                </statement>
+                <statement name="ELSE">
+                    <block type="maze_turn_ccw" id="e7bc3932-0d82-4f60-ac86-acebdbdb7b21" />
+                </statement>
+            </block>
+        </statement>
+    </block>
+</xml>
