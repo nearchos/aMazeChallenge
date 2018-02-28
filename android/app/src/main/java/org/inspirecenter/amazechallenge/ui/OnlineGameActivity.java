@@ -286,8 +286,11 @@ public class OnlineGameActivity extends AppCompatActivity {
         public void run() {
             if(handler != null) {
                 handler.post(() -> {
-                    if(challenge == null) finish();
-                    new GetGameStateAsyncTask(email, challenge.getId()).execute();
+                    if(challenge == null) {
+                        finish();
+                    } else {
+                        new GetGameStateAsyncTask(email, challenge.getId()).execute();
+                    }
                 });
             }
         }
