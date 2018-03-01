@@ -17,10 +17,19 @@
 
 <div style="text-align: center;"><img class="styledImage"  src="../images/leftwall.png"/></div>
 
-<p>In the sample code provided, the justTurned variable is initialized to false and is used so that the avatar will
-remember if it has made a turn in the last round.</p>
+<p>In the sample code for Left Wall Follower, the justTurned variable is initialized to false. It is used so that the avatar will
+remember if it has made a turn in the last round or not. The algorithm runs as follows:</p>
 
-<h1>TODO</h1>
+<ul>
+    <li>The avatar will move forward if it turned during the last round AND it can indeed move forward according to its position and direction.</li>
+    <li>If it cannot move forward or it did not turn during the last round, it will attempt to turn counterclockwise (if it can).</li>
+    <li>Otherwise it will attempt to move forward (if it can).</li>
+    <li>If it cannot turn counterclockwise or move forward, it will turn clockwise.</li>
+</ul>
+
+<p>The avatar needs to remember if it turned during the last round (or not) so that it does not turn again if it does not need to, otherwise it could go off course.</p>
+
+<p>You can edit sample code as you like to produce better algorithms and save them on your device.</p>
 
 <br><br><div style="text-align: center; text-size: 18px;"><b>Swipe left to continue</b><img height=50 src="../images/swipe_left_black.png"/></div>
 

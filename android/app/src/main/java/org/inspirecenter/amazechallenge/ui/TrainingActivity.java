@@ -195,6 +195,14 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
                 inputStream.close();
             }
 
+            //Sort the default challenges:
+            challenges.sort(new Comparator<Challenge>() {
+                @Override
+                public int compare(Challenge challenge, Challenge t1) {
+                    return (int) (challenge.getId() - t1.getId());
+                }
+            });
+
             //Player-created challenges:
             final ArrayList<String> playerChallenges = FileManager.readPlayerMazes(this);
             for (String content : playerChallenges) {

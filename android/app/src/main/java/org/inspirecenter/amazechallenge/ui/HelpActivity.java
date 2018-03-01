@@ -39,16 +39,22 @@ public class HelpActivity extends AppCompatActivity {
             "file:///android_asset/help/en/writingCode_part3.html",
             "file:///android_asset/help/en/samplecode.html",
             "file:///android_asset/help/en/training.html",
+            "file:///android_asset/help/en/mazedesigner.html",
             "file:///android_asset/help/en/online.html"
     };
 
     //TODO
     public static final String [] ASSET_URLS_GR = new String [] {
-            "file:///android_asset/help/gr/index.html",
-            "file:///android_asset/help/gr/personalization.html",
-            "file:///android_asset/help/gr/coding.html",
-            "file:///android_asset/help/gr/training.html",
-            "file:///android_asset/help/gr/online.html"
+            "file:///android_asset/help/el/index.html",
+            "file:///android_asset/help/el/personalization.html",
+            "file:///android_asset/help/el/coding.html",
+            "file:///android_asset/help/el/writingCode_part1.html",
+            "file:///android_asset/help/el/writingCode_part2.html",
+            "file:///android_asset/help/el/writingCode_part3.html",
+            "file:///android_asset/help/el/samplecode.html",
+            "file:///android_asset/help/el/training.html",
+            "file:///android_asset/help/el/mazedesigner.html",
+            "file:///android_asset/help/el/online.html"
     };
 
     public static String[] ASSET_URLS;
