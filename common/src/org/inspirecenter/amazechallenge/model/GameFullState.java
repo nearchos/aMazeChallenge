@@ -7,8 +7,8 @@ import java.util.Set;
 
 public class GameFullState extends GameLightState {
 
-    private Map<String,Player> playerIDsToPlayers = new HashMap<>();
-    private Grid grid;
+    private final Map<String,Player> playerIDsToPlayers;
+    private final Grid grid;
 
     public GameFullState(
             final Map<String,PlayerPositionAndDirection> playerIDsToPositionAndDirections,
@@ -38,5 +38,13 @@ public class GameFullState extends GameLightState {
 
     public Grid getGrid() {
         return grid;
+    }
+
+    @Override
+    public String toString() {
+        return "GameFullState{" +
+                "playerIDsToPlayers=" + playerIDsToPlayers +
+                ", grid=" + grid +
+                "} extends: " + super.toString();
     }
 }

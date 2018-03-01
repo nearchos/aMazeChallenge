@@ -110,10 +110,12 @@ public class OnlinePlayerAdapter extends RecyclerView.Adapter<OnlinePlayerAdapte
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         final Player player = players.elementAt(position);
-        holder.playerNameTextView.setText(player.getName());
         if(installationId.equals(player.getId())) {
             holder.playerCardView.setBackgroundColor(Color.YELLOW);
             holder.playerNameTextView.setText(player.getName() + " (You)");
+        } else {
+            holder.playerCardView.setBackgroundColor(Color.WHITE);
+            holder.playerNameTextView.setText(player.getName());
         }
         if("active".equals(playerIDsToStatus.get(player.getId()))) {
             holder.playerStatusTextView.setText("active");

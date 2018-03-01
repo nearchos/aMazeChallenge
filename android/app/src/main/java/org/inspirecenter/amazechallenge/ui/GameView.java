@@ -77,7 +77,6 @@ public class GameView extends View {
     private BitmapDrawable backgroundDrawable;
     public Map<String,Player> allIDsToPlayers;
     public Map<String,PlayerPositionAndDirection> activePlayerIdToPositionAndDirectionMap = new HashMap<>();
-    public List<String> queuedPlayerIDs;
     public List<Pickable> pickables = new Vector<>();
 
     void setGrid(final Grid grid) {
@@ -89,7 +88,6 @@ public class GameView extends View {
         for(final String activePlayerId : game.getActivePlayerIDs()) {
             activePlayerIdToPositionAndDirectionMap.put(activePlayerId, game.getPlayerPositionAndDirectionById(activePlayerId));
         }
-        queuedPlayerIDs = game.getQueuedPlayerIDs();
         this.pickables = game.getPickables();
     }
 
@@ -115,7 +113,6 @@ public class GameView extends View {
         this.grid = gameFullState.getGrid();
         allIDsToPlayers = gameFullState.getAllIDsToPlayers();
         activePlayerIdToPositionAndDirectionMap = gameFullState.getActiveIDsToPlayerPositionsAndDirections();
-        queuedPlayerIDs = gameFullState.getQueuedPlayerIDs();
         pickables = gameFullState.getPickables();
         invalidate();
     }

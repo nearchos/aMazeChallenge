@@ -62,4 +62,16 @@ public class GameLightState implements Serializable {
     public long getCounter() {
         return counter;
     }
+
+    @Override
+    public String toString() {
+        return "GameLightState{" +
+                "activeIDsToPlayerPositionsAndDirections=" + activeIDsToPlayerPositionsAndDirections +
+                ", queuedPlayerIDs=" + queuedPlayerIDs +
+                ", waitingPlayerIDs=" + waitingPlayerIDs +
+                ", pickables=" + pickables +
+                ", lastUpdated=" + lastUpdated +
+                ", counter=" + counter +
+                '}';
+    }
 }

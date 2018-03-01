@@ -12,10 +12,7 @@ import org.inspirecenter.amazechallenge.model.Player;
 import org.inspirecenter.amazechallenge.model.PlayerPositionAndDirection;
 import org.inspirecenter.amazechallenge.model.Position;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LEFT_SIDE;
 import static org.inspirecenter.amazechallenge.model.Grid.SHAPE_ONLY_LOWER_SIDE;
@@ -36,39 +33,50 @@ public class RuntimeController {
         final Grid grid = challenge.getGrid();
 
         // apply next move to active players
-        final List<String> playersToMoveIDs = game.getActivePlayerIDs();
-        for (final String playerToMoveId : playersToMoveIDs) {
-            final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirectionById(playerToMoveId);
-            final Player player = game.getPlayerById(playerToMoveId);
-            final MazeSolver mazeSolver = playerIdsToMazeSolvers.get(playerToMoveId);
+        final List<String> playerToMoveIDs = game.getActivePlayerIDs();
 
+        // the adjusted list will contain the player IDs, possibly two or zero times according to the num of turns they get/lose from pickables
+        final List<String> adjustedPlayerToMoveIDs = new Vector<>(playerToMoveIDs);
+
+        for (final String playerToMoveId : playerToMoveIDs) {
+
+            // check if player lost a move
             if (playerHasLostTurnsById(playerToMoveId)) {
                 decreasePlayerLostTurnsRemainingById(playerToMoveId);
-            } else {
-                final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
-                applyPlayerMove(grid, game, playerToMoveId, playerPositionAndDirection, nextPlayerMove);
+                adjustedPlayerToMoveIDs.remove(playerToMoveId); // remove first entry it finds
             }
 
             // check if a second move is needed
             if (playerHasDoubleTurnsById(playerToMoveId)) {
-                final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
-                applyPlayerMove(grid, game, playerToMoveId, game.getPlayerPositionAndDirectionById(playerToMoveId), nextPlayerMove);
                 decreasePlayerDoubleTurnsRemainingById(playerToMoveId);
+                adjustedPlayerToMoveIDs.add(playerToMoveId); // add another entry at the end
             }
+        }
 
-            //Check the player's health:
-            if (player.getHealth().isAtMin()) {
-                game.setPlayerPositionAndDirectionById(playerToMoveId, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
-                game.resetPlayerById(playerToMoveId);
-                resetTurnEffects();
-                final AudioEventListener audioEventListener = game.getAudioEventListener();
-                if(audioEventListener != null) {
-                    audioEventListener.onGameEndAudioEvent(false);
+        for (final String playerToMoveId : adjustedPlayerToMoveIDs) {
+            final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirectionById(playerToMoveId);
+            final Player player = game.getPlayerById(playerToMoveId);
+            final MazeSolver mazeSolver = playerIdsToMazeSolvers.get(playerToMoveId);
+
+            // the player might have been deactivated (for instance if he had 2 moves and this one is the second)
+            if(game.getActivePlayerIDs().contains(playerToMoveId)) {
+                final PlayerMove nextPlayerMove = mazeSolver == null ? PlayerMove.NO_MOVE : mazeSolver.getNextMove(game);
+                applyPlayerMove(grid, game, playerToMoveId, playerPositionAndDirection, nextPlayerMove);
+
+                // check the player's health and finalize if needed
+                if (player.getHealth().isAtMin()) {
+                    game.setPlayerPositionAndDirectionById(playerToMoveId, new PlayerPositionAndDirection(grid.getStartingPosition(), Direction.NORTH));
+                    game.resetPlayerById(playerToMoveId);
+                    resetTurnEffects();
+                    final AudioEventListener audioEventListener = game.getAudioEventListener();
+                    if(audioEventListener != null) {
+                        audioEventListener.onGameEndAudioEvent(false);
+                    }
                 }
             }
 
-            generateItems(game, challenge, grid);
-            handlePickableState(game);
+            generateItems(game, challenge, grid); // generate pickables etc.
+            handlePickableState(game); // handle stateful pickables
         }
     }
 
@@ -90,7 +98,6 @@ public class RuntimeController {
                     // handle pickables and rewards (i.e. add/substract health etc.)
                     for(int i = 0; i < game.getPickables().size(); i++) {
                         Pickable pickable = game.getPickables().get(i);
-
 
                         if(pickable.getPosition().equals(position)) {
 
@@ -119,11 +126,11 @@ public class RuntimeController {
                         //Player is near a bomb, but not over it:
                         if (pickable.getPickableType() == PickableType.BOMB && (pickable.getState() == 1 || pickable.getState() == 2)) {
 
-                        /*
-                            NOTE: Bombs will do damage in terms of radius:
-                                1) On top of bomb - 100% damage of original.
-                                2) 1 block away from bomb (incl. diagonals) - 50% damage of original.
-                         */
+                            /*
+                                NOTE: Bombs will do damage in terms of radius:
+                                    1) On top of bomb - 100% damage of original.
+                                    2) 1 block away from bomb (incl. diagonals) - 50% damage of original.
+                             */
                             int colDifference = Math.abs(position.getCol() - pickable.getPosition().getCol());
                             int rowDifference = Math.abs(position.getRow() - pickable.getPosition().getRow());
 

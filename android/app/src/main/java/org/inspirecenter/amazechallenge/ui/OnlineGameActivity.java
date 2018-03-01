@@ -129,13 +129,26 @@ public class OnlineGameActivity extends AppCompatActivity {
         // todo ask user to confirm and withdraw
     }
 
+    @Override
+    public void onBackPressed() {
+        if(!isFABOpen){
+            super.onBackPressed();
+        }else{
+            closeFABMenu();
+        }
+    }
+
     public void editCode(final View view) {
+        closeFABMenu();
+
         final Intent intent = new Intent(OnlineGameActivity.this, BlocklyActivity.class);
         intent.putExtra(INTENT_KEY_NEXT_ACTIVITY, OnlineGameActivity.class.getCanonicalName());
         startActivity(intent);
     }
 
     public void submitCode(final View view) {
+        closeFABMenu();
+
         // todo use dialog to ask user to confirm
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
@@ -205,12 +218,12 @@ public class OnlineGameActivity extends AppCompatActivity {
 
     private class GetGameStateAsyncTask extends AsyncTask<Void, Void, String> {
 
-        private final String email;
         private final long challengeId;
+        private final String installationId;
 
-        GetGameStateAsyncTask(final String email, final long challengeId) {
-            this.email = email;
+        GetGameStateAsyncTask(final long challengeId) {
             this.challengeId = challengeId;
+            this.installationId = Installation.id(OnlineGameActivity.this);
         }
 
         @Override
@@ -224,7 +237,7 @@ public class OnlineGameActivity extends AppCompatActivity {
             try {
                 final String apiUrlBase = getString(R.string.api_url);
                 final String magic = getString(R.string.magic);
-                final URL apiURL = new URL(apiUrlBase + "/game-state?magic=" + magic + "&email=" + email + "&challenge=" + challengeId);
+                final URL apiURL = new URL(apiUrlBase + "/game-state?magic=" + magic + "&installation=" + installationId + "&challenge=" + challengeId);
                 Log.d(TAG, "apiURL: " + apiURL.toString());
                 final HttpURLConnection httpURLConnection = (HttpURLConnection) apiURL.openConnection();
                 httpURLConnection.setDoInput(true); // Allow Inputs
@@ -289,7 +302,7 @@ public class OnlineGameActivity extends AppCompatActivity {
                     if(challenge == null) {
                         finish();
                     } else {
-                        new GetGameStateAsyncTask(email, challenge.getId()).execute();
+                        new GetGameStateAsyncTask(challenge.getId()).execute();
                     }
                 });
             }
@@ -318,5 +331,4 @@ public class OnlineGameActivity extends AppCompatActivity {
         if (!isFABOpen) showFABMenu();
         else closeFABMenu();
     }
-
 }

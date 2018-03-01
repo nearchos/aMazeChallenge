@@ -122,7 +122,7 @@
     <string name="Apply">Apply</string>
     <string name="Edit_your_code">Edit your code</string>
     <string name="Submit_code">Submit code</string>
-    <string name="Edit_code">Editcode</string>
+    <string name="Edit_code">Edit code</string>
     <string name="Training">Training</string>
     <string name="Test_locally">Test locally</string>
     <string name="Play_online">Play online</string>
@@ -295,11 +295,8 @@
     <string name="health">Health</string>
     <string name="points">Points</string>
 
-
     <string name="sound_AllOff">All Off</string>
     <string name="sound_SoundsOnly">Sounds Only</string>
     <string name="sound_VibrationOnly">Sound &amp; Vibration</string>
-    <string name="upload_code">Upload code</string>
-    <string name="edit_code">Edit code</string>
 
 </resources>

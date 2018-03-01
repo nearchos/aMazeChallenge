@@ -181,7 +181,7 @@ public class RunEngineServlet extends HttpServlet {
         for(final String activePlayerId : activePlayerIDs) {
             final Position playerPosition = game.getPositionById(activePlayerId);
             // for any players that were moved in 'inactive' status, reset their state and code so they are not restarted automatically
-            if(playerPosition.equals(targetPosition)) {
+            if(playerPosition != null && playerPosition.equals(targetPosition)) {
                 memcacheService.delete(getMazeSolverStateKey(game.getId(), activePlayerId)); // reset algorithm's state
                 memcacheService.delete(SubmitCodeServlet.getMazeCodeKey(challenge.getId(), activePlayerId)); // reset submitted code
                 game.resetPlayerById(activePlayerId);

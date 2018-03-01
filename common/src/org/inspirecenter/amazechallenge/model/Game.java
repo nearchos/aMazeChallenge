@@ -18,7 +18,7 @@ public class Game implements Serializable {
     @com.googlecode.objectify.annotation.Index
     Long challengeId;
 
-    private List<String> activePlayers = new Vector<>();
+    private List<String> finishedPlayers = new Vector<>();
     private List<String> queuedPlayers = new Vector<>();
     private List<String> waitingPlayers = new Vector<>();
     private Map<String,Player> allPlayerIDsToPlayers = new HashMap<>();
@@ -80,18 +80,18 @@ public class Game implements Serializable {
      * @param player the {@link Player} to be added to the {@link Game}.
      * @return true iff the specified player email existed in either the 'active' or 'queued' list (the 'waiting' list is not checked)
      */
-    public boolean addPlayer(final Player player) {
+    public void addPlayer(final Player player) {
         final String playerId = player.getId();
         allPlayerIDsToPlayers.put(playerId, player);
-        return resetPlayerById(playerId);
     }
 
     public boolean resetPlayerById(final String playerId) {
         boolean existed = false;
-        if(activePlayers.remove(playerId)) existed = true;
+        if(finishedPlayers.remove(playerId)) existed = true;
+        if(activePlayerIDsToPositionAndDirections.remove(playerId) != null) existed = true;
         if(queuedPlayers.remove(playerId)) existed = true;
         waitingPlayers.add(playerId);
-        //New
+
         final Player player = getPlayerById(playerId);
         player.reset();
         return existed;
@@ -110,7 +110,6 @@ public class Game implements Serializable {
     public boolean activateNextPlayer(final Grid grid) {
         if(!queuedPlayers.isEmpty()) {
             final String nextPlayerId = queuedPlayers.remove(0); // get first in line from 'queued'
-            activePlayers.add(nextPlayerId);
             activePlayerIDsToPositionAndDirections.put(nextPlayerId, new PlayerPositionAndDirection(grid.getStartingPosition(), grid.getStartingDirection()));
             final Player player = getPlayerById(nextPlayerId);
             player.setHealth(new Health());
@@ -120,16 +119,27 @@ public class Game implements Serializable {
         }
     }
 
+    public void setPlayerAsFinished(final String playerId) {
+        if(activePlayerIDsToPositionAndDirections.containsKey(playerId)) {
+            activePlayerIDsToPositionAndDirections.remove(playerId);
+            finishedPlayers.add(playerId);
+        }
+    }
+
     public Player getPlayerById(final String playerId) {
         return allPlayerIDsToPlayers.get(playerId);
     }
 
+    public boolean hasFinishedPlayers() {
+        return !finishedPlayers.isEmpty();
+    }
+
     public boolean hasActivePlayers() {
-        return !activePlayers.isEmpty();
+        return !activePlayerIDsToPositionAndDirections.isEmpty();
     }
 
     public int getNumberOfActivePlayers() {
-        return activePlayers.size();
+        return activePlayerIDsToPositionAndDirections.size();
     }
 
     public boolean hasQueuedPlayers() {
@@ -144,8 +154,12 @@ public class Game implements Serializable {
         return allPlayerIDsToPlayers.values();
     }
 
+    public List<String> getFinishedPlayers() {
+        return new Vector<>(finishedPlayers);
+    }
+
     public List<String> getActivePlayerIDs() {
-        return new Vector<>(activePlayers);
+        return new Vector<>(activePlayerIDsToPositionAndDirections.keySet());
     }
 
     public List<String> getQueuedPlayerIDs() {
@@ -156,10 +170,6 @@ public class Game implements Serializable {
 
     public boolean hasActiveOrQueuedPlayers() {
         return hasActivePlayers() || hasQueuedPlayers();
-    }
-
-    public boolean hasAnyPlayers() {
-        return hasActivePlayers() || hasQueuedPlayers() || hasWaitingPlayers();
     }
 
     public int getNumOfBiasType(final PickableType.Bias biasType) {
@@ -205,7 +215,8 @@ public class Game implements Serializable {
      * @return the {@link Player}'s {@link Position}
      */
     public Position getPositionById(final String playerId) {
-        return activePlayerIDsToPositionAndDirections.get(playerId).getPosition();
+        final PlayerPositionAndDirection playerPositionAndDirection = activePlayerIDsToPositionAndDirections.get(playerId);
+        return playerPositionAndDirection != null ? playerPositionAndDirection.getPosition() : null;
     }
 
     /**
@@ -222,8 +233,9 @@ public class Game implements Serializable {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder("GAME - id: ").append(id).append(" ~~ challengeId: ").append(challengeId).append(" @").append(hashCode());
-        stringBuilder.append(" $ players[a/q/w]: ").append(activePlayers.size()).append("/").append(queuedPlayers.size()).append("/").append(waitingPlayers.size()).append("\n");
-        stringBuilder.append("*active: ").append(activePlayers).append("\n");
+        stringBuilder.append(" $ players[a/q/w]: ").append(activePlayerIDsToPositionAndDirections.size()).append("/").append(queuedPlayers.size()).append("/").append(waitingPlayers.size()).append("\n");
+        stringBuilder.append("*finished: ").append(finishedPlayers).append("\n");
+        stringBuilder.append("*active: ").append(activePlayerIDsToPositionAndDirections).append("\n");
         stringBuilder.append("*queued: ").append(queuedPlayers).append("\n");
         stringBuilder.append("*waiting: ").append(waitingPlayers).append("\n");
         return stringBuilder.toString();
