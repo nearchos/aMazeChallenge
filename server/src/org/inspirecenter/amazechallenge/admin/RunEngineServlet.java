@@ -71,6 +71,7 @@ public class RunEngineServlet extends HttpServlet {
 
                 final Challenge challenge = ofy().load().key(Key.create(Challenge.class, challengeId)).now();
 
+                // make the incremental step in a transaction to ensure consistency with the other servlets (join and submit)
                 final Game game = ofy().transact(() -> {
 
                     final Game initialGame = ofy().load().key(Key.create(Game.class, gameId)).now();
@@ -93,24 +94,24 @@ public class RunEngineServlet extends HttpServlet {
                     log.severe("Game could not be updated so quitting the RunEngineServlet");
                     return; // skip scheduling the next run
                 }
+
                 gameFullState = game.getFullState(challenge.getGrid());
 
                 // 1. update game state
-                memcacheService.put(getGameKey(challengeId), gameFullState);
+                memcacheService.put(getGameKey(challengeIdAsString), gameFullState);
 
-                // 2. update leader board
-                // todo ... update leader board and save in memcache
-
-                // 3. schedule next run
-                final Queue queue = QueueFactory.getDefaultQueue();
-                TaskOptions taskOptions = TaskOptions.Builder
-                        .withUrl("/admin/run-engine")
-                        .param("magic", magic)
-                        .param("challenge", Long.toString(challengeId))
-                        .param("game", Long.toString(gameId))
-                        .countdownMillis(ONE_SECOND)
-                        .method(TaskOptions.Method.GET);
-                queue.add(taskOptions);
+                // 2. schedule next run
+                if(challenge.isActive()) {
+                    final Queue queue = QueueFactory.getDefaultQueue();
+                    TaskOptions taskOptions = TaskOptions.Builder
+                            .withUrl("/admin/run-engine")
+                            .param("magic", magic)
+                            .param("challenge", Long.toString(challengeId))
+                            .param("game", Long.toString(gameId))
+                            .countdownMillis(ONE_SECOND)
+                            .method(TaskOptions.Method.GET);
+                    queue.add(taskOptions);
+                }
 
             } catch (NumberFormatException nfe) {
                 log.severe("Could not parse parameter 'challenge-id' or 'challenge-instance-id' or 'game-id' (" + nfe.getMessage() + ")");
@@ -139,7 +140,7 @@ public class RunEngineServlet extends HttpServlet {
 
         final Grid grid = challenge.getGrid();
 
-        // check if we can add upgrade any players from 'waiting' to 'queued'
+        // check if we can upgrade any players from 'waiting' to 'queued'
         final List<String> waitingPlayerIDs = game.getWaitingPlayerIDs();
         for(final String waitingPlayerId : waitingPlayerIDs) {
             final String code = (String) memcacheService.get(SubmitCodeServlet.getMazeCodeKey(challenge.getId(), waitingPlayerId));
@@ -155,7 +156,7 @@ public class RunEngineServlet extends HttpServlet {
         }
 
         // prepare active players
-        final Map<String,MazeSolver> playerIDsToMazeSolvers = new HashMap<>();
+        final Map<String, MazeSolver> playerIDsToMazeSolvers = new HashMap<>();
         final List<String> activePlayerIDs = game.getActivePlayerIDs();
         for(final String activePlayerId : activePlayerIDs) {
             final String code = (String) memcacheService.get(SubmitCodeServlet.getMazeCodeKey(challenge.getId(), activePlayerId));
@@ -166,7 +167,7 @@ public class RunEngineServlet extends HttpServlet {
             playerIDsToMazeSolvers.put(activePlayerId, mazeSolver);
         }
 
-        // todo ... revise to make multi-threaded and with deadlines? [e.g. check out: com.google.appengine.api.ThreadManager]
+        // todo ... consider revising to make multi-threaded and with deadlines? [e.g. check out: com.google.appengine.api.ThreadManager]
         RuntimeController.makeMove(challenge, game, playerIDsToMazeSolvers);
 
         // store maze solvers' state to memcache
@@ -175,7 +176,7 @@ public class RunEngineServlet extends HttpServlet {
             memcacheService.put(getMazeSolverStateKey(game.getId(), activePlayerId), mazeSolver.getState());
         }
 
-        // remove completed players (move from 'active' back to 'waiting')
+        // remove completed players (move from 'active' to 'finished')
         final Position targetPosition = challenge.getGrid().getTargetPosition();
         for(final String activePlayerId : activePlayerIDs) {
             final Position playerPosition = game.getPositionById(activePlayerId);
@@ -191,10 +192,6 @@ public class RunEngineServlet extends HttpServlet {
         game.touch(System.currentTimeMillis() - startTime);
 
         return game;
-    }
-
-    public static String getGameKey(final long challengeId) {
-        return getGameKey(Long.toString(challengeId));
     }
 
     public static String getGameKey(final String challengeIdAsString) {

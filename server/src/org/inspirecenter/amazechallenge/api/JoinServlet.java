@@ -1,5 +1,6 @@
 package org.inspirecenter.amazechallenge.api;
 
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -7,6 +8,7 @@ import com.google.cloud.datastore.DatastoreException;
 import com.google.gson.Gson;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
+import org.inspirecenter.amazechallenge.admin.RunEngineServlet;
 import org.inspirecenter.amazechallenge.model.*;
 
 import javax.servlet.http.HttpServlet;
@@ -84,27 +86,30 @@ public class JoinServlet extends HttpServlet {
                                 .first()
                                 .now();
 
-                        final long gameId = game == null ? 0L : game.getId();
-                        final boolean gameExists = game != null;
+                        final boolean gameDidNotExist = game == null;
+                        final long gameId = gameDidNotExist ? 0L : game.getId();
 
                         // handle the addition of a new player within a transaction to ensure atomicity
                         game = ofy().transact(() -> {
                             // add binding of user to game
-                            final Game tGame = gameId == 0 ?
+                            final Game tGame = gameDidNotExist ?
                                     new Game(challengeId) :
                                     ofy().load().key(Key.create(Game.class, gameId)).now();
 
                             // modify
                             tGame.addPlayer(new Player(id, email, name, playerColor, playerIcon, playerShape));
 
-                            // save
+                            // save to data store
                             ofy().save().entity(tGame).now();
 
                             return tGame;
                         });
 
-                        if(!gameExists) {
-                            // the first player to join the game (and create it), also kick-starts the RunEngineServlet
+                        // the first player to join the game (and create it), also kick-starts the RunEngineServlet
+                        if(gameDidNotExist) {
+                            // save initial game to memcache
+                            MemcacheServiceFactory.getMemcacheService().put(RunEngineServlet.getGameKey(challengeIdAsString), game.getFullState(challenge.getGrid()));
+
                             final Queue queue = QueueFactory.getDefaultQueue();
                             TaskOptions taskOptions = TaskOptions.Builder
                                     .withUrl("/admin/run-engine")

@@ -6,10 +6,12 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.gson.Gson;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import org.inspirecenter.amazechallenge.admin.RunEngineServlet;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.Game;
+import org.inspirecenter.amazechallenge.model.Player;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -77,12 +79,21 @@ public class SubmitCodeServlet extends HttpServlet {
                         if(!game.containsPlayerById(playerId)) {
                             errors.add("Player not found in specified challenge for 'id': " + playerId);
                         } else {
-                            // store maze solver code in data-store
+                            // handle the reset of the player within a transaction to ensure atomicity
+                            ofy().transact(() -> {
+                                // add binding of user to game
+                                final Game tGame = ofy().load().key(Key.create(Game.class, game.getId())).now();
+
+                                // modify
+                                tGame.resetPlayerById(playerId); // reset so that he stops if currently active
+
+                                // store maze solver code in data-store
+                                ofy().save().entity(tGame).now();
+                            });
+
+                            // store maze solver code in mem-cache
                             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
                             memcacheService.put(getMazeCodeKey(challengeId, playerId), code);
-
-                            game.resetPlayerById(playerId); // reset so that he stops if currently active
-                            game.queuePlayerById(playerId); // queue so they can start as soon as a slot is available
                         }
                     }
                 }

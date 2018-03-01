@@ -24,7 +24,7 @@ public class GameStateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         final String magic = request.getParameter("magic");
-        final String email = request.getParameter("email");
+        final String installationId = request.getParameter("installation");
         final String challengeIdAsString = request.getParameter("challenge");
 
         final Vector<String> errors = new Vector<>();
@@ -35,17 +35,21 @@ public class GameStateServlet extends HttpServlet {
             errors.add("Missing or empty 'magic' parameter");
         } else if(!Common.checkMagic(magic)) {
             errors.add("Invalid 'magic' parameter");
-        } else if(email == null || email.isEmpty()) {
-            errors.add("Missing or empty 'email' parameter");
+        } else if(installationId == null || installationId.isEmpty()) {
+            errors.add("Missing or empty 'installation' parameter");
         } else if(challengeIdAsString == null || challengeIdAsString.isEmpty()) {
             errors.add("Missing or empty challenge 'id'");
         } else {
             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
 
             gameFullState = (GameFullState) memcacheService.get(RunEngineServlet.getGameKey(challengeIdAsString));
+
             if(gameFullState == null) {
-                log.info("Could not find game for challenge id '" + challengeIdAsString + "' in memcache (missing key: " + RunEngineServlet.getGameKey(challengeIdAsString) + ")");
+                log.severe("Could not find game for challenge id '" + challengeIdAsString + "' in memcache (missing key: " + RunEngineServlet.getGameKey(challengeIdAsString) + ")");
                 errors.add("Could not find game for challenge id '" + challengeIdAsString + "' in memcache");
+            } else if(!gameFullState.getAllPlayerIDs().contains(installationId)) {
+                log.warning("Could not find existing installation (player) ID '" + installationId + "' in game");
+                errors.add("Invalid player id '" + installationId + "' in memcache");
             }
         }
 
