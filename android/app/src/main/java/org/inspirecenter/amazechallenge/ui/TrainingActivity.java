@@ -88,12 +88,10 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
         if (ColorFragment.isBrightColor(Color.parseColor(userAmazeColor.getHexCode()))) {
             nameTextView.setTextColor(Color.BLACK);
             emailTextView.setTextColor(Color.BLACK);
-        }
-        else {
+        } else {
             nameTextView.setTextColor(Color.WHITE);
             emailTextView.setTextColor(Color.WHITE);
         }
-
 
         challengesRecyclerView = findViewById(R.id.activity_training_challenges_list_view);
         challengesRecyclerView.setLayoutManager(new LinearLayoutManager(this));

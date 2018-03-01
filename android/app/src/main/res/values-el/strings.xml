@@ -113,7 +113,7 @@
     <string name="Check_code">Έλεγχος κώδικα</string>
     <string name="Apply">Εφαρμογή</string>
     <string name="Edit_your_code">Επεξεργασια κωδικα</string>
-    <string name="Submit_code">Υποβολή κώδικα</string>
+    <string name="Upload_code">Upload code</string>
     <string name="Edit_code">Επεξεργασια κωδικα</string>
     <string name="Training">Εκπαιδευση</string>
     <string name="Test_locally">Τοπικη δοκιμη</string>

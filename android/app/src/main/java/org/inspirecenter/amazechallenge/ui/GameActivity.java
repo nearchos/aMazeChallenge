@@ -6,16 +6,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -54,8 +53,6 @@ import static org.inspirecenter.amazechallenge.ui.MainActivity.KEY_PREF_VIBRATIO
 import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 
 public class GameActivity extends AppCompatActivity implements AudioEventListener {
-
-    public static final String TAG = "aMaze";
 
     public static final String SELECTED_CHALLENGE_KEY = "selected_challenge";
     public static final String SELECTED_PLAYER_KEY = "selected_player";
@@ -170,11 +167,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         this.nextButton.setOnClickListener(v -> makeNextMove());
 
         movesDetailsButton = findViewById(R.id.activity_game_moves_details);
-        movesDetailsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // todo show a dialog displaying the details of all players' moves
-            }
+        movesDetailsButton.setOnClickListener(view -> {
+            // todo show a dialog displaying the details of all players' moves
         });
 
         //Create audio map:
@@ -330,7 +324,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     private void resetGame() {
         //autoPlayButton.setChecked(false);
         isRunning = false;
-        playPauseToggleButton.setChecked(isRunning);
+        playPauseToggleButton.setChecked(false);
         final Intent intent = getIntent();
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -436,8 +430,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             MediaPlayer winAudio = MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_WIN.getSoundResourceName(), "raw", getPackageName()));
             winAudio.start();
             winAudio.release();
-        }
-        else {
+        } else {
             MediaPlayer loseAudio = MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_LOSE.getSoundResourceName(), "raw", getPackageName()));
             loseAudio.start();
             loseAudio.release();

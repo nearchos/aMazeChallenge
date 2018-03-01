@@ -83,6 +83,10 @@ public class Game implements Serializable {
     public void addPlayer(final Player player) {
         final String playerId = player.getId();
         allPlayerIDsToPlayers.put(playerId, player);
+        finishedPlayers.remove(playerId);
+        activePlayerIDsToPositionAndDirections.remove(playerId);
+        queuedPlayers.remove(playerId);
+        if(!waitingPlayers.contains(playerId)) waitingPlayers.add(playerId);
     }
 
     public boolean resetPlayerById(final String playerId) {
@@ -90,7 +94,7 @@ public class Game implements Serializable {
         if(finishedPlayers.remove(playerId)) existed = true;
         if(activePlayerIDsToPositionAndDirections.remove(playerId) != null) existed = true;
         if(queuedPlayers.remove(playerId)) existed = true;
-        waitingPlayers.add(playerId);
+        if(!waitingPlayers.contains(playerId)) waitingPlayers.add(playerId);
 
         final Player player = getPlayerById(playerId);
         player.reset();
