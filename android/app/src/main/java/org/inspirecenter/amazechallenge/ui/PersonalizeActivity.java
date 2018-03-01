@@ -105,12 +105,11 @@ public class PersonalizeActivity extends AppCompatActivity {
         super.onPause();
 
         save();
-//        // verify name is non-empty and email is valid
-//        final String name = nameEditText.getText().toString().trim();
-//        final String email = emailEditText.getText().toString().toLowerCase().trim();
-//
-//        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_EMAIL, email).apply();
-//        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_NAME, name).apply();
+        final String name = nameEditText.getText().toString().trim();
+        final String email = emailEditText.getText().toString().toLowerCase().trim();
+
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_EMAIL, email).apply();
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(PREFERENCE_KEY_NAME, name).apply();
     }
 
     @Override
