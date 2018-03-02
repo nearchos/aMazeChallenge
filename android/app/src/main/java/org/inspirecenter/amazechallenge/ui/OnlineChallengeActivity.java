@@ -208,7 +208,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
             super.onPostExecute(reply);
             progressBar.setVisibility(View.GONE);
             //Toast.makeText(OnlineChallengeActivity.this, "Joined \n" + reply, Toast.LENGTH_SHORT).show();
-            Toast.makeText(OnlineChallengeActivity.this, "Joined successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(OnlineChallengeActivity.this, R.string.join_success, Toast.LENGTH_SHORT).show();
             System.out.println("Joined \n" + reply);
 
             // parse and check reply
