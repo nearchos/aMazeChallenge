@@ -294,6 +294,7 @@
     <string name="color_darkgray">Dark Gray</string>
     <string name="health">Health</string>
     <string name="points">Points</string>
+    <string name="join_success">Joined successfully</string>
 
     <string name="sound_AllOff">All Off</string>
     <string name="sound_SoundsOnly">Sounds Only</string>
