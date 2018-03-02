@@ -1,0 +1,36 @@
+{
+  "id": 4,
+  "apiVersion": 1,
+  "name": "5 - Aimlessly",
+  "description": "There is no point. Or is there?",
+  "difficulty": "EASY",
+  "createdOn": 0,
+  "createdBy": "admin",
+  "canRepeat": true,
+  "canJoinAfterStart": true,
+  "canStepOnEachOther": true,
+  "minActivePlayers": 1,
+  "maxActivePlayers": 10,
+  "startTimestamp": 0,
+  "endTimestamp": 0,
+  "hasQuestionnaire": false,
+  "rewards": "HIGH",
+  "penalties": "LOW",
+  "algorithm": "EMPTY",
+  "grid": {
+    "width": 10,
+    "height": 10,
+    "data": "511111111940000000084000000008400000000840000000084000000008400000000840000000084000000008622222222a",
+    "startingPosition": {
+      "row": 4,
+      "col": 5
+    },
+    "targetPosition": {
+      "row": -1,
+      "col": -1
+    }
+  },
+  "lineColor": "#ffffffff",
+  "backgroundImage": "TEXTURE_GRASS",
+  "backgroundAudio": "AUDIO_NONE"
+}
