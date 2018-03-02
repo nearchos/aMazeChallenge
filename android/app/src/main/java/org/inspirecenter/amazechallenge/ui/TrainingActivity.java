@@ -194,10 +194,10 @@ public class TrainingActivity extends AppCompatActivity implements ChallengeAdap
             }
 
             //Sort the default challenges:
-            challenges.sort(new Comparator<Challenge>() {
+            Collections.sort(challenges, new Comparator<Challenge>() {
                 @Override
-                public int compare(Challenge challenge, Challenge t1) {
-                    return (int) (challenge.getId() - t1.getId());
+                public int compare(Challenge challengeLeft, Challenge challengeRight) {
+                    return (int) (challengeLeft.getId() - challengeRight.getId());
                 }
             });
 
