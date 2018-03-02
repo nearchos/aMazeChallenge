@@ -274,5 +274,6 @@
     <string name="sound_VibrationOnly">Ήχος και δόνηση</string>
     <string name="sound_SoundsOnly">Ήχος μόνο</string>
     <string name="sound_AllOff">Χώρις ήχο και δόνηση</string>
+    <string name="Submit_code">Υποβολή κώδικα</string>
 
 </resources>
