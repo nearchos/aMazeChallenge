@@ -31,6 +31,6 @@
         }
     },
     "lineColor": "#00FFFF",
-    "backgroundImage": "TEXTURE_METAL",
+    "backgroundImage": "TEXTURE_MOON",
     "backgroundAudio": "AMBIENT_HIGHTECH"
 }
