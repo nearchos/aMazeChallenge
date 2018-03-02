@@ -207,7 +207,10 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         protected void onPostExecute(final String reply) {
             super.onPostExecute(reply);
             progressBar.setVisibility(View.GONE);
-            Toast.makeText(OnlineChallengeActivity.this, "Joined \n" + reply, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(OnlineChallengeActivity.this, "Joined \n" + reply, Toast.LENGTH_SHORT).show();
+            Toast.makeText(OnlineChallengeActivity.this, "Joined successfully", Toast.LENGTH_SHORT).show();
+            System.out.println("Joined \n" + reply);
+
             // parse and check reply
             try {
                 final JSONObject replyJsonObject = new JSONObject(reply);
