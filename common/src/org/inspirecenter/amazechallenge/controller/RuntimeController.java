@@ -143,7 +143,8 @@ public class RuntimeController {
             final PlayerPositionAndDirection playerPositionAndDirection = game.getPlayerPositionAndDirectionById(playerId);
             if (targetPosition.equals(playerPositionAndDirection.getPosition())) {
                 if (grid.getTargetPosition().equals(playerPositionAndDirection.getPosition())) {
-                    game.getAudioEventListener().onGameEndAudioEvent(true); //TODO Remove, make for each player individually.
+//                    game.getAudioEventListener().onGameEndAudioEvent(true); //TODO Remove, make for each player individually.
+                    game.getGameEndListener().onPlayerHasWon(playerId);
                 }
                 someoneHasReachedTheTargetPosition = true;
                 resetTurnEffects();

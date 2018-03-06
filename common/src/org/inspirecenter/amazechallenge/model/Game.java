@@ -1,6 +1,7 @@
 package org.inspirecenter.amazechallenge.model;
 
 import org.inspirecenter.amazechallenge.controller.AudioEventListener;
+import org.inspirecenter.amazechallenge.controller.GameEndListener;
 
 import java.io.Serializable;
 import java.util.*;
@@ -250,6 +251,7 @@ public class Game implements Serializable {
     }
 
     private AudioEventListener audioEventListener = null;
+    private GameEndListener gameEndListener = null;
 
     public void setOnAudioEventListener(AudioEventListener audioEventListener) {
         this.audioEventListener = audioEventListener;
@@ -258,4 +260,11 @@ public class Game implements Serializable {
     public AudioEventListener getAudioEventListener() {
         return audioEventListener;
     }
+
+    public void setGameEndListener(GameEndListener gameEndListener) {
+        this.gameEndListener = gameEndListener;
+    }
+
+    public GameEndListener getGameEndListener() { return gameEndListener; }
+
 }

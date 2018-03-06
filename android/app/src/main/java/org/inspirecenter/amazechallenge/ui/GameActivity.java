@@ -33,6 +33,7 @@ import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.algorithms.InterpretedMazeSolver;
 import org.inspirecenter.amazechallenge.algorithms.MazeSolver;
 import org.inspirecenter.amazechallenge.controller.AudioEventListener;
+import org.inspirecenter.amazechallenge.controller.GameEndListener;
 import org.inspirecenter.amazechallenge.controller.RuntimeController;
 import org.inspirecenter.amazechallenge.model.Audio;
 import org.inspirecenter.amazechallenge.model.BackgroundImage;
@@ -52,7 +53,7 @@ import static org.inspirecenter.amazechallenge.ui.MainActivity.KEY_PREF_SOUND;
 import static org.inspirecenter.amazechallenge.ui.MainActivity.KEY_PREF_VIBRATION;
 import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 
-public class GameActivity extends AppCompatActivity implements AudioEventListener {
+public class GameActivity extends AppCompatActivity implements AudioEventListener, GameEndListener {
 
     public static final String SELECTED_CHALLENGE_KEY = "selected_challenge";
     public static final String SELECTED_PLAYER_KEY = "selected_player";
@@ -60,8 +61,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     public static final int DEFAULT_PERIOD_INDEX = 3;
     public static final long [] PERIOD_OPTIONS = new long [] { 100L, 200L, 500L, 1000L, 2000L, 5000L };
 
-    private static final float DEFAULT_EVENTS_VOLUME = 1f;
-    private static final float DEFAULT_AMBIENT_VOLUME = 0.7f;
+    public static final float DEFAULT_EVENTS_VOLUME = 1f;
+    public static final float DEFAULT_AMBIENT_VOLUME = 0.7f;
 
     private boolean isRunning = false;
     private boolean hasCreatedQuestionnaire = false;
@@ -86,6 +87,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
 
     private HashMap<String, MediaPlayer> audioEventsMap = new HashMap<>();
     private MediaPlayer backgroundAudio;
+    MediaPlayer winAudio;
+    MediaPlayer loseAudio;
     private boolean sound = true;
     private boolean vibration = true;
 
@@ -211,6 +214,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         this.gameView.setBackgroundDrawable(backgroundImage);
         this.game = new Game();
         game.setOnAudioEventListener(this);
+        game.setGameEndListener(this);
         final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
@@ -431,13 +435,29 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     @Override
     public void onGameEndAudioEvent(boolean win) {
         if (win) {
-            MediaPlayer winAudio = MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_WIN.getSoundResourceName(), "raw", getPackageName()));
+            winAudio= MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_WIN.getSoundResourceName(), "raw", getPackageName()));
             winAudio.start();
-            winAudio.release();
         } else {
-            MediaPlayer loseAudio = MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_LOSE.getSoundResourceName(), "raw", getPackageName()));
+            loseAudio = MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_LOSE.getSoundResourceName(), "raw", getPackageName()));
             loseAudio.start();
-            loseAudio.release();
+        }
+    }
+
+    @Override
+    public void onPlayerHasWon(String playerID) {
+        final Intent intent = getIntent();
+        final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
+        if (player.getId().equals(playerID)) {
+            onGameEndAudioEvent(true);
+        }
+    }
+
+    @Override
+    public void onPlayerHasLost(String playerID) {
+        final Intent intent = getIntent();
+        final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
+        if (player.getId().equals(playerID)) {
+            onGameEndAudioEvent(false);
         }
     }
 
@@ -447,5 +467,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         for (Map.Entry<String, MediaPlayer> entry : audioEventsMap.entrySet()) {
             audioEventsMap.get(entry.getKey()).release();
         }
+        if (winAudio != null) winAudio.release();
+        if (loseAudio != null) loseAudio.release();
+
     }
 }

@@ -1,9 +1,12 @@
 package org.inspirecenter.amazechallenge.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,8 +26,13 @@ import org.inspirecenter.amazechallenge.Installation;
 import org.inspirecenter.amazechallenge.R;
 import org.inspirecenter.amazechallenge.api.ReplyWithErrors;
 import org.inspirecenter.amazechallenge.api.ReplyWithGameFullState;
+import org.inspirecenter.amazechallenge.controller.AudioEventListener;
+import org.inspirecenter.amazechallenge.controller.GameEndListener;
+import org.inspirecenter.amazechallenge.model.Audio;
 import org.inspirecenter.amazechallenge.model.Challenge;
 import org.inspirecenter.amazechallenge.model.GameFullState;
+import org.inspirecenter.amazechallenge.model.Pickable;
+import org.inspirecenter.amazechallenge.model.Player;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -32,15 +40,21 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import static org.inspirecenter.amazechallenge.ui.BlocklyActivity.INTENT_KEY_NEXT_ACTIVITY;
+import static org.inspirecenter.amazechallenge.ui.GameActivity.DEFAULT_AMBIENT_VOLUME;
+import static org.inspirecenter.amazechallenge.ui.GameActivity.DEFAULT_EVENTS_VOLUME;
+import static org.inspirecenter.amazechallenge.ui.GameActivity.SELECTED_PLAYER_KEY;
+import static org.inspirecenter.amazechallenge.ui.MainActivity.KEY_PREF_SOUND;
+import static org.inspirecenter.amazechallenge.ui.MainActivity.KEY_PREF_VIBRATION;
 import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_EMAIL;
 
-public class OnlineGameActivity extends AppCompatActivity {
+public class OnlineGameActivity extends AppCompatActivity implements GameEndListener, AudioEventListener {
 
     public static final String TAG = "aMazeChallenge";
     public static final long ONE_SECOND = 1000L;
@@ -55,6 +69,13 @@ public class OnlineGameActivity extends AppCompatActivity {
     FloatingActionButton mainFAB;
     LinearLayout fabLayout_upload;
     LinearLayout fabLayout_edit;
+
+    private MediaPlayer backgroundAudio;
+    MediaPlayer winAudio;
+    MediaPlayer loseAudio;
+    private boolean sound = true;
+    private boolean vibration = true;
+    private HashMap<String, MediaPlayer> audioEventsMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +110,23 @@ public class OnlineGameActivity extends AppCompatActivity {
                 closeFABMenu();
             }
         });
+
+        //Create audio map:
+        for (final Audio audio : Audio.values()) {
+            if (audio.getAudioType() == Audio.AudioType.EVENT) {
+                if (audio.getAudioFormat() != Audio.AudioFormat.UNDEFINED_FORMAT && !audio.getSoundResourceName().equals(Audio.AUDIO_NONE.getSoundResourceName())) {
+                    final int identifier = getResources().getIdentifier(audio.getSoundResourceName(), "raw", getPackageName());
+                    final MediaPlayer mediaPlayer = MediaPlayer.create(this, identifier);
+                    mediaPlayer.setVolume(DEFAULT_EVENTS_VOLUME, DEFAULT_EVENTS_VOLUME);
+                    audioEventsMap.put(audio.toString(), mediaPlayer);
+                }
+            }
+        }
+
+        //Sound prefs:
+        sound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_SOUND, true);
+        vibration = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_PREF_VIBRATION, true);
+
     }
 
     private Challenge challenge;
@@ -120,11 +158,25 @@ public class OnlineGameActivity extends AppCompatActivity {
             timer = new Timer();
         }
         timer.schedule(new OnlineMazeRunner(), 0L, ONE_SECOND); // todo
+
+        //Play background audio:
+        final Audio audioResource = challenge.getBackgroundAudio();
+        System.out.println("Sound is: " + sound);
+        if (audioResource.getAudioFormat() != Audio.AudioFormat.UNDEFINED_FORMAT && !audioResource.getName().equals(Audio.AUDIO_NONE.getSoundResourceName())) {
+            backgroundAudio = MediaPlayer.create(this, getResources().getIdentifier(audioResource.getSoundResourceName(), "raw", getPackageName()));
+            if (backgroundAudio != null && sound) {
+                backgroundAudio.setLooping(true);
+                backgroundAudio.setVolume(DEFAULT_AMBIENT_VOLUME, DEFAULT_AMBIENT_VOLUME);
+                backgroundAudio.start();
+            }
+        }
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (backgroundAudio != null) backgroundAudio.stop();
         timer.cancel();
 
         // todo ask user to confirm and withdraw
@@ -156,6 +208,87 @@ public class OnlineGameActivity extends AppCompatActivity {
         final String code = sharedPreferences.getString(BlocklyActivity.KEY_ALGORITHM_ACTIVITY_CODE, "");
 
         new SubmitCodeAsyncTask(email, code, challenge, getString(R.string.api_url), getString(R.string.magic)).execute();
+    }
+
+    @Override
+    public void onPlayerHasWon(String playerID) {
+        final Intent intent = getIntent();
+        final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
+        if (player.getId().equals(playerID)) {
+            onGameEndAudioEvent(true);
+        }
+    }
+
+    @Override
+    public void onPlayerHasLost(String playerID) {
+        final Intent intent = getIntent();
+        final Player player = (Player) intent.getSerializableExtra(SELECTED_PLAYER_KEY);
+        if (player.getId().equals(playerID)) {
+            onGameEndAudioEvent(false);
+        }
+    }
+
+    @Override
+    public void onAudioEvent(Pickable pickable) {
+
+        switch (pickable.getPickableType()) {
+            case APPLE:
+            case BANANA:
+            case STRAWBERRY:
+            case PEACH:
+            case WATERMELON:
+            case GRAPES:
+            case ORANGE:
+                if (sound) audioEventsMap.get(Audio.EVENT_FOOD.toString()).start();
+                break;
+            case COIN_5:
+                if (sound) audioEventsMap.get(Audio.EVENT_COIN5.toString()).start();
+                break;
+            case COIN_10:
+                if (sound) audioEventsMap.get(Audio.EVENT_COIN10.toString()).start();
+                break;
+            case COIN_20:
+                if (sound) audioEventsMap.get(Audio.EVENT_COIN20.toString()).start();
+                break;
+            case GIFTBOX:
+                if (sound) audioEventsMap.get(Audio.EVENT_GIFTBOX.toString()).start();
+                break;
+            case BOMB:
+                if (pickable.getState() == 1  || pickable.getState() == 2) {
+                    if (sound) audioEventsMap.get(Audio.EVENT_BOMB.toString()).start();
+                    if (vibration) {
+                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                        if (v != null) v.vibrate(250);
+                    }
+                }
+                break;
+            case SPEEDHACK:
+                if (sound) audioEventsMap.get(Audio.EVENT_SPEEDHACK.toString()).start();
+                if (vibration) {
+                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    long[] pattern = {100, 100, 100};
+                    if (v != null) v.vibrate(pattern, -1);
+                }
+                break;
+            case TRAP:
+                if (sound) audioEventsMap.get(Audio.EVENT_TRAP.toString()).start();
+                if (vibration) {
+                    Vibrator vTrap = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    if (vTrap != null) vTrap.vibrate(250);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onGameEndAudioEvent(boolean win) {
+        if (win) {
+            winAudio= MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_WIN.getSoundResourceName(), "raw", getPackageName()));
+            winAudio.start();
+        } else {
+            loseAudio = MediaPlayer.create(this, getResources().getIdentifier(Audio.EVENT_LOSE.getSoundResourceName(), "raw", getPackageName()));
+            loseAudio.start();
+        }
     }
 
     private class SubmitCodeAsyncTask extends AsyncTask<Void, Void, String> {
@@ -331,5 +464,14 @@ public class OnlineGameActivity extends AppCompatActivity {
     public void openFAB(View view) {
         if (!isFABOpen) showFABMenu();
         else closeFABMenu();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (backgroundAudio != null) {
+            backgroundAudio.stop();
+            backgroundAudio.release();
+        }
     }
 }
