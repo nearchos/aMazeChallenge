@@ -164,3 +164,26 @@ Blockly.JavaScript['maze_literal_turn_counterclockwise'] = function(block) {
   var code = 'Packages.org.inspirecenter.amazechallenge.algorithms.PlayerMove.TURN_COUNTERCLOCKWISE';
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
+
+Blockly.JavaScript['maze_math_compare'] = function(block) {
+  var value_number1 = Blockly.JavaScript.valueToCode(block, 'number1', Blockly.JavaScript.ORDER_ATOMIC);
+  var dropdown_operator = block.getFieldValue('operator');
+  var value_number2 = Blockly.JavaScript.valueToCode(block, 'number2', Blockly.JavaScript.ORDER_ATOMIC);
+
+  var code = '';
+
+  if (dropdown_operator == "more") {
+      code = "(" + value_number1 + " > " + value_number2 + ")";
+  }
+  else if (dropdown_operator == "more_equal") {
+       code = "(" + value_number1 + " >= " + value_number2 + ")";
+  }
+  else if (dropdown_operator == "less") {
+       code = "(" + value_number1 + " < " + value_number2 + ")";
+  }
+  else if (dropdown_operator == "less_equal") {
+       code = "(" + value_number1 + " <= " + value_number2 + ")";
+  }
+
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};

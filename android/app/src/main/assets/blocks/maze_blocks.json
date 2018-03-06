@@ -243,6 +243,49 @@
     "colour": 260,
     "tooltip": "",
     "helpUrl": ""
+  },
+  {
+    "type": "maze_math_compare",
+    "message0": "%1 %2 %3",
+    "args0": [
+      {
+        "type": "input_value",
+        "name": "number1",
+        "check": "Number"
+      },
+      {
+        "type": "field_dropdown",
+        "name": "operator",
+        "options": [
+          [
+            ">",
+            "more"
+          ],
+          [
+            ">=",
+            "more_equal"
+          ],
+          [
+            "<",
+            "less"
+          ],
+          [
+            "<=",
+            "less_equal"
+          ]
+        ]
+      },
+      {
+        "type": "input_value",
+        "name": "number2",
+        "check": "Number"
+      }
+    ],
+    "inputsInline": true,
+    "output": "Boolean",
+    "colour": 210,
+    "tooltip": "Compares two numbers.",
+    "helpUrl": ""
   }
 
 ]

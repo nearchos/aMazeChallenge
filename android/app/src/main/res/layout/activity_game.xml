@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/ditheredGray"
     tools:context="org.inspirecenter.amazechallenge.ui.GameActivity">
 
     <org.inspirecenter.amazechallenge.ui.GameView
@@ -22,7 +23,6 @@
         android:baselineAligned="true"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/ditheredGray"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -57,7 +57,7 @@
                 android:id="@+id/activity_game_health"
                 android:textAlignment="center"
                 android:text="123"
-                android:textColor="@color/materialGreen"
+                android:textColor="@android:color/black"
                 android:layout_alignTop="@id/playerHealthProgress"
                 android:layout_marginTop="13dp"
                 />
@@ -123,10 +123,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/Reset"
-                    android:textColor="@color/materialRed" />
+                    android:padding="5dp"
+                    android:background="@color/materialViolet"
+                    android:textColor="@color/white" />
 
                 <ToggleButton
+                    android:layout_marginLeft="5dp"
                     android:id="@+id/activity_game_play"
+                    android:background="@color/materialGreen"
+                    android:textColor="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/Play" />
@@ -137,6 +142,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -145,30 +151,33 @@
                     style="@style/Base.TextAppearance.AppCompat.Body1"
                     android:layout_width="0dp"
                     android:layout_weight="2"
+                    android:textColor="@android:color/black"
                     android:layout_height="wrap_content" />
 
                 <Spinner
                     android:id="@+id/activity_game_delay_spinner"
                     android:layout_width="0dp"
                     android:layout_weight="4"
+                    android:textColor="@android:color/black"
                     android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/activity_game_button_next"
                     android:text="@string/Next"
                     android:drawableEnd="@drawable/ic_navigate_next_black_24dp"
-                    android:drawableTint="@color/colorPrimary"
+                    android:drawableTint="@color/white"
                     android:layout_width="0dp"
                     android:layout_weight="3"
-                    android:textColor="@color/colorPrimary"
+                    android:background="@color/materialOrange"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
 
-            <View
-                android:background="@color/lightGray"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"/>
+            <!--<View-->
+                <!--android:background="@color/lightGray"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dp"/>-->
 
             <!--<RelativeLayout-->
                 <!--android:padding="12dp"-->
@@ -206,21 +215,12 @@
 
             <!--</RelativeLayout>-->
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:padding="10dp"
-                android:layout_height="wrap_content">
+            <!--<RelativeLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:padding="10dp"-->
+                <!--android:layout_height="wrap_content">-->
 
-                <Button
-                    android:id="@+id/activity_game_moves_details"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/Details"
-                    android:textSize="10sp"
-                    style="@style/Base.Widget.AppCompat.Button.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp" />
-
-            </RelativeLayout>
+            <!--</RelativeLayout>-->
 
         </LinearLayout>
 

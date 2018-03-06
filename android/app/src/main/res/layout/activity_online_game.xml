@@ -61,6 +61,9 @@
             android:visibility="gone">
 
             <TextView
+                android:padding="5dp"
+                android:background="@color/transparentBackground"
+                android:textColor="@android:color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Upload_code"/>
@@ -90,6 +93,9 @@
             android:visibility="gone">
 
             <TextView
+                android:padding="5dp"
+                android:textColor="@android:color/black"
+                android:background="@color/transparentBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Edit_code"/>

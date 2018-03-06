@@ -295,6 +295,12 @@
     <string name="health">Health</string>
     <string name="points">Points</string>
     <string name="join_success">Joined successfully</string>
+    <string name="join_failure">Error while joining challenge</string>
+    <string name="reply_failure">Error while parsing reply</string>
+    <string name="code_uploaded">Code uploaded successfully</string>
+    <string name="code_upload_failed">Code upload failed</string>
+    <string name="gamestate_getting_error">Error while getting game state</string>
+    <string name="gamestate_error">Error in game state</string>
 
     <string name="sound_AllOff">All Off</string>
     <string name="sound_SoundsOnly">Sounds Only</string>

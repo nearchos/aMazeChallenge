@@ -64,6 +64,7 @@ public class OnlineGameActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setLanguage(this);
         setContentView(R.layout.activity_online_game);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         gameView = findViewById(R.id.activity_online_game_game_view);
 
@@ -201,7 +202,7 @@ public class OnlineGameActivity extends AppCompatActivity {
                 return convertStreamToString(inputStream);
             } catch (IOException e) {
                 // show message in snackbar
-                Snackbar.make(findViewById(R.id.activity_online_game), "Error while submitting code: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.activity_online_game), getString(R.string.code_upload_failed), Snackbar.LENGTH_SHORT).show();
                 // log error
                 Log.e(TAG, "Error: " + Arrays.toString(e.getStackTrace()));
                 return "Error: " + Arrays.toString(e.getStackTrace());
@@ -211,7 +212,7 @@ public class OnlineGameActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(final String reply) {
             super.onPostExecute(reply);
-            Snackbar.make(findViewById(R.id.activity_online_game), "Code uploaded \n" + reply, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.activity_online_game), getString(R.string.code_uploaded), Snackbar.LENGTH_SHORT).show();
             Log.d(TAG, "reply: " + reply);
         }
     }
@@ -250,7 +251,7 @@ public class OnlineGameActivity extends AppCompatActivity {
                 return convertStreamToString(inputStream);
             } catch (IOException e) {
                 // show message in snackbar
-                Snackbar.make(findViewById(R.id.activity_online_game), "Error while getting game-state: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.activity_online_game), getString(R.string.gamestate_getting_error) + e.getMessage(), Snackbar.LENGTH_SHORT).show();
                 // log error
                 Log.e(TAG, "Error: " + e.getMessage());
                 e.printStackTrace();
@@ -284,7 +285,7 @@ public class OnlineGameActivity extends AppCompatActivity {
                 case ERROR:
                 default:
                     final ReplyWithErrors replyWithErrors = new Gson().fromJson(reply, ReplyWithErrors.class);
-                    Snackbar.make(findViewById(R.id.activity_online_game), "Error in game state: " + replyWithErrors.getErrors(), Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.activity_online_game), getString(R.string.gamestate_error) + replyWithErrors.getErrors(), Snackbar.LENGTH_SHORT).show();
             }
         }
     }

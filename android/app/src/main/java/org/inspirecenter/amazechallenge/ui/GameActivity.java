@@ -80,7 +80,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
     private TextView pointsTextView;
     private ProgressBar healthProgress;
 
-    private Button movesDetailsButton;
+//    private Button movesDetailsButton;
 
     final GameActivity instance = this;
 
@@ -98,6 +98,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setLanguage(this);
         setContentView(R.layout.activity_game);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         final ActionBar actionBar = getActionBar();
         if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
@@ -111,6 +112,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isRunning = b;
+                if (b) playPauseToggleButton.setBackgroundColor(getColor(R.color.materialRed));
+                else playPauseToggleButton.setBackgroundColor(getColor(R.color.materialGreen));
                 nextButton.setEnabled(!b);
                 resetButton.setEnabled(!b);
             }
@@ -134,6 +137,7 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         });
 
         healthProgress = findViewById(R.id.playerHealthProgress);
+        healthProgress.setScaleY(3f);
 
         healthTextView = findViewById(R.id.activity_game_health);
         System.out.println("AA" + healthTextView.getText());
@@ -166,10 +170,10 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
         this.nextButton = findViewById(org.inspirecenter.amazechallenge.R.id.activity_game_button_next);
         this.nextButton.setOnClickListener(v -> makeNextMove());
 
-        movesDetailsButton = findViewById(R.id.activity_game_moves_details);
-        movesDetailsButton.setOnClickListener(view -> {
-            // todo show a dialog displaying the details of all players' moves
-        });
+//        movesDetailsButton = findViewById(R.id.activity_game_moves_details);
+//        movesDetailsButton.setOnClickListener(view -> {
+//            // todo show a dialog displaying the details of all players' moves
+//        });
 
         //Create audio map:
         for (final Audio audio : Audio.values()) {

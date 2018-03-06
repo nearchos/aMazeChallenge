@@ -40,7 +40,7 @@
     <string name="SharingInstructions">Πάρτε το aMazeChallenge app και μάθετε να προγραμματίζετε παίζοντας! Κατεβάστε τώρα δωρεάν απο: https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge</string>
     <string name="NoAppsAvailable">Καμία εφαρμογή για κοινοποίηση</string>
     <string name="Done">Τέλος</string>
-    <string name="Clear">Εκκαθάριση</string>
+    <string name="Clear">Εκκαθαριση</string>
     <string name="Clear_code">Εκκαθάριση κώδικα</string>
     <string name="Are_you_sure_you_want_to_erase_the_code">Είστε σίγουροι οτι θέλετε να γίνει εκκαθάριση κώδικα; Δεν μπορεί να γίνει επαναφορα!</string>
     <string name="Are_you_sure_you_want_to_reset">Είστε σίγουροι οτι θέλετε να γίνει επαναφορά παιχνιδιού;</string>
@@ -48,7 +48,7 @@
     <string name="Save_code_name">Εισάγετε όνομα για τον κώδικά σας:</string>
     <string name="save_code_error_empty">Το όνομα του κώδικα σας δεν μπορεί να έιναι άδειο.</string>
     <string name="save_code_error_invalid">Το όνομα του κώδικα σας πρέπει να περιέχει μονο γράμματα και αριθμούς.</string>
-    <string name="try_again">Προσπάθησε ξανά</string>
+    <string name="try_again">Προσπαθησε ξανα</string>
     <string name="load_code">Φόρτωση κώδικα</string>
     <string name="load_code_message">Διαλέξτε κώδικα για φόρτωση:</string>
     <string name="delete_code">Διαγραγή κώδικα;</string>
@@ -276,5 +276,11 @@
     <string name="sound_AllOff">Χώρις ήχο και δόνηση</string>
     <string name="Submit_code">Υποβολή κώδικα</string>
     <string name="join_success">Έχετε ενταχθεί στην πρόκληση</string>
+    <string name="code_uploaded">Ο κώδικας σας έχει υποβληθεί.</string>
+    <string name="code_upload_failed">Σφάλμα υποβολής κώδικα.</string>
+    <string name="gamestate_getting_error">Σφάλμα κατά τη λήψη κατάστασης παιχνιδιού (game state).</string>
+    <string name="gamestate_error">Σφάλμα κατάστασης παιχνιδιού (game state).</string>
+    <string name="join_failure">Σφάλμα κατά την ένωση στην πρόκληση</string>
+    <string name="reply_failure">Σφάλμα κατά την ανάλυση της απάντησης του διακομιστή</string>
 
 </resources>

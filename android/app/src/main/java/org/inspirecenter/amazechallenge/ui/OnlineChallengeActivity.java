@@ -196,7 +196,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
                 return convertStreamToString(inputStream);
             } catch (IOException e) {
                 // show message in snackbar
-                Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while joining challenge: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.activity_online_challenge), getString(R.string.join_failure), Snackbar.LENGTH_SHORT).show();
                 // log error
                 Log.e(TAG, "Error: " + Arrays.toString(e.getStackTrace()));
                 return "Error: " + Arrays.toString(e.getStackTrace());
@@ -220,11 +220,11 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
                     intent.putExtra(PREFERENCE_KEY_CHALLENGE, challenge);
                     startActivity(intent);
                 } else {
-                    Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while joining challenge: " + challenge.getName(), Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.activity_online_challenge), getString(R.string.join_failure) + challenge.getName(), Snackbar.LENGTH_SHORT).show();
                     Log.w(TAG, reply);
                 }
             } catch (JSONException jsone) {
-                Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while parsing reply: " + jsone.getMessage(), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.activity_online_challenge), getString(R.string.reply_failure) + jsone.getMessage(), Snackbar.LENGTH_SHORT).show();
                 Log.e(TAG, reply);
             }
 

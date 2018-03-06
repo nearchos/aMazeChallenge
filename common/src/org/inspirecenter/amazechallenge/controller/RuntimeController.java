@@ -123,26 +123,6 @@ public class RuntimeController {
                             if (pickable.getPickableType() != PickableType.BOMB) game.removePickupItem(i);
                         }
 
-                        //Player is near a bomb, but not over it:
-                        if (pickable.getPickableType() == PickableType.BOMB && (pickable.getState() == 1 || pickable.getState() == 2)) {
-
-                            /*
-                                NOTE: Bombs will do damage in terms of radius:
-                                    1) On top of bomb - 100% damage of original.
-                                    2) 1 block away from bomb (incl. diagonals) - 50% damage of original.
-                             */
-                            int colDifference = Math.abs(position.getCol() - pickable.getPosition().getCol());
-                            int rowDifference = Math.abs(position.getRow() - pickable.getPosition().getRow());
-
-                            //1 Block-radius away:
-                            if (colDifference <= 1 && rowDifference <= 1) {
-                                game.getPlayerById(playerId).getHealth().changeBy(pickable.getPickableType().getHealthChange() / 2);
-                            }
-
-                            if(audioEventListener != null) {
-                                audioEventListener.onAudioEvent(pickable);
-                            }
-                        }
                     }
                 }
                 break;

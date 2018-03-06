@@ -34,5 +34,6 @@
     <color name="materialViolet">#efc51162</color>
 
     <color name="transparent">#00000000</color>
+    <color name="transparentBackground">#DDFFFFFF</color>
 
 </resources>
