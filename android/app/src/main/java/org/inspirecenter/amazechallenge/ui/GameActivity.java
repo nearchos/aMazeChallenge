@@ -115,8 +115,8 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isRunning = b;
-                if (b) playPauseToggleButton.setBackgroundColor(getColor(R.color.materialRed));
-                else playPauseToggleButton.setBackgroundColor(getColor(R.color.materialGreen));
+                if (b) playPauseToggleButton.setBackgroundColor(getResources().getColor(R.color.materialRed));
+                else playPauseToggleButton.setBackgroundColor(getResources().getColor(R.color.materialGreen));
                 nextButton.setEnabled(!b);
                 resetButton.setEnabled(!b);
             }
@@ -359,17 +359,17 @@ public class GameActivity extends AppCompatActivity implements AudioEventListene
             healthProgress.setProgress(health);
             Drawable drawable = healthProgress.getProgressDrawable();
             if (health <= 30) {
-                healthTextView.setTextColor(getColor(R.color.materialRed));
-                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialRed)));
+                healthTextView.setTextColor(getResources().getColor(R.color.materialRed));
+                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getResources().getColor(R.color.materialRed)));
             } else if (health <= 50) {
-                healthTextView.setTextColor(getColor(R.color.materialYellow));
-                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialYellow)));
+                healthTextView.setTextColor(getResources().getColor(R.color.materialYellow));
+                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getResources().getColor(R.color.materialYellow)));
             } else if (health > 100) {
-                healthTextView.setTextColor(getColor(R.color.materialBlue));
-                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialBlue)));
+                healthTextView.setTextColor(getResources().getColor(R.color.materialBlue));
+                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getResources().getColor(R.color.materialBlue)));
             } else {
-                healthTextView.setTextColor(getColor(R.color.materialGreen));
-                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getColor(R.color.materialGreen)));
+                healthTextView.setTextColor(getResources().getColor(R.color.materialGreen));
+                drawable.setColorFilter(new LightingColorFilter(0xFF000000, getResources().getColor(R.color.materialGreen)));
             }
         }
     }

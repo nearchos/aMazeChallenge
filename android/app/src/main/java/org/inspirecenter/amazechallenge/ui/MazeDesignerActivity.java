@@ -324,9 +324,9 @@ public class MazeDesignerActivity extends AppCompatActivity {
             Button generateButton = findViewById(R.id.generateButton);
             addToTrainingButton.setText(getString(R.string.Save));
             generateButton.setText(getString(R.string.Discard));
-            addToTrainingButton.setBackgroundColor(getColor(R.color.materialBlue));
+            addToTrainingButton.setBackgroundColor(getResources().getColor(R.color.materialBlue));
             addToTrainingButton.setEnabled(true);
-            generateButton.setBackgroundColor(getColor(R.color.materialRed));
+            generateButton.setBackgroundColor(getResources().getColor(R.color.materialRed));
 
             addToTrainingButton.setOnClickListener(new View.OnClickListener() {
                 @Override

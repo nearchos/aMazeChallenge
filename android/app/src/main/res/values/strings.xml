@@ -302,6 +302,10 @@
     <string name="gamestate_getting_error">Error while getting game state</string>
     <string name="gamestate_error">Error in game state</string>
 
+    <string name="Missing_email">Missing email</string>
+    <string name="Missing_or_invalid_email">Missing or invalid email. Choose a valid email first, using the Personalize view.</string>
+    <string name="OK">OK</string>
+
     <string name="sound_AllOff">All Off</string>
     <string name="sound_SoundsOnly">Sounds Only</string>
     <string name="sound_VibrationOnly">Sound &amp; Vibration</string>

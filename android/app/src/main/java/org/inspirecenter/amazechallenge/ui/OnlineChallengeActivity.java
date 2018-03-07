@@ -1,6 +1,9 @@
 package org.inspirecenter.amazechallenge.ui;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -37,6 +41,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import static org.inspirecenter.amazechallenge.ui.MainActivity.setLanguage;
 import static org.inspirecenter.amazechallenge.ui.PersonalizeActivity.PREFERENCE_KEY_COLOR;
@@ -89,7 +94,6 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
 
     @Override
     public void onChallengeSelected(final Challenge challenge) {
-        Snackbar.make(findViewById(R.id.activity_online_challenge), "Joining " + challenge.getName() + " ...", Snackbar.LENGTH_SHORT).show();
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(OnlineChallengeActivity.this);
         final String email = sharedPreferences.getString(PREFERENCE_KEY_EMAIL, getString(R.string.Guest_email));
@@ -97,7 +101,18 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
         final String colorName = sharedPreferences.getString(PREFERENCE_KEY_COLOR, AmazeColor.getDefault().name());
         final String iconName = sharedPreferences.getString(PREFERENCE_KEY_ICON, AmazeIcon.getDefault().getName());
         final String shapeCode = sharedPreferences.getString(PREFERENCE_SHAPE_CODE, "triangle");
-        new JoinChallengeAsyncTask(email, name, colorName, iconName, shapeCode, challenge).execute();
+
+        if(email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.Missing_email)
+                    .setMessage(R.string.Missing_or_invalid_email)
+                    .setPositiveButton(R.string.OK, (dialog, which) -> finish())
+                    .create()
+                    .show();
+        } else {
+            Snackbar.make(findViewById(R.id.activity_online_challenge), "Joining " + challenge.getName() + " ...", Snackbar.LENGTH_SHORT).show();
+            new JoinChallengeAsyncTask(email, name, colorName, iconName, shapeCode, challenge).execute();
+        }
     }
 
     @Override
@@ -116,7 +131,6 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
 
         @Override
         protected Reply doInBackground(Void... v) {
-            final Vector<Challenge> challenges = new Vector<>();
             try {
                 final String apiUrlBase = getString(R.string.api_url);
                 final URL apiURL = new URL(apiUrlBase + "/challenges");
@@ -125,8 +139,7 @@ public class OnlineChallengeActivity extends AppCompatActivity implements Challe
                 final String json = convertStreamToString(inputStream);
                 Log.v(TAG, "Read JSON: " + json);
                 final Gson gson = new Gson();
-                final ChallengesReply challengesReply = gson.fromJson(json, ChallengesReply.class);
-                return challengesReply;
+                return gson.fromJson(json, ChallengesReply.class);
             } catch (IOException e) {
                 // show message in snackbar
                 Snackbar.make(findViewById(R.id.activity_online_challenge), "Error while accessing list of challenges: " + e.getMessage(), Snackbar.LENGTH_SHORT).show();

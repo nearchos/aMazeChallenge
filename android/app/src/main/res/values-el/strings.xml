@@ -283,4 +283,8 @@
     <string name="join_failure">Σφάλμα κατά την ένωση στην πρόκληση</string>
     <string name="reply_failure">Σφάλμα κατά την ανάλυση της απάντησης του διακομιστή</string>
 
+    <string name="Missing_email">Λανθασμένο email</string>
+    <string name="Missing_or_invalid_email">Λανθασμένο email. Επιλέξτε ένα έγκυρο email πρώτα, χρησιμοποιώντας την οθόνη για 'Προσαρμογή'.</string>
+    <string name="OK">ΟΚ</string>
+
 </resources>

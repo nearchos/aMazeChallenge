@@ -59,12 +59,12 @@ public class ErrorListDialogListAdapter extends BaseAdapter {
             case ERROR:
                 errorType.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_report_problem_black_24dp));
                 errorType.setColorFilter(activity.getResources().getColor(R.color.snackbarRed));
-                layout.setBackgroundColor(activity.getColor(R.color.lightRed));
+                layout.setBackgroundColor(activity.getResources().getColor(R.color.lightRed));
                 break;
             case WARNING:
                 errorType.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_info_black_24dp));
                 errorType.setColorFilter(activity.getResources().getColor(R.color.snackbarYellow));
-                layout.setBackgroundColor(activity.getColor(R.color.lightYellow));
+                layout.setBackgroundColor(activity.getResources().getColor(R.color.lightYellow));
                 break;
         }//end switch
         DrawableCompat.setTint(errorType.getDrawable(), Color.BLACK);

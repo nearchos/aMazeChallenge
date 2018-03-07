@@ -138,7 +138,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
         if (errorList.isEmpty()) {
             if (getController().getWorkspace().hasBlocks()) {
                 Snackbar compilingSnackbar = Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_INDEFINITE);
-                View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getColor(R.color.snackbarGreen));
+                View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getResources().getColor(R.color.snackbarGreen));
                 compilingSnackbar.show();
                 onRunCode();
             }//end if has blocks and no error occured
@@ -210,7 +210,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Snackbar compilingSnackbar = Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG);
-                        View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getColor(R.color.snackbarGreen));
+                        View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getResources().getColor(R.color.snackbarGreen));
                         compilingSnackbar.show();
                         onRunCode();
                     }
@@ -239,7 +239,7 @@ public class BlocklyActivity extends AbstractBlocklyActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Snackbar compilingSnackbar = Snackbar.make(findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG);
-                        View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getColor(R.color.snackbarGreen));
+                        View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(getResources().getColor(R.color.snackbarGreen));
                         compilingSnackbar.show();
                         onRunCode();
                     }

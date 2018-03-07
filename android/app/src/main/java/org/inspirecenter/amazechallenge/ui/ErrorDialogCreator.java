@@ -91,10 +91,10 @@ public class ErrorDialogCreator {
      * Creates the warning list dialog.
      * @return Returns an AlertDialog object.
      */
-    public static AlertDialog createWarningListDialog(BlocklyActivity a, ArrayList<InterpreterError> errorList) {
-        final ListView list = new ListView(a);
-        final AlertDialog.Builder warningListDialog = new AlertDialog.Builder(a);
-        ErrorListDialogListAdapter listAdapter = new ErrorListDialogListAdapter(a, errorList, a);
+    public static AlertDialog createWarningListDialog(BlocklyActivity blocklyActivity, ArrayList<InterpreterError> errorList) {
+        final ListView list = new ListView(blocklyActivity);
+        final AlertDialog.Builder warningListDialog = new AlertDialog.Builder(blocklyActivity);
+        ErrorListDialogListAdapter listAdapter = new ErrorListDialogListAdapter(blocklyActivity, errorList, blocklyActivity);
         list.setAdapter(listAdapter);
 
         LinearLayout.LayoutParams lp_list = new LinearLayout.LayoutParams(
@@ -103,14 +103,14 @@ public class ErrorDialogCreator {
         list.setLayoutParams(lp_list);
         warningListDialog.setView(list);
         warningListDialog.setTitle(R.string.warnings);
-        warningListDialog.setMessage(a.getString(R.string.warnings_list_message));
+        warningListDialog.setMessage(blocklyActivity.getString(R.string.warnings_list_message));
         warningListDialog.setNegativeButton(R.string.ignore_all, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Snackbar compilingSnackbar = Snackbar.make(a.findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG);
-                View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(a.getColor(R.color.snackbarGreen));
+                Snackbar compilingSnackbar = Snackbar.make(blocklyActivity.findViewById(R.id.blocklyView), R.string.Compiling, Snackbar.LENGTH_LONG);
+                View sbCView = compilingSnackbar.getView(); sbCView.setBackgroundColor(blocklyActivity.getResources().getColor(R.color.snackbarGreen));
                 compilingSnackbar.show();
-                a.runCode();
+                blocklyActivity.runCode();
             }
         });
         warningListDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

@@ -51,7 +51,7 @@ public class AboutActivity extends AppCompatActivity {
 
             {
                 final Preference applicationVersionPreference = findPreference("applicationVersion");
-                applicationVersionPreference.setSummary(BuildConfig.VERSION_NAME + " [" + Installation.id(getContext()).substring(24) + "]");
+                applicationVersionPreference.setSummary(BuildConfig.VERSION_NAME + " [" + Installation.id(getActivity()).substring(24) + "]");
             }
             {
                 final Preference rateUsPreference = findPreference("rateUs");
