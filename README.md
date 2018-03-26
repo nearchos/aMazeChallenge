@@ -1,7 +1,7 @@
 # aMazeChallenge
 A game-like, distributed application for learning code by playing
 
-![aMazeChallenge app icon](https://raw.githubusercontent.com/nearchos/aMazeChallenge/master/artwork/amaze_logo-web.png)
+![aMazeChallenge app icon](https://raw.githubusercontent.com/nearchos/aMazeChallenge/master/android/app/src/main/res/mipmap-xxxhdpi/amaze_logo.png)
 
 Get it from [Google Play](https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge).
 
