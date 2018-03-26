@@ -1,9 +1,9 @@
 # aMazeChallenge
 A game-like, distributed application for learning code by playing
 
-![aMazeChallenge app icon](https://raw.githubusercontent.com/nearchos/aMazeChallenge/master/android/app/src/main/res/mipmap-xxxhdpi/amaze_logo.png)
-
 Get it from [Google Play](https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge).
+
+![aMazeChallenge app icon](https://raw.githubusercontent.com/nearchos/aMazeChallenge/master/artwork/amaze_logo-web.png)
 
 ## Privacy policy
 The app requests access to the user account to simplify the collection of name/email in the Personalization screen. You can still set an alias name and email before connecting to the online server. Also, connecting to the online server (and thus registering to play with these credentials) is optional.
