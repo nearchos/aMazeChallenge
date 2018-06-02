@@ -1,5 +1,5 @@
 # aMazeChallenge
-A game-like, distributed application for learning code by playing
+A game-like, distributed application for learning code by playing.
 
 Get it from [Google Play](https://play.google.com/store/apps/details?id=org.inspirecenter.amazechallenge).
 
